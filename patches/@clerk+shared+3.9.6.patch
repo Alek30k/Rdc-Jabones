@@ -1,0 +1,14 @@
+diff --git a/node_modules/@clerk/shared/dist/react/index.d.mts b/node_modules/@clerk/shared/dist/react/index.d.mts
+index 197aed6..73cb74a 100644
+--- a/node_modules/@clerk/shared/dist/react/index.d.mts
++++ b/node_modules/@clerk/shared/dist/react/index.d.mts
+@@ -2,7 +2,8 @@ import React, { PropsWithChildren } from 'react';
+ import { ClerkPaginatedResponse, GetDomainsParams, GetMembershipRequestParams, GetMembersParams, GetInvitationsParams, GetSubscriptionsParams, OrganizationDomainResource, OrganizationMembershipRequestResource, OrganizationMembershipResource, OrganizationInvitationResource, CommerceSubscriptionResource, OrganizationResource, GetUserOrganizationMembershipParams, GetUserOrganizationInvitationsParams, GetUserOrganizationSuggestionsParams, UserOrganizationInvitationResource, OrganizationSuggestionResource, CreateOrganizationParams, SetActive, PendingSessionOptions, UseSessionReturn, UseSessionListReturn, UseUserReturn, LoadedClerk, SessionVerificationLevel, ClientResource, ClerkOptions, SignedInSessionResource, UserResource } from '@clerk/types';
+ import { ClerkAPIResponseError } from '../error.mjs';
+ import { dequal } from 'dequal';
+-
++import * as swr from "swr";
++import * as swrInfinite from "swr/infinite";
+ /**
+  * Assert that the context value exists, otherwise throw an error.
+  *
