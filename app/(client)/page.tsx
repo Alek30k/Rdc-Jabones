@@ -16,8 +16,8 @@ const Home = async () => {
       <HomeBanner />
       <ProductGrid />
       <HomeCategories categories={categories} />
-      <ShopByBrands />
-      <LatestBlog />
+      {/* <ShopByBrands /> */}
+      {/* <LatestBlog /> */}
     </Container>
   );
 };

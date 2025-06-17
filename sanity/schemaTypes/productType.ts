@@ -59,13 +59,6 @@ export const productType = defineType({
       validation: (Rule) => Rule.min(0),
     }),
     defineField({
-      name: "brand",
-      title: "Brand",
-      type: "reference",
-      to: { type: "brand" },
-    }),
-
-    defineField({
       name: "status",
       title: "Product Status",
       type: "string",
@@ -83,10 +76,11 @@ export const productType = defineType({
       type: "string",
       options: {
         list: [
-          { title: "Gadget", value: "gadget" },
-          { title: "Appliances", value: "appliances" },
-          { title: "Refrigerators", value: "refrigerators" },
-          { title: "Others", value: "others" },
+          { title: "Jabones", value: "jabones" },
+          { title: "Regalos", value: "regalos" },
+          { title: "Corporal", value: "corporal" },
+          { title: "Facial", value: "facial" },
+          { title: "Cosmética", value: "cosmetica" },
         ],
       },
     }),
