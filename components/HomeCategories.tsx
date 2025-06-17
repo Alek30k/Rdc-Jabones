@@ -150,7 +150,7 @@ const HomeCategories = ({
               No categories available
             </h3>
             <p className="text-gray-600 mb-6">
-              We're working on adding new product categories
+              Estamos trabajando para agregar nuevas categorías de productos.
             </p>
             <Link
               href="/contact"
