@@ -75,7 +75,7 @@ const HomeCategories = ({
                       <CardContent className="p-0 relative">
                         <div className="relative h-72 w-full overflow-hidden">
                           <Image
-                            src={imageUrl || ""}
+                            src={imageUrl}
                             alt={category?.title || "Category"}
                             width={400}
                             height={288}
