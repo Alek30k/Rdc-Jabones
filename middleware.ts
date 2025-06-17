@@ -9,4 +9,6 @@ export const config = {
     // Always run for API routes
     "/(api|trpc)(.*)",
   ],
+  // Agregar esta línea para forzar Node.js runtime
+  runtime: "nodejs",
 };
