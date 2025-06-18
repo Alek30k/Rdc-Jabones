@@ -44,7 +44,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         )}
       </div>
 
-      <div className="p-3 sm:p-4 flex flex-col gap-2 sm:gap-3 ">
+      <div className="p-3 sm:p-4  flex flex-col gap-2 sm:gap-3 ">
         {product?.categories && (
           <p className="uppercase line-clamp-1 text-xs font-medium text-lightText">
             {product.categories.map((cat) => cat).join(", ")}

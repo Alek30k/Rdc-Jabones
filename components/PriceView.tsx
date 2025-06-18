@@ -16,27 +16,29 @@ const PriceView = ({ price, discount, className }: Props) => {
           amount={price}
           className={cn("text-shop_dark_green", className)}
         />
-        {price && discount !== undefined && (
-          <>
-            {discount > 0 && (
-              <PriceFormatter
-                amount={price + (discount * price) / 100}
-                className={twMerge(
-                  "line-through text-xs font-normal text-zinc-500",
-                  className
-                )}
-              />
-            )}
-            {discount === 0 && (
-              <span
-                className={twMerge(
-                  "text-xs font-normal text-zinc-500",
-                  className
-                )}
-              ></span>
-            )}
-          </>
-        )}
+        <div className="hidden sm:flex">
+          {price && discount !== undefined && (
+            <>
+              {discount > 0 && (
+                <PriceFormatter
+                  amount={price + (discount * price) / 100}
+                  className={twMerge(
+                    "line-through text-xs font-normal text-zinc-500",
+                    className
+                  )}
+                />
+              )}
+              {discount === 0 && (
+                <span
+                  className={twMerge(
+                    "text-xs font-normal text-zinc-500 ",
+                    className
+                  )}
+                ></span>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
