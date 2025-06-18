@@ -80,7 +80,7 @@ export const productType = defineType({
           { title: "Regalos", value: "regalos" },
           { title: "Corporal", value: "corporal" },
           { title: "Facial", value: "facial" },
-          { title: "Cosmética", value: "cosmetica" },
+          { title: "Accesorios", value: "accesorios" },
         ],
       },
     }),
