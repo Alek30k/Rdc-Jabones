@@ -46,7 +46,7 @@ const ImageView = ({ images = [], isStock }: Props) => {
             width={700}
             height={700}
             priority
-            className={`w-full h-96 max-h-[550px] min-h-[500px] object-contain group-hover:scale-110 hoverEffect rounded-md ${
+            className={`w-full h-96 max-h-[550px] min-h-[500px] object-cover group-hover:scale-110 hoverEffect rounded-md ${
               isStock === 0 ? "opacity-50" : ""
             }`}
           />
@@ -64,7 +64,7 @@ const ImageView = ({ images = [], isStock }: Props) => {
               alt={`Thumbnail ${image._key}`}
               width={100}
               height={100}
-              className="w-full h-auto object-contain"
+              className="w-full h-auto object-cover"
             />
           </button>
         ))}
