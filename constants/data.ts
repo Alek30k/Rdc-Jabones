@@ -25,5 +25,5 @@ export const categoriesData = [
 export const productType = [
   { title: "Jabones", value: "jabones" },
   { title: "Regalos", value: "regalos" },
-  { title: "Cosmética", value: "cosmetica" },
+  { title: "Accesorios", value: "accesorios" },
 ];
