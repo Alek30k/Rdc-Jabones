@@ -40,14 +40,15 @@ const HomeCategories = ({
   return (
     <section className="bg-white border border-shop_light_green/20 my-10 md:my-20 p-6 lg:p-8 rounded-xl shadow-sm">
       <div className="text-center mb-8">
-        <Title className="border-b pb-4 mb-6 text-3xl sm:text-4xl">
+        <Title className="border-b pb-4 mb-6  ">
           <span className="bg-gradient-to-r from-shop_orange to-shop_dark_green bg-clip-text text-transparent">
-            Categorías principales
+            Nuestras Lineas de Productos
           </span>
+          {/* <p className="text-sm text-gray-400"> */}
+          <p className=" line-clamp-1 text-sm font-medium text-lightText">
+            Explora nuestros productos destacados y las mejores ofertas
+          </p>
         </Title>
-        <p className="text-lg text-gray-600 mx-auto">
-          Discover our most loved product categories
-        </p>
       </div>
 
       <div className="grid gap-6 sm:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
@@ -100,14 +101,6 @@ const HomeCategories = ({
                             }`}
                           />
 
-                          {/* Top badge */}
-                          <div className="absolute top-4 left-4">
-                            <Badge className="bg-white/90 text-gray-900 hover:bg-white">
-                              <Package className="w-3 h-3 mr-1" />
-                              {category?.productCount || 0} items
-                            </Badge>
-                          </div>
-
                           {/* Bottom content */}
                           <div className="absolute bottom-0 left-0 right-0 p-6">
                             <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 group-hover:text-shop_orange/90 transition-colors">
@@ -115,7 +108,8 @@ const HomeCategories = ({
                             </h3>
                             <div className="flex items-center justify-between">
                               <span className="text-white/90 text-sm">
-                                {category?.productCount || 0} products available
+                                {category?.productCount || 0} productos
+                                disponibles
                               </span>
                               <div
                                 className={`flex items-center justify-center w-8 h-8 bg-white/20 rounded-full backdrop-blur-sm transition-all duration-300 ${
