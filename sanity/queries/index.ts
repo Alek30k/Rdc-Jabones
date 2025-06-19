@@ -1,5 +1,6 @@
 import { sanityFetch } from "../lib/live";
 import {
+  APPLICATIONAREA_QUERY,
   BLOG_CATEGORIES,
   BRAND_QUERY,
   BRANDS_QUERY,
@@ -76,10 +77,10 @@ const getProductBySlug = async (slug: string) => {
     return null;
   }
 };
-const getBrand = async (slug: string) => {
+const getApplication = async (slug: string) => {
   try {
     const product = await sanityFetch({
-      query: BRAND_QUERY,
+      query: APPLICATIONAREA_QUERY,
       params: {
         slug,
       },
@@ -161,7 +162,7 @@ export {
   getLatestBlogs,
   getDealProducts,
   getProductBySlug,
-  getBrand,
+  getApplication,
   getMyOrders,
   getAllBlogs,
   getSingleBlog,

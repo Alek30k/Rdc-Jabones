@@ -6,15 +6,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
-import { getBrand } from "@/sanity/queries";
+import { getApplication } from "@/sanity/queries";
 
 const ProductCharacteristics = async ({
   product,
 }: {
   product: Product | null | undefined;
 }) => {
-  const brand = await getBrand(product?.slug?.current as string);
-  console.log(brand);
+  const application = await getApplication(product?.slug?.current as string);
+
+  console.log(application);
 
   return (
     <Accordion type="single" collapsible>
@@ -22,19 +23,19 @@ const ProductCharacteristics = async ({
         <AccordionTrigger>{product?.name}: Characteristics</AccordionTrigger>
         <AccordionContent>
           <p className="flex items-center justify-between">
-            Brand:{" "}
-            {brand && (
+            Zona de aplicación:{" "}
+            {application && (
               <span className="font-semibold tracking-wide">
-                {brand[0]?.brandName}
+                {application[0]?.applicationName}
               </span>
             )}
           </p>
           <p className="flex items-center justify-between">
-            Collection:{" "}
+            Beneficios:{" "}
             <span className="font-semibold tracking-wide">2025</span>
           </p>
           <p className="flex items-center justify-between">
-            Type:{" "}
+            Categoría:{" "}
             <span className="font-semibold tracking-wide">
               {product?.variant}
             </span>
@@ -42,7 +43,7 @@ const ProductCharacteristics = async ({
           <p className="flex items-center justify-between">
             Stock:{" "}
             <span className="font-semibold tracking-wide">
-              {product?.stock ? "Available" : "Out of Stock"}
+              {product?.stock ? "Disponible" : "Agotado"}
             </span>
           </p>
         </AccordionContent>

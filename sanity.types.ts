@@ -232,20 +232,20 @@ export type Product = {
     [internalGroqTypeReferenceTo]?: "category";
   }>;
   stock?: number;
-  brand?: {
+  application?: {
     _ref: string;
     _type: "reference";
     _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "brand";
+    [internalGroqTypeReferenceTo]?: "application";
   };
   status?: "new" | "hot" | "sale";
   variant?: "gadget" | "appliances" | "refrigerators" | "others";
   isFeatured?: boolean;
 };
 
-export type Brand = {
+export type application = {
   _id: string;
-  _type: "brand";
+  _type: "application";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -452,7 +452,7 @@ export type AllSanitySchemaTypes =
   | Author
   | Order
   | Product
-  | Brand
+  | application
   | BlockContent
   | Category
   | SanityImagePaletteSwatch
@@ -468,11 +468,11 @@ export type AllSanitySchemaTypes =
   | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/queries/query.ts
-// Variable: BRANDS_QUERY
-// Query: *[_type=='brand'] | order(name asc)
-export type BRANDS_QUERYResult = Array<{
+// Variable: applicationS_QUERY
+// Query: *[_type=='application'] | order(name asc)
+export type APPLICATIONAREA_QUERY = Array<{
   _id: string;
-  _type: "brand";
+  _type: "application";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
@@ -588,11 +588,11 @@ export type DEAL_PRODUCTSResult = Array<{
   discount?: number;
   categories: Array<string | null> | null;
   stock?: number;
-  brand?: {
+  application?: {
     _ref: string;
     _type: "reference";
     _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "brand";
+    [internalGroqTypeReferenceTo]?: "application";
   };
   status?: "hot" | "new" | "sale";
   variant?: "appliances" | "gadget" | "others" | "refrigerators";
@@ -632,11 +632,11 @@ export type PRODUCT_BY_SLUG_QUERYResult = {
     [internalGroqTypeReferenceTo]?: "category";
   }>;
   stock?: number;
-  brand?: {
+  application?: {
     _ref: string;
     _type: "reference";
     _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "brand";
+    [internalGroqTypeReferenceTo]?: "application";
   };
   status?: "hot" | "new" | "sale";
   variant?: "appliances" | "gadget" | "others" | "refrigerators";
@@ -644,8 +644,8 @@ export type PRODUCT_BY_SLUG_QUERYResult = {
 } | null;
 // Variable: BRAND_QUERY
 // Query: *[_type == "product" && slug.current == $slug]{  "brandName": brand->title  }
-export type BRAND_QUERYResult = Array<{
-  brandName: string | null;
+export type APPLICATIONAREA_QUERYResult = Array<{
+  applicationArea: string | null;
 }>;
 // Variable: MY_ORDERS_QUERY
 // Query: *[_type == 'order' && clerkUserId == $userId] | order(orderData desc){...,products[]{  ...,product->}}
@@ -700,11 +700,11 @@ export type MY_ORDERS_QUERYResult = Array<{
         [internalGroqTypeReferenceTo]?: "category";
       }>;
       stock?: number;
-      brand?: {
+      application?: {
         _ref: string;
         _type: "reference";
         _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "brand";
+        [internalGroqTypeReferenceTo]?: "application";
       };
       status?: "hot" | "new" | "sale";
       variant?: "appliances" | "gadget" | "others" | "refrigerators";
@@ -932,11 +932,11 @@ export type OTHERS_BLOG_QUERYResult = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type=='brand'] | order(name asc) ": BRANDS_QUERYResult;
+    "*[_type=='application'] | order(name asc) ": APPLICATIONAREA_QUERYResult;
     " *[_type == 'blog' && isLatest == true]|order(name asc){\n      ...,\n      blogcategories[]->{\n      title\n    }\n    }": LATEST_BLOG_QUERYResult;
     "*[_type == 'product' && status == 'hot'] | order(name asc){\n    ...,\"categories\": categories[]->title\n  }": DEAL_PRODUCTSResult;
     '*[_type == "product" && slug.current == $slug] | order(name asc) [0]': PRODUCT_BY_SLUG_QUERYResult;
-    '*[_type == "product" && slug.current == $slug]{\n  "brandName": brand->title\n  }': BRAND_QUERYResult;
+    '*[_type == "product" && slug.current == $slug]{\n  "ApplicationArea": application->title\n  }': APPLICATIONAREA_QUERYResult;
     "*[_type == 'order' && clerkUserId == $userId] | order(orderData desc){\n...,products[]{\n  ...,product->\n}\n}": MY_ORDERS_QUERYResult;
     "*[_type == 'blog'] | order(publishedAt desc)[0...$quantity]{\n  ...,  \n     blogcategories[]->{\n    title\n}\n    }\n  ": GET_ALL_BLOGResult;
     '*[_type == "blog" && slug.current == $slug][0]{\n  ..., \n    author->{\n    name,\n    image,\n  },\n  blogcategories[]->{\n    title,\n    "slug": slug.current,\n  },\n}': SINGLE_BLOG_QUERYResult;

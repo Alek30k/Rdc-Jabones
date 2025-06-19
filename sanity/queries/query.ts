@@ -21,8 +21,9 @@ const PRODUCT_BY_SLUG_QUERY = defineQuery(
   `*[_type == "product" && slug.current == $slug] | order(name asc) [0]`
 );
 
-const BRAND_QUERY = defineQuery(`*[_type == "product" && slug.current == $slug]{
-  "brandName": brand->title
+const APPLICATIONAREA_QUERY =
+  defineQuery(`*[_type == "product" && slug.current == $slug]{
+  "applicationArea": applicationArea->title
   }`);
 
 const MY_ORDERS_QUERY =
@@ -86,7 +87,7 @@ export {
   LATEST_BLOG_QUERY,
   DEAL_PRODUCTS,
   PRODUCT_BY_SLUG_QUERY,
-  BRAND_QUERY,
+  APPLICATIONAREA_QUERY,
   MY_ORDERS_QUERY,
   GET_ALL_BLOG,
   SINGLE_BLOG_QUERY,
