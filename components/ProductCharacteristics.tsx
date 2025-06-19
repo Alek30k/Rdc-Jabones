@@ -6,36 +6,23 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
-import { getApplication } from "@/sanity/queries";
 
 const ProductCharacteristics = async ({
   product,
 }: {
   product: Product | null | undefined;
 }) => {
-  const application = await getApplication(product?.slug?.current as string);
-
-  console.log(application);
-
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger>{product?.name}: Characteristics</AccordionTrigger>
         <AccordionContent>
           <p className="flex items-center justify-between">
-            Zona de aplicación:{" "}
-            {application && (
-              <span className="font-semibold tracking-wide">
-                {application[0]?.applicationName}
-              </span>
-            )}
-          </p>
-          <p className="flex items-center justify-between">
-            Beneficios:{" "}
+            Collection:{" "}
             <span className="font-semibold tracking-wide">2025</span>
           </p>
           <p className="flex items-center justify-between">
-            Categoría:{" "}
+            Categoria:{" "}
             <span className="font-semibold tracking-wide">
               {product?.variant}
             </span>

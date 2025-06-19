@@ -74,7 +74,7 @@ const ProductGrid = () => {
         <Button
           onClick={() => router.push("/shop")}
           size="lg"
-          className="bg-gray-100 text-gray-600 cursor-pointer  shadow-xl  hover:bg-white hover:border-shop_light_green hover:text-shop_light_green hoverEffect border border-shop_light_green/30 sm:text-sm px-12 py-4 text-xl font-semibold rounded-full"
+          className="bg-gray-100 text-xs sm:px-3 sm:py-1.5 sm:text-sm md:px-6 md:py-2 text-gray-600 cursor-pointer  shadow-xl  hover:bg-white hover:border-shop_light_green hover:text-shop_light_green hoverEffect border border-shop_light_green/30 px-12 py-4 font-semibold rounded-full mt-5"
         >
           Ver todos los productos
           <ArrowRight className="ml-3 w-6 h-6" />

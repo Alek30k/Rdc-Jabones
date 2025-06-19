@@ -42,7 +42,7 @@ const HomeCategories = ({
       <div className="text-center mb-8">
         <Title className="border-b pb-4 mb-6 text-3xl sm:text-4xl">
           <span className="bg-gradient-to-r from-shop_orange to-shop_dark_green bg-clip-text text-transparent">
-            Popular Categories
+            Categorías principales
           </span>
         </Title>
         <p className="text-lg text-gray-600 mx-auto">

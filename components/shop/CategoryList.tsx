@@ -17,7 +17,7 @@ const CategoryList = ({
 }: Props) => {
   return (
     <div className="w-full bg-white p-5">
-      <Title className="text-base font-black">Product Categories</Title>
+      <Title className="text-base font-black">Categorías</Title>
       <RadioGroup value={selectedCategory || ""} className="mt-2 space-y-1">
         {categories?.map((category) => (
           <div
