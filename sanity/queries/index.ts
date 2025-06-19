@@ -2,7 +2,6 @@ import { sanityFetch } from "../lib/live";
 import {
   APPLICATIONAREA_QUERY,
   BLOG_CATEGORIES,
-  BRAND_QUERY,
   BRANDS_QUERY,
   DEAL_PRODUCTS,
   GET_ALL_BLOG,

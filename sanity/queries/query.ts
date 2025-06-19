@@ -1,6 +1,6 @@
 import { defineQuery } from "next-sanity";
 
-const BRANDS_QUERY = defineQuery(`*[_type=='brand'] | order(name asc) `);
+// const APPLICATIONAREA_QUERY = defineQuery(`*[_type=='application'] | order(name asc) `);
 
 const LATEST_BLOG_QUERY = defineQuery(
   ` *[_type == 'blog' && isLatest == true]|order(name asc){
@@ -83,7 +83,6 @@ const OTHERS_BLOG_QUERY = defineQuery(`*[
   }
 }`);
 export {
-  BRANDS_QUERY,
   LATEST_BLOG_QUERY,
   DEAL_PRODUCTS,
   PRODUCT_BY_SLUG_QUERY,
