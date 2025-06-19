@@ -50,7 +50,7 @@ const HomeCategories = ({
         </p>
       </div>
 
-      <div className="grid gap-6 sm:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
         {loading
           ? [...Array(6)].map((_, index: number) => (
               <CategorySkeleton key={index} />
@@ -72,8 +72,8 @@ const HomeCategories = ({
                     onMouseLeave={() => setHoveredCategory(null)}
                   >
                     <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
-                      <CardContent className="p-0 relative">
-                        <div className="relative h-72 w-full overflow-hidden">
+                      <CardContent className="p-0 relative ">
+                        <div className="relative h-72 w-full rounded-md overflow-hidden">
                           <Image
                             src={imageUrl}
                             alt={category?.title || "Category"}
