@@ -845,7 +845,7 @@
         },
         "optional": true
       },
-      "brand": {
+      "application": {
         "type": "objectAttribute",
         "value": {
           "type": "object",
@@ -871,7 +871,7 @@
               "optional": true
             }
           },
-          "dereferencesTo": "brand"
+          "dereferencesTo": "application"
         },
         "optional": true
       },
@@ -931,7 +931,7 @@
     }
   },
   {
-    "name": "brand",
+    "name": "application",
     "type": "document",
     "attributes": {
       "_id": {
@@ -944,7 +944,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "brand"
+          "value": "application"
         }
       },
       "_createdAt": {

@@ -1,5 +1,5 @@
 "use client";
-import { BRANDS_QUERYResult, Category, Product } from "@/sanity.types";
+import { Category, Product } from "@/sanity.types";
 import React, { useEffect, useState } from "react";
 import Container from "./Container";
 import Title from "./Title";
@@ -9,26 +9,21 @@ import { Loader2 } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
 import CategoryList from "./shop/CategoryList";
-import BrandList from "./shop/BrandList";
 import PriceList from "./shop/PriceList";
 
 interface Props {
   categories: Category[];
-  brands: BRANDS_QUERYResult;
 }
 
-const Shop = ({ categories, brands }: Props) => {
+const Shop = ({ categories }: Props) => {
   const searchParams = useSearchParams();
-  const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     categoryParams || null
   );
-  const [selectedBrand, setSelectedBrand] = useState<string | null>(
-    brandParams || null
-  );
+
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
 
   const fetchProducts = async () => {
@@ -54,7 +49,7 @@ const Shop = ({ categories, brands }: Props) => {
     `;
       const data = await client.fetch(
         query,
-        { selectedCategory, selectedBrand, minPrice, maxPrice },
+        { selectedCategory, minPrice, maxPrice },
         { next: { revalidate: 0 } }
       );
       setProducts(data);
@@ -67,7 +62,7 @@ const Shop = ({ categories, brands }: Props) => {
 
   useEffect(() => {
     fetchProducts();
-  }, [selectedCategory, selectedBrand, selectedPrice]);
+  }, [selectedCategory, selectedPrice]);
 
   return (
     <div className="border-t">
@@ -77,13 +72,10 @@ const Shop = ({ categories, brands }: Props) => {
             <Title className="text-lg uppercase tracking-wide">
               Get the products as your needs
             </Title>
-            {(selectedCategory !== null ||
-              selectedBrand !== null ||
-              selectedPrice !== null) && (
+            {(selectedCategory !== null || selectedPrice !== null) && (
               <button
                 onClick={() => {
                   setSelectedCategory(null);
-                  setSelectedBrand(null);
                   setSelectedPrice(null);
                 }}
                 className="text-shop_dark_green underline text-sm mt-2 font-medium hover:text-darkRed hoverEffect"
@@ -100,11 +92,7 @@ const Shop = ({ categories, brands }: Props) => {
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
             />
-            <BrandList
-              brands={brands}
-              setSelectedBrand={setSelectedBrand}
-              selectedBrand={selectedBrand}
-            />
+
             <PriceList
               setSelectedPrice={setSelectedPrice}
               selectedPrice={selectedPrice}
