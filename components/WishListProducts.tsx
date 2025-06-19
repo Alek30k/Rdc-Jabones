@@ -22,11 +22,11 @@ const WishListProducts = () => {
 
   const handleResetWishlist = () => {
     const confirmReset = window.confirm(
-      "Are you sure you want to reset your wishlist?"
+      "¿Estás segura de que quieres restablecer tu lista de favoritos?"
     );
     if (confirmReset) {
       resetFavorite();
-      toast.success("Wishlist reset successfully");
+      toast.success("La lista de favoritos se restableció correctamente");
     }
   };
 
@@ -38,14 +38,14 @@ const WishListProducts = () => {
             <table className="w-full border-collapse">
               <thead className="border-b">
                 <tr className="bg-black/5">
-                  <th className="p-2 text-left">Image</th>
+                  <th className="p-2 text-left">Imagen</th>
                   <th className="p-2 text-left hidden md:table-cell">
-                    Category
+                    Categoría
                   </th>
-                  <th className="p-2 text-left hidden md:table-cell">Type</th>
-                  <th className="p-2 text-left hidden md:table-cell">Status</th>
-                  <th className="p-2 text-left">Price</th>
-                  <th className="p-2 text-center md:text-left">Action</th>
+                  <th className="p-2 text-left hidden md:table-cell">Tipo</th>
+                  <th className="p-2 text-left hidden md:table-cell">Estado</th>
+                  <th className="p-2 text-left">Precio</th>
+                  <th className="p-2 text-center md:text-left">Acción</th>
                 </tr>
               </thead>
               <tbody>
@@ -57,10 +57,12 @@ const WishListProducts = () => {
                         <X
                           onClick={() => {
                             removeFromFavorite(product?._id);
-                            toast.success("Product removed from wishlist");
+                            toast.success(
+                              "Producto eliminado de la lista de favoritos"
+                            );
                           }}
-                          size={18}
-                          className="hover:text-red-600 hover:cursor-pointer size-9 hoverEffect "
+                          size={14}
+                          className="hover:text-red-600 hover:cursor-pointer hoverEffect "
                         />
                         {product?.images && (
                           <Link
@@ -72,7 +74,7 @@ const WishListProducts = () => {
                               alt={"product image"}
                               width={80}
                               height={80}
-                              className="rounded-md group-hover:scale-105 hoverEffect h-20 w-20 object-contain"
+                              className="rounded-md group-hover:scale-105 hoverEffect h-20 w-20 object-cover"
                             />
                           </Link>
                         )}
@@ -96,8 +98,8 @@ const WishListProducts = () => {
                         } font-medium text-sm hidden md:table-cell`}
                       >
                         {(product?.stock as number) > 0
-                          ? "In Stock"
-                          : "Out of Stock"}
+                          ? "Disponible"
+                          : "Agotado"}
                       </td>
                       <td className="p-2">
                         <PriceFormatter amount={product?.price} />
@@ -114,7 +116,7 @@ const WishListProducts = () => {
             {visibleProducts < favoriteProduct?.length && (
               <div className="my-5">
                 <Button variant="outline" onClick={loadMore}>
-                  Load More
+                  Cargar más
                 </Button>
               </div>
             )}
@@ -124,7 +126,7 @@ const WishListProducts = () => {
                   onClick={() => setVisibleProducts(10)}
                   variant="outline"
                 >
-                  Load Less
+                  Cargar menos
                 </Button>
               </div>
             )}
@@ -136,7 +138,7 @@ const WishListProducts = () => {
               variant="destructive"
               size="lg"
             >
-              Reset Wishlist
+              Restablecer lista de favoritos{" "}
             </Button>
           )}
         </>
@@ -151,14 +153,15 @@ const WishListProducts = () => {
           </div>
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold tracking-tight">
-              Your wishlist is empty
+              Tu lista de favoritos está vacía
             </h2>
             <p className="text-sm text-muted-foreground">
-              Items added to your wishlist will appear here
+              Los artículos agregados a su lista de favoritos aparecerán
+              aquí{" "}
             </p>
           </div>
           <Button asChild>
-            <Link href="/shop">Continue Shopping</Link>
+            <Link href="/shop">Continuar comprando</Link>
           </Button>
         </div>
       )}
