@@ -17,13 +17,16 @@ interface Props {
 
 const Shop = ({ categories }: Props) => {
   const searchParams = useSearchParams();
+  const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     categoryParams || null
   );
-
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(
+    brandParams || null
+  );
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
 
   const fetchProducts = async () => {
@@ -49,7 +52,7 @@ const Shop = ({ categories }: Props) => {
     `;
       const data = await client.fetch(
         query,
-        { selectedCategory, minPrice, maxPrice },
+        { selectedCategory, selectedBrand, minPrice, maxPrice },
         { next: { revalidate: 0 } }
       );
       setProducts(data);
@@ -62,7 +65,7 @@ const Shop = ({ categories }: Props) => {
 
   useEffect(() => {
     fetchProducts();
-  }, [selectedCategory, selectedPrice]);
+  }, [selectedCategory, selectedBrand, selectedPrice]);
 
   return (
     <div className="border-t">
@@ -72,10 +75,13 @@ const Shop = ({ categories }: Props) => {
             <Title className="text-lg uppercase tracking-wide">
               Get the products as your needs
             </Title>
-            {(selectedCategory !== null || selectedPrice !== null) && (
+            {(selectedCategory !== null ||
+              selectedBrand !== null ||
+              selectedPrice !== null) && (
               <button
                 onClick={() => {
                   setSelectedCategory(null);
+                  setSelectedBrand(null);
                   setSelectedPrice(null);
                 }}
                 className="text-shop_dark_green underline text-sm mt-2 font-medium hover:text-darkRed hoverEffect"
