@@ -2,7 +2,6 @@
 import { Category, Product } from "@/sanity.types";
 import React, { useEffect, useState } from "react";
 import Container from "./Container";
-import Title from "./Title";
 import { useSearchParams } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { Loader2 } from "lucide-react";
