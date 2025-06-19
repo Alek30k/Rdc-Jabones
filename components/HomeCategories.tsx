@@ -8,7 +8,7 @@ import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowRight, Heart, Package } from "lucide-react";
+import { ArrowRight, Heart } from "lucide-react";
 
 interface HomeCategoriesProps {
   categories: Category[];
