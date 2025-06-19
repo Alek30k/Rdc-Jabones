@@ -1,6 +1,5 @@
 "use client";
 import { productType } from "@/constants/data";
-import Link from "next/link";
 interface Props {
   selectedTab: string;
   onTabSelect: (tab: string) => void;
@@ -8,7 +7,7 @@ interface Props {
 
 const HomeTabbar = ({ selectedTab, onTabSelect }: Props) => {
   return (
-    <div className="flex items-center flex-wrap gap-3 justify-start sm:justify-between max-w-full overflow-x-hidden">
+    <div className="flex flex-col flex-wrap gap-3 max-w-full overflow-x-hidden">
       <div className="flex items-center gap-1.5 md:gap-3 overflow-x-auto whitespace-nowrap">
         {productType?.map((item) => (
           <button
@@ -20,12 +19,6 @@ const HomeTabbar = ({ selectedTab, onTabSelect }: Props) => {
           </button>
         ))}
       </div>
-      <Link
-        href={"/shop"}
-        className="border border-darkColor px-4 py-1 rounded-full hover:bg-shop_light_green  text-xs hover:text-white hover:border-shop_light_green hoverEffect"
-      >
-        See all
-      </Link>
     </div>
   );
 };

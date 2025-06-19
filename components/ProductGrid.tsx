@@ -5,16 +5,21 @@ import ProductCard from "./ProductCard";
 import { motion, AnimatePresence } from "motion/react";
 import { client } from "@/sanity/lib/client";
 import NoProductAvailable from "./NoProductAvailable";
-import { Loader2 } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import Container from "./Container";
 import HomeTabbar from "./HomeTabbar";
 import { productType } from "@/constants/data";
 import { Product } from "@/sanity.types";
+import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 const ProductGrid = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(productType[0]?.title || "");
+
+  const router = useRouter();
+
   const query = `*[_type == "product" && variant == $variant] | order(name asc){
   ...,"categories": categories[]->title
 }`;
@@ -65,6 +70,16 @@ const ProductGrid = () => {
       ) : (
         <NoProductAvailable selectedTab={selectedTab} />
       )}
+      <div className="text-center">
+        <Button
+          onClick={() => router.push("/shop")}
+          size="lg"
+          className="bg-gray-100 text-gray-600 cursor-pointer  shadow-xl  hover:bg-white hover:border-shop_light_green hover:text-shop_light_green hoverEffect border border-shop_light_green/30 sm:text-sm px-12 py-4 text-xl font-semibold rounded-full"
+        >
+          Ver todos los productos
+          <ArrowRight className="ml-3 w-6 h-6" />
+        </Button>
+      </div>
     </Container>
   );
 };
