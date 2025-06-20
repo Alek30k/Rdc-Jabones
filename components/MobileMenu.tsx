@@ -3,7 +3,6 @@
 import { AlignLeft } from "lucide-react";
 import SideMenu from "./SideMenu";
 import { useState } from "react";
-// import type { SerializedUser } from "@/types/user" // Importar el tipo
 
 export interface SerializedUser {
   id: string;
