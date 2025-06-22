@@ -39,37 +39,13 @@ const CartPage = () => {
     resetCart,
   } = useStore();
 
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const groupedItems = useStore((state) => state.getGroupedItems());
   const router = useRouter();
 
   const { isSignedIn } = useAuth();
   const { user } = useUser();
-  const [addresses, setAddresses] = useState<Address[] | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
-
-  // const fetchAddresses = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const query = `*[_type=="address"] | order(publishedAt desc)`;
-  //     const data = await client.fetch(query);
-  //     setAddresses(data);
-  //     const defaultAddress = data.find((addr: Address) => addr.default);
-  //     if (defaultAddress) {
-  //       setSelectedAddress(defaultAddress);
-  //     } else if (data.length > 0) {
-  //       setSelectedAddress(data[0]);
-  //     }
-  //   } catch (error) {
-  //     console.log("Addresses fetching error:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchAddresses();
-  // }, []);
 
   const handleResetCart = () => {
     const confirmed = window.confirm(
@@ -82,12 +58,8 @@ const CartPage = () => {
   };
 
   const handleProceedToCheckout = () => {
-    // if (!selectedAddress) {
-    //   toast.error("Por favor selecciona una dirección de entrega");
-    //   return;
-    // }
-
     // Store checkout data in localStorage for the checkout page
+
     const checkoutData = {
       items: groupedItems,
       address: selectedAddress,
@@ -252,57 +224,6 @@ const CartPage = () => {
                         </Button>
                       </div>
                     </div>
-                    {/* {addresses && (
-                      <div className="bg-white rounded-md mt-5">
-                        <Card>
-                          <CardHeader>
-                            <CardTitle>Dirección de entrega</CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <RadioGroup
-                              defaultValue={addresses
-                                ?.find((addr) => addr.default)
-                                ?._id.toString()}
-                              onValueChange={(value) => {
-                                const address = addresses.find(
-                                  (addr) => addr._id.toString() === value
-                                );
-                                setSelectedAddress(address || null);
-                              }}
-                            >
-                              {addresses?.map((address) => (
-                                <div
-                                  key={address?._id}
-                                  className={`flex items-center space-x-2 mb-4 cursor-pointer ${
-                                    selectedAddress?._id === address?._id &&
-                                    "text-shop_dark_green"
-                                  }`}
-                                >
-                                  <RadioGroupItem
-                                    value={address?._id.toString()}
-                                  />
-                                  <Label
-                                    htmlFor={`address-${address?._id}`}
-                                    className="grid gap-1.5 flex-1"
-                                  >
-                                    <span className="font-semibold">
-                                      {address?.name}
-                                    </span>
-                                    <span className="text-sm text-black/60">
-                                      {address.address}, {address.city},{" "}
-                                      {address.state} {address.zip}
-                                    </span>
-                                  </Label>
-                                </div>
-                              ))}
-                            </RadioGroup>
-                            <Button variant="outline" className="w-full mt-4">
-                              Agregar nueva dirección
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    )} */}
                   </div>
                 </div>
                 {/* Order summary for mobile view */}

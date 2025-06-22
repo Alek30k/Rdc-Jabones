@@ -14,6 +14,7 @@ import {
   MapPin,
   User,
   Package,
+  Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,6 +42,8 @@ interface CheckoutData {
 const CheckoutPage = () => {
   const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null);
   const [orderNumber, setOrderNumber] = useState("");
+  const [isConfirming, setIsConfirming] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -60,27 +63,43 @@ const CheckoutPage = () => {
     toast.success(`${label} copiado al portapapeles`);
   };
 
-  const handlePaymentConfirmation = () => {
+  const handlePaymentConfirmation = async () => {
     if (!checkoutData) return;
 
-    // Store order data for confirmation page
-    const orderData = {
-      ...checkoutData,
-      orderNumber,
-      orderDate: new Date().toISOString(),
-      status: "pending_confirmation",
-    };
+    setIsConfirming(true);
 
-    localStorage.setItem("orderData", JSON.stringify(orderData));
-    localStorage.removeItem("checkoutData");
-    router.push("/order-confirmation");
+    try {
+      // Simular procesamiento de 3 segundos
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      // Store order data for confirmation page
+      const orderData = {
+        ...checkoutData,
+        orderNumber,
+        orderDate: new Date().toISOString(),
+        status: "pending_confirmation",
+      };
+
+      localStorage.setItem("orderData", JSON.stringify(orderData));
+      localStorage.removeItem("checkoutData");
+
+      toast.success("¡Transferencia confirmada! Redirigiendo...");
+
+      // Pequeño delay adicional para mostrar el toast
+      setTimeout(() => {
+        router.push("/order-confirmation");
+      }, 500);
+    } catch (error) {
+      toast.error("Hubo un error. Por favor intenta nuevamente.");
+      setIsConfirming(false);
+    }
   };
 
   if (!checkoutData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
           <p>Cargando información del pedido...</p>
         </div>
       </div>
@@ -92,7 +111,7 @@ const CheckoutPage = () => {
       <Container className="py-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" size="sm" asChild disabled={isConfirming}>
             <Link href="/cart" className="flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" />
               Volver al carrito
@@ -109,48 +128,11 @@ const CheckoutPage = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Order Summary */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Customer Info */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
-                  Información del Cliente
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <p className="font-semibold">{checkoutData.customer.name}</p>
-                  <p className="text-gray-600">{checkoutData.customer.email}</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Delivery Address */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
-                  Dirección de Entrega
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-1">
-                  <p className="font-semibold">{checkoutData.address.name}</p>
-                  <p className="text-gray-600">
-                    {checkoutData.address.address}, {checkoutData.address.city}
-                  </p>
-                  <p className="text-gray-600">
-                    {checkoutData.address.state} {checkoutData.address.zip}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
             {/* Order Items */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Package className="w-5 h-5" />
+                <CardTitle className="flex items-center gap-2 ">
+                  <Package className="w-5 h-5 " />
                   Productos ({checkoutData.items.length})
                 </CardTitle>
               </CardHeader>
@@ -257,6 +239,7 @@ const CheckoutPage = () => {
                         onClick={() =>
                           copyToClipboard("0000003100010000000001", "CBU")
                         }
+                        disabled={isConfirming}
                       >
                         <Copy className="w-4 h-4" />
                       </Button>
@@ -278,6 +261,7 @@ const CheckoutPage = () => {
                         onClick={() =>
                           copyToClipboard("TIENDA.ONLINE.MP", "Alias")
                         }
+                        disabled={isConfirming}
                       >
                         <Copy className="w-4 h-4" />
                       </Button>
@@ -313,6 +297,7 @@ const CheckoutPage = () => {
                             "Monto"
                           )
                         }
+                        disabled={isConfirming}
                       >
                         <Copy className="w-4 h-4" />
                       </Button>
@@ -321,21 +306,63 @@ const CheckoutPage = () => {
                 </div>
 
                 <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                  <p className="text-sm text-yellow-800">
-                    <strong>Importante:</strong> Incluye el número de pedido #
-                    {orderNumber} en el concepto de la transferencia para
-                    identificar tu pago.
-                  </p>
+                  <h4 className="text-sm font-semibold text-yellow-800 mb-2">
+                    Importante:
+                  </h4>
+                  <ul className="text-sm text-yellow-800 space-y-1">
+                    <li className="break-words">
+                      • Incluye el número de pedido:{" "}
+                      <strong>{orderNumber}</strong>
+                    </li>
+                    <li>• Envía el comprobante por WhatsApp o email</li>
+                  </ul>
                 </div>
 
-                <Button
-                  onClick={handlePaymentConfirmation}
-                  className="w-full"
-                  size="lg"
-                >
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Ya realicé la transferencia
-                </Button>
+                <div className="space-y-3">
+                  <Button
+                    className="w-full"
+                    onClick={handlePaymentConfirmation}
+                    size="lg"
+                    disabled={isConfirming}
+                  >
+                    {isConfirming ? (
+                      <span className="flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Procesando transferencia...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4" />
+                        Ya realicé la transferencia
+                      </span>
+                    )}
+                  </Button>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    asChild
+                    disabled={isConfirming}
+                  >
+                    <a
+                      href="https://wa.me/1234567890"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Enviar por WhatsApp
+                    </a>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    asChild
+                    disabled={isConfirming}
+                  >
+                    <a href="mailto:ventas@tutienda.com">Enviar por Email</a>
+                  </Button>
+                </div>
 
                 <p className="text-xs text-gray-500 text-center">
                   Al confirmar, recibirás un email con los detalles de tu
