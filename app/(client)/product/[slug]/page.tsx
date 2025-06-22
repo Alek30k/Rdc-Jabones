@@ -37,7 +37,7 @@ const SingleProductPage = async ({
     <div className="min-h-screen bg-gray-50/30">
       {/* Breadcrumb Section */}
       <div className="bg-white border-b">
-        <Container className="py-4">
+        <Container className="">
           <div className="flex items-center justify-between">
             <Breadcrumb>
               <BreadcrumbList>

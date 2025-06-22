@@ -1,3 +1,4 @@
+import { client } from "../lib/client";
 import { sanityFetch } from "../lib/live";
 import {
   BLOG_CATEGORIES,
@@ -155,6 +156,57 @@ const getOthersBlog = async (slug: string, quantity: number) => {
     return [];
   }
 };
+
+export async function getCategoryBySlug(slug: string) {
+  const query = `
+    *[_type == "category" && slug.current == $slug][0] {
+      _id,
+      _createdAt,
+      _updatedAt,
+      title,
+      slug,
+      description,
+      "productCount": count(*[_type == "product" && references(^._id)])
+    }
+  `;
+
+  try {
+    const category = await client.fetch(query, { slug });
+    return category;
+  } catch (error) {
+    console.error("Error fetching category by slug:", error);
+    return null;
+  }
+}
+
+export async function getProductsByCategory(categorySlug: string) {
+  const query = `
+    *[_type == "product" && references(*[_type == "category" && slug.current == $categorySlug]._id)] | order(name asc) {
+      _id,
+      _createdAt,
+      _updatedAt,
+      name,
+      slug,
+      description,
+      price,
+      discount,
+      stock,
+      variant,
+      images,
+      "categories": categories[]->title,
+      "brand": brand->title
+    }
+  `;
+
+  try {
+    const products = await client.fetch(query, { categorySlug });
+    return products || [];
+  } catch (error) {
+    console.error("Error fetching products by category:", error);
+    return [];
+  }
+}
+
 export {
   getCategories,
   getAllBrands,
