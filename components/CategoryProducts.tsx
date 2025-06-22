@@ -39,7 +39,7 @@ const CategoryProducts = ({ categories, slug }: Props) => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("name-asc");
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [viewMode] = useState<ViewMode>("grid");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);

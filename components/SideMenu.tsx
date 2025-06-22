@@ -9,14 +9,23 @@ import { useOutsideClick } from "@/hooks";
 import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
 import SignIn from "./SignIn";
 import { User } from "@clerk/nextjs/server";
+import { cn } from "@/lib/utils";
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   user: User | null;
+  className?: string;
+  spanDesign?: string;
 }
 
-const SideMenu: FC<SidebarProps> = ({ isOpen, onClose, user }) => {
+const SideMenu: FC<SidebarProps> = ({
+  isOpen,
+  onClose,
+  user,
+  className,
+  spanDesign,
+}) => {
   const pathname = usePathname();
   const sidebarRef = useOutsideClick<HTMLDivElement>(onClose);
 
@@ -31,7 +40,24 @@ const SideMenu: FC<SidebarProps> = ({ isOpen, onClose, user }) => {
         className="min-w-72 max-w-96 bg-black h-screen p-10 border-r border-r-shop_light_green flex flex-col gap-6"
       >
         <div className="flex items-center justify-between gap-5">
-          <Logo className=" text-white" spanDesign="group-hover:text-white" />
+          <Link href={"/"}>
+            <h2
+              className={cn(
+                "text-2xl text-shop_orange font-black tracking-wider hover:text-shop_light_green hoverEffect group font-sans",
+                className
+              )}
+            >
+              🎁 Regalos del
+              <span
+                className={cn(
+                  "text-shop_light_green group-hover:text-shop_orange hoverEffect",
+                  spanDesign
+                )}
+              >
+                Corazón ❤️
+              </span>
+            </h2>
+          </Link>{" "}
           <button
             className="hover:text-shop_light_green hoverEffect"
             onClick={onClose}
