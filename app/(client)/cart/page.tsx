@@ -1,9 +1,5 @@
 "use client";
 
-import {
-  createCheckoutSession,
-  Metadata,
-} from "@/actions/createCheckoutSession";
 import Container from "@/components/Container";
 import EmptyCart from "@/components/EmptyCart";
 import NoAccess from "@/components/NoAccess";
@@ -22,14 +18,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Address } from "@/sanity.types";
+import type { Address } from "@/sanity.types";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import useStore from "@/store";
 import { useAuth, useUser } from "@clerk/nextjs";
-import { ShoppingBag, Trash } from "lucide-react";
+import { ShoppingBag, Trash, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -44,65 +41,72 @@ const CartPage = () => {
 
   const [loading, setLoading] = useState(false);
   const groupedItems = useStore((state) => state.getGroupedItems());
+  const router = useRouter();
 
   const { isSignedIn } = useAuth();
   const { user } = useUser();
   const [addresses, setAddresses] = useState<Address[] | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
-  const fetchAddresses = async () => {
-    setLoading(true);
-    try {
-      const query = `*[_type=="address"] | order(publishedAt desc)`;
-      const data = await client.fetch(query);
-      setAddresses(data);
-      const defaultAddress = data.find((addr: Address) => addr.default);
-      if (defaultAddress) {
-        setSelectedAddress(defaultAddress);
-      } else if (data.length > 0) {
-        setSelectedAddress(data[0]); // Optional: select first address if no default
-      }
-    } catch (error) {
-      console.log("Addresses fetching error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetchAddresses = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const query = `*[_type=="address"] | order(publishedAt desc)`;
+  //     const data = await client.fetch(query);
+  //     setAddresses(data);
+  //     const defaultAddress = data.find((addr: Address) => addr.default);
+  //     if (defaultAddress) {
+  //       setSelectedAddress(defaultAddress);
+  //     } else if (data.length > 0) {
+  //       setSelectedAddress(data[0]);
+  //     }
+  //   } catch (error) {
+  //     console.log("Addresses fetching error:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchAddresses();
-  }, []);
+  // useEffect(() => {
+  //   fetchAddresses();
+  // }, []);
 
   const handleResetCart = () => {
     const confirmed = window.confirm(
-      "Are you sure you want to reset your cart?"
+      "¿Estás seguro de que quieres vaciar tu carrito?"
     );
     if (confirmed) {
       resetCart();
-      toast.success("Cart reset successfully!");
+      toast.success("Carrito vaciado exitosamente!");
     }
   };
 
-  const handleCheckout = async () => {
-    setLoading(true);
-    try {
-      const metadata: Metadata = {
-        orderNumber: crypto.randomUUID(),
-        customerName: user?.fullName ?? "Unknown",
-        customerEmail: user?.emailAddresses[0]?.emailAddress ?? "Unknown",
-        clerkUserId: user?.id,
-        address: selectedAddress,
-      };
-      const checkoutUrl = await createCheckoutSession(groupedItems, metadata);
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl;
-      }
-    } catch (error) {
-      console.error("Error creating checkout session:", error);
-    } finally {
-      setLoading(false);
-    }
+  const handleProceedToCheckout = () => {
+    // if (!selectedAddress) {
+    //   toast.error("Por favor selecciona una dirección de entrega");
+    //   return;
+    // }
+
+    // Store checkout data in localStorage for the checkout page
+    const checkoutData = {
+      items: groupedItems,
+      address: selectedAddress,
+      customer: {
+        name: user?.fullName ?? "Unknown",
+        // email: user?.emailAddresses[0]?.emailAddress ?? "Unknown",
+        id: user?.id,
+      },
+      totals: {
+        subtotal: getSubTotalPrice(),
+        discount: getSubTotalPrice() - getTotalPrice(),
+        total: getTotalPrice(),
+      },
+    };
+
+    localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
+    router.push("/checkout");
   };
+
   return (
     <div className="bg-gray-50 pb-52 md:pb-10">
       {isSignedIn ? (
@@ -127,11 +131,13 @@ const CartPage = () => {
                             {product?.images && (
                               <Link
                                 href={`/product/${product?.slug?.current}`}
-                                className="border p-0.5 md:p-1 mr-2 rounded-md
-                                 overflow-hidden group"
+                                className="border p-0.5 md:p-1 mr-2 rounded-md overflow-hidden group"
                               >
                                 <Image
-                                  src={urlFor(product?.images[0]).url()}
+                                  src={
+                                    urlFor(product?.images[0]).url() ||
+                                    "/placeholder.svg"
+                                  }
                                   alt="productImage"
                                   width={500}
                                   height={500}
@@ -168,7 +174,7 @@ const CartPage = () => {
                                       />
                                     </TooltipTrigger>
                                     <TooltipContent className="font-bold">
-                                      Add to Favorite
+                                      Agregar a favoritos
                                     </TooltipContent>
                                   </Tooltip>
                                   <Tooltip>
@@ -177,7 +183,7 @@ const CartPage = () => {
                                         onClick={() => {
                                           deleteCartProduct(product?._id);
                                           toast.success(
-                                            "Product deleted successfully!"
+                                            "Producto eliminado exitosamente!"
                                           );
                                         }}
                                         className="w-4 h-4 md:w-5 md:h-5 mr-1 text-gray-500 hover:text-red-600 hoverEffect"
@@ -236,16 +242,17 @@ const CartPage = () => {
                           />
                         </div>
                         <Button
-                          className="w-full rounded-full font-semibold tracking-wide hoverEffect"
+                          className="w-full rounded-full font-semibold tracking-wide hoverEffect flex items-center gap-2"
                           size="lg"
                           disabled={loading}
-                          onClick={handleCheckout}
+                          onClick={handleProceedToCheckout}
                         >
-                          {loading ? "Please wait..." : "Proceed to Checkout"}
+                          Continuar con el pago
+                          <ArrowRight className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>
-                    {addresses && (
+                    {/* {addresses && (
                       <div className="bg-white rounded-md mt-5">
                         <Card>
                           <CardHeader>
@@ -256,12 +263,20 @@ const CartPage = () => {
                               defaultValue={addresses
                                 ?.find((addr) => addr.default)
                                 ?._id.toString()}
+                              onValueChange={(value) => {
+                                const address = addresses.find(
+                                  (addr) => addr._id.toString() === value
+                                );
+                                setSelectedAddress(address || null);
+                              }}
                             >
                               {addresses?.map((address) => (
                                 <div
                                   key={address?._id}
-                                  onClick={() => setSelectedAddress(address)}
-                                  className={`flex items-center space-x-2 mb-4 cursor-pointer ${selectedAddress?._id === address?._id && "text-shop_dark_green"}`}
+                                  className={`flex items-center space-x-2 mb-4 cursor-pointer ${
+                                    selectedAddress?._id === address?._id &&
+                                    "text-shop_dark_green"
+                                  }`}
                                 >
                                   <RadioGroupItem
                                     value={address?._id.toString()}
@@ -287,7 +302,7 @@ const CartPage = () => {
                           </CardContent>
                         </Card>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
                 {/* Order summary for mobile view */}
@@ -314,14 +329,13 @@ const CartPage = () => {
                         />
                       </div>
                       <Button
-                        className="w-full rounded-full font-semibold tracking-wide hoverEffect"
+                        className="w-full rounded-full font-semibold tracking-wide hoverEffect flex items-center gap-2"
                         size="lg"
-                        disabled={loading}
-                        onClick={handleCheckout}
+                        disabled={loading || !selectedAddress}
+                        onClick={handleProceedToCheckout}
                       >
-                        {loading
-                          ? "Espere por favor..."
-                          : "Proceed to Checkout"}
+                        Continuar con el pago
+                        <ArrowRight className="w-4 h-4" />
                       </Button>
                     </div>
                   </div>
