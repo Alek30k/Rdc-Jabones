@@ -1,7 +1,7 @@
 "use client";
 
 import type { Category, Product } from "@/sanity.types";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
@@ -16,14 +16,7 @@ import {
 import { Separator } from "./ui/separator";
 import { client } from "@/sanity/lib/client";
 import { AnimatePresence, motion } from "motion/react";
-import {
-  Loader2,
-  Search,
-  SlidersHorizontal,
-  Grid3X3,
-  List,
-  Package,
-} from "lucide-react";
+import { Loader2, Search, SlidersHorizontal, Package } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
 
