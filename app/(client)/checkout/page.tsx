@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Product } from "@/sanity.types";
 import { urlFor } from "@/sanity/lib/image";
+import useStore from "@/store";
 import {
   ArrowLeft,
   Copy,
@@ -41,6 +42,8 @@ const CheckoutPage = () => {
   const [checkoutData, setCheckoutData] = useState<CheckoutData | null>(null);
   const [orderNumber, setOrderNumber] = useState("");
   const [isConfirming, setIsConfirming] = useState(false);
+
+  const { resetCart } = useStore();
 
   const router = useRouter();
 
@@ -82,6 +85,7 @@ const CheckoutPage = () => {
       localStorage.removeItem("checkoutData");
 
       toast.success("¡Transferencia confirmada! Redirigiendo...");
+      resetCart();
 
       // Pequeño delay adicional para mostrar el toast
       setTimeout(() => {
