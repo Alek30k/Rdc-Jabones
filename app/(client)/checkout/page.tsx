@@ -5,6 +5,7 @@ import PriceFormatter from "@/components/PriceFormatter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Product } from "@/sanity.types";
 import { urlFor } from "@/sanity/lib/image";
 import {
   ArrowLeft,
@@ -22,7 +23,7 @@ import toast from "react-hot-toast";
 
 interface CheckoutData {
   items: Array<{
-    product: any;
+    product: Product;
   }>;
   customer: {
     name: string;
