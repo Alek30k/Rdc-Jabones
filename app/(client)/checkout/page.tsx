@@ -88,6 +88,7 @@ const CheckoutPage = () => {
       }, 500);
     } catch (error) {
       toast.error("Hubo un error. Por favor intenta nuevamente.");
+      console.log(error);
       setIsConfirming(false);
     }
   };
