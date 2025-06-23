@@ -24,7 +24,6 @@ interface CheckoutData {
   items: Array<{
     product: any;
   }>;
-  address: any;
   customer: {
     name: string;
     email: string;
