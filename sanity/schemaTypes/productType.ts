@@ -110,7 +110,7 @@ export const productType = defineType({
       type: "string",
     }),
     defineField({
-      name: "skin",
+      name: "skinType",
       title: "Tipo de Piel",
       type: "string",
     }),
