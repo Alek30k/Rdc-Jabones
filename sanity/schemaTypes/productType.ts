@@ -92,7 +92,41 @@ export const productType = defineType({
       description: "Toggle to Featured on or off",
       initialValue: false,
     }),
+
+    // Características específicas del jabón
+    defineField({
+      name: "weight",
+      title: "Peso (gramos)",
+      type: "number",
+    }),
+    defineField({
+      name: "quantity",
+      title: "Cantidad",
+      type: "string",
+    }),
+    defineField({
+      name: "fragrance",
+      title: "Fragancia",
+      type: "string",
+    }),
+    defineField({
+      name: "skinType",
+      title: "Tipo de Piel",
+      type: "string",
+    }),
+    defineField({
+      name: "origin",
+      title: "Origen",
+      type: "string",
+    }),
+    defineField({
+      name: "ingredients",
+      title: "Ingredientes",
+      type: "array",
+      of: [{ type: "string" }],
+    }),
   ],
+
   preview: {
     select: {
       title: "name",
@@ -103,7 +137,7 @@ export const productType = defineType({
       const { title, subtitle, media } = selection;
       const image = media && media[0];
       return {
-        title: title,
+        title,
         subtitle: `$${subtitle}`,
         media: image,
       };
