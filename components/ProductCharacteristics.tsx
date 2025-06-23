@@ -53,8 +53,6 @@ const ProductCharacteristics = ({
     }
   };
 
-  console.log(product);
-
   // Características del producto con valores por defecto para jabones
   const characteristics = [
     {
@@ -88,6 +86,7 @@ const ProductCharacteristics = ({
       value: product.skinType || "Todo tipo de piel",
       description: "Piel recomendada",
     },
+
     {
       type: "origin",
       label: "Origen",

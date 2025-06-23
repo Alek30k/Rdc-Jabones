@@ -33,6 +33,8 @@ const SingleProductPage = async ({
   if (!product) {
     return notFound();
   }
+
+  console.log(product);
   return (
     <div className="min-h-screen bg-gray-50/30">
       {/* Breadcrumb Section */}
