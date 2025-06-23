@@ -53,6 +53,8 @@ const ProductCharacteristics = ({
     }
   };
 
+  console.log(product);
+
   // Características del producto con valores por defecto para jabones
   const characteristics = [
     {
@@ -70,7 +72,8 @@ const ProductCharacteristics = ({
     {
       type: "category",
       label: "Categoría",
-      value: product.categories?.[0] || product.variant || "Jabón Artesanal",
+      value:
+        product.categories?.[0]?.title || product.variant || "Jabón Artesanal",
       description: "Tipo de jabón",
     },
     {
@@ -84,18 +87,6 @@ const ProductCharacteristics = ({
       label: "Tipo de Piel",
       value: product.skinType || "Todo tipo de piel",
       description: "Piel recomendada",
-    },
-    {
-      type: "ph",
-      label: "pH",
-      value: product.ph || "8-9",
-      description: "Nivel de pH del jabón",
-    },
-    {
-      type: "curing",
-      label: "Tiempo de Curado",
-      value: product.curingTime || "6-8 semanas",
-      description: "Tiempo de maduración",
     },
     {
       type: "origin",
