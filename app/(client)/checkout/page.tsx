@@ -11,8 +11,6 @@ import {
   Copy,
   CheckCircle,
   CreditCard,
-  MapPin,
-  User,
   Package,
   Loader2,
 } from "lucide-react";
