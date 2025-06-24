@@ -1,5 +1,7 @@
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import Link from "next/link";
+import { rdc } from "@/images";
 
 const Logo = ({
   className,
@@ -10,22 +12,13 @@ const Logo = ({
 }) => {
   return (
     <Link href={"/"}>
-      <h2
-        className={cn(
-          "text-2xl text-shop_orange font-black tracking-wider uppercase hover:text-shop_light_green hoverEffect group font-sans",
-          className
-        )}
-      >
-        RD
-        <span
-          className={cn(
-            "text-shop_light_green group-hover:text-shop_orange hoverEffect",
-            spanDesign
-          )}
-        >
-          C
-        </span>
-      </h2>
+      <div className="ml-5">
+        <Image
+          src={rdc}
+          alt="logo"
+          className="w-15 hover:scale-110 transition-transform duration-300"
+        />
+      </div>
     </Link>
   );
 };
