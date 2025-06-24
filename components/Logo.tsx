@@ -1,15 +1,8 @@
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { rdc } from "@/images";
 
-const Logo = ({
-  className,
-  spanDesign,
-}: {
-  className?: string;
-  spanDesign?: string;
-}) => {
+const Logo = () => {
   return (
     <Link href={"/"}>
       <div className="ml-5">
