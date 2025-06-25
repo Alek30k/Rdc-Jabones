@@ -98,7 +98,7 @@ const SingleProductPage = async ({
             <PriceView
               price={product?.price}
               discount={product?.discount}
-              className="text-lg font-bold"
+              className="text-4xl leading-3 font-extralight"
             />
             <p
               className={`px-4 py-1.5 text-sm text-center inline-block font-semibold rounded-lg ${product?.stock === 0 ? "bg-red-100 text-red-600" : "text-green-600 bg-green-100"}`}

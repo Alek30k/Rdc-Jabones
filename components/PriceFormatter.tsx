@@ -6,10 +6,11 @@ interface Props {
 }
 
 const PriceFormatter = ({ amount, className }: Props) => {
-  const formattedPrice = new Number(amount).toLocaleString("en-US", {
-    currency: "USD",
+  const formattedPrice = new Number(amount).toLocaleString("es-AR", {
+    currency: "ARS",
     style: "currency",
-    minimumFractionDigits: 2,
+    minimumFractionDigits: 0, // Cambiado a 0 para eliminar los decimales
+    maximumFractionDigits: 0, // Añadido para asegurar que no haya decimales
   });
   return (
     <span
