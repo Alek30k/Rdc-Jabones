@@ -105,7 +105,7 @@ const ProductCharacteristics = ({
 
   return (
     <div className="space-y-4 ">
-      <Accordion type="single" collapsible className="w-full">
+      <Accordion type="single" collapsible className="w-full ">
         {/* Características Principales */}
         <AccordionItem
           value="characteristics"
@@ -172,7 +172,7 @@ const ProductCharacteristics = ({
         {/* Ingredientes */}
         <AccordionItem
           value="ingredients"
-          className="border rounded-lg px-4 mt-2"
+          className="border rounded-lg px-4 mt-2 mb-2"
         >
           <AccordionTrigger className="hover:no-underline">
             <div className="flex items-center gap-2">
@@ -198,23 +198,10 @@ const ProductCharacteristics = ({
                   </div>
                 ))}
               </div>
-
-              {product.description && (
-                <>
-                  <Separator className="my-3" />
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <h4 className="font-medium text-blue-900 mb-2">
-                      Descripción:
-                    </h4>
-                    <p className="text-sm text-blue-800">
-                      {product.description}
-                    </p>
-                  </div>
-                </>
-              )}
             </div>
           </AccordionContent>
         </AccordionItem>
+        <span></span>
       </Accordion>
     </div>
   );

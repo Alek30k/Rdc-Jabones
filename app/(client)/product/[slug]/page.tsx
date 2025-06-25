@@ -5,6 +5,7 @@ import ImageView from "@/components/ImageView";
 
 import PriceView from "@/components/PriceView";
 import ProductCharacteristics from "@/components/ProductCharacteristics";
+import ProductPromotions from "@/components/ProductPromotions";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -83,16 +84,31 @@ const SingleProductPage = async ({
           </div>
         </Container>
       </div>
+
+      {/* Contenedor principal de la página del producto */}
       <Container className="flex flex-col md:flex-row gap-10 py-10">
-        {product?.images && (
-          <ImageView images={product?.images} isStock={product?.stock} />
-        )}
+        {/* Columna Izquierda: Imagen y Descripción */}
+        <div className="w-full md:w-3/4 flex flex-col gap-10">
+          {product?.images && (
+            <ImageView images={product?.images} isStock={product?.stock} />
+          )}
+
+          {/* --- Sección de Descripción (ahora dentro de la columna de la imagen) --- */}
+          {product?.description && (
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <h3 className="text-xl font-bold mb-4">Descripción</h3>
+              <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                {product.description}
+              </p>
+            </div>
+          )}
+          {/* --- Fin Sección de Descripción --- */}
+        </div>
+
+        {/* Columna Derecha: Detalles del Producto, Precio, CTA, etc. */}
         <div className="w-full md:w-1/2 flex flex-col gap-5">
           <div className="space-y-1">
             <h2 className="text-2xl font-bold">{product?.name}</h2>
-            {/* <p className="text-sm text-gray-600 tracking-wide">
-              {product?.description}
-            </p> */}
           </div>
           <div className="space-y-2 border-t border-b border-gray-200 py-5">
             <PriceView
@@ -105,6 +121,14 @@ const SingleProductPage = async ({
             >
               {(product?.stock as number) > 0 ? "In Stock" : "Out of Stock"}
             </p>
+            {product?.price && (
+              <ProductPromotions
+                basePrice={product.price}
+                shippingCost={1234} // Ejemplo: Pasa el costo de envío real si lo tienes
+                pickupCost={8953.99} // Ejemplo: Pasa el costo de retiro real
+                pickupOriginalCost={9443.99} // Ejemplo: Pasa el costo original de retiro
+              />
+            )}{" "}
           </div>
           <div className="flex items-center gap-2.5 lg:gap-3">
             <AddToCartButton product={product} />

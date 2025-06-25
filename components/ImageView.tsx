@@ -100,7 +100,7 @@ const ImageView = ({ images = [], isStock }: Props) => {
 
   return (
     <>
-      <div className="w-full md:w-1/2 space-y-4">
+      <div className="w-full  space-y-4">
         {/* Main Image Container */}
         <div className="relative group">
           <AnimatePresence mode="wait">
