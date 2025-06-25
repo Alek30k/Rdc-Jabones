@@ -5,7 +5,7 @@ import { rdc } from "@/images";
 const Logo = () => {
   return (
     <Link href={"/"}>
-      <div className="ml-5">
+      <div className="hidden md:inline-block ml-5">
         <Image
           src={rdc}
           alt="logo"
