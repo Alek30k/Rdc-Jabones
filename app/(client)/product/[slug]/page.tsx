@@ -90,9 +90,9 @@ const SingleProductPage = async ({
         <div className="w-full md:w-1/2 flex flex-col gap-5">
           <div className="space-y-1">
             <h2 className="text-2xl font-bold">{product?.name}</h2>
-            <p className="text-sm text-gray-600 tracking-wide">
+            {/* <p className="text-sm text-gray-600 tracking-wide">
               {product?.description}
-            </p>
+            </p> */}
           </div>
           <div className="space-y-2 border-t border-b border-gray-200 py-5">
             <PriceView
