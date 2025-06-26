@@ -21,6 +21,8 @@ const HomeCategories = ({
 }: HomeCategoriesProps) => {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
+  console.log(categories);
+
   const CategorySkeleton = () => (
     <Card className="group overflow-hidden border-0 shadow-lg">
       <CardContent className="p-0">
@@ -56,7 +58,7 @@ const HomeCategories = ({
               <CategorySkeleton key={index} />
             ))
           : categories && Array.isArray(categories) && categories.length > 0
-            ? categories.map((category: Category, index: number) => {
+            ? categories?.map((category: Category, index: number) => {
                 const imageUrl = category?.image
                   ? urlFor(category.image).width(400).height(288).url()
                   : "";

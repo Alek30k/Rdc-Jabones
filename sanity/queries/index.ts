@@ -28,6 +28,8 @@ const getCategories = async (quantity?: number) => {
       query,
       params: quantity ? { quantity } : {},
     });
+
+    console.log(data);
     return data;
   } catch (error) {
     console.log("Error fetching categories", error);
