@@ -36,7 +36,7 @@ const SideMenu: FC<SidebarProps> = ({
     >
       <div
         ref={sidebarRef}
-        className="min-w-72 max-w-96 bg-black h-screen p-10 border-r border-r-shop_light_green flex flex-col justify-evenly"
+        className="min-w-72 max-w-96 bg-black h-screen px-10 border-r border-r-shop_light_green flex flex-col justify-evenly"
       >
         <button
           className="hover:text-shop_light_green flex justify-end hoverEffect"
@@ -75,7 +75,7 @@ const SideMenu: FC<SidebarProps> = ({
             </div>
           </ClerkLoaded>
         </div>
-        <div className=" flex flex-col mb-30 space-y-3.5 tracking-wide capitalize font-semibold my-10">
+        <div className=" flex flex-col mb-24 space-y-3.5 tracking-wide capitalize font-semibold my-10">
           {headerData?.map((item) => (
             <Link
               href={item?.href}
