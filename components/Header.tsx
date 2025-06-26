@@ -8,6 +8,9 @@ import SignIn from "./SignIn";
 import MobileMenu from "./MobileMenu";
 import { currentUser } from "@clerk/nextjs/server";
 import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
+import Image from "next/image";
+import { rdc } from "@/images";
+import Link from "next/link";
 
 const Header = async () => {
   const clerkUser = await currentUser();
@@ -30,6 +33,11 @@ const Header = async () => {
           <Logo />
         </div>
         <HeaderMenu />
+        <Link href={"/"}>
+          <div className="md:hidden">
+            <Image src={rdc} alt="logo" className="w-10" />
+          </div>
+        </Link>
         <div className="w-auto md:w-1/3 flex items-center justify-end gap-5">
           <div className="hidden md:flex">
             <SearchBar />
