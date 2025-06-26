@@ -67,7 +67,11 @@ const Footer = () => {
               ofertas exclusivas.
             </SubText>
             <form className="space-y-3">
-              <Input placeholder="Enter your email" type="email" required />
+              <Input
+                placeholder="Introduce tu correo electrónico"
+                type="email"
+                required
+              />
               <Button className="w-full">Suscríbete</Button>
             </form>
           </div>
