@@ -21,8 +21,6 @@ const HomeCategories = ({
 }: HomeCategoriesProps) => {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
-  console.log(categories);
-
   const CategorySkeleton = () => (
     <Card className="group overflow-hidden border-0 shadow-lg">
       <CardContent className="p-0">
