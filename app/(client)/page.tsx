@@ -9,6 +9,8 @@ import React from "react";
 const Home = async () => {
   const categories = await getCategories(6);
 
+  console.log(categories);
+
   return (
     <Container className="bg-shop-light-pink">
       <HomeBanner />
