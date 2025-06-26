@@ -30,8 +30,8 @@ const data: ContactItemData[] = [
     ),
   },
   {
-    title: "Envíenos un correo electrónico",
-    subtitle: "regalosdelcorazonRDC@gmail.com",
+    title: "Envíenos un email",
+    subtitle: "rdc@gmail.com",
     icon: (
       <Mail className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
     ),
@@ -40,7 +40,7 @@ const data: ContactItemData[] = [
 
 const FooterTop = () => {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 border-b">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-8 border-b">
       {data?.map((item, index) => (
         <div
           key={index}
@@ -51,7 +51,7 @@ const FooterTop = () => {
             <h3 className="font-semibold text-gray-900 group-hover:text-black hoverEffect">
               {item?.title}
             </h3>
-            <p className="text-gray-600 text-sm mt-1 group-hover:text-gray-900 hoverEffect">
+            <p className="text-gray-600  text-sm mt-1 group-hover:text-gray-900 hoverEffect">
               {item?.subtitle}
             </p>
           </div>

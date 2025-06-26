@@ -36,7 +36,7 @@ const SideMenu: FC<SidebarProps> = ({
     >
       <div
         ref={sidebarRef}
-        className="min-w-72 max-w-96 bg-black h-screen p-10 border-r border-r-shop_light_green flex flex-col "
+        className="min-w-72 max-w-96 bg-black h-screen gap-6 p-10 border-r border-r-shop_light_green flex flex-col "
       >
         <button
           className="hover:text-shop_light_green flex justify-end hoverEffect"
