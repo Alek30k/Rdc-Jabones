@@ -107,7 +107,7 @@ const HomeCategories = ({
                             </h3>
                             <div className="flex items-center justify-between">
                               <span className="text-white/90 text-sm">
-                                {category?.productCount || 0} productos
+                                {category?.productCount || 0} productos COMBOS
                                 disponibles
                               </span>
                               <div
