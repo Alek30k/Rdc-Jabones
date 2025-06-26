@@ -56,7 +56,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         </Title>
 
         <div className="flex items-center gap-2 text-xs sm:text-sm">
-          <p className="font-medium">In Stock</p>
+          <p className="font-medium">En Stock</p>
           <p
             className={`${product?.stock === 0 ? "text-red-600" : "text-shop_dark_green/80 font-semibold"}`}
           >

@@ -140,7 +140,7 @@ const HomeCategories = ({
               <Heart className="w-12 h-12 text-gray-400" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No categories available
+              No hay categorías disponibles
             </h3>
             <p className="text-gray-600 mb-6">
               Estamos trabajando para agregar nuevas categorías de productos.
@@ -149,7 +149,7 @@ const HomeCategories = ({
               href="/contact"
               className="inline-flex items-center px-4 py-2 bg-shop_orange text-white rounded-lg hover:bg-shop_orange/90 transition-colors"
             >
-              Contact us
+              Contacta con nosotros
             </Link>
           </div>
         )}

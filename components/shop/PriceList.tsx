@@ -4,7 +4,7 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 
 const priceArray = [
-  { title: "Under $1000", value: "0-1000" },
+  { title: "Menos de $1000", value: "0-1000" },
   { title: "$1000 - $2000", value: "1000-2000" },
   { title: "$2000 - $3000", value: "2000-3000" },
   { title: "$3000 - $5000", value: "3000-5000" },
