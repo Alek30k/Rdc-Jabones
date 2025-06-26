@@ -29,8 +29,8 @@ const ProductSideMenu = ({
       addToFavorite(product).then(() => {
         toast.success(
           existingProduct
-            ? "Product removed successfully!"
-            : "Product added successfully!"
+            ? "Producto eliminado exitosamente!"
+            : "Producto añadido con éxito!"
         );
       });
     }
