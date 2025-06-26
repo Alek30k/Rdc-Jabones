@@ -38,15 +38,21 @@ const SideMenu: FC<SidebarProps> = ({
         ref={sidebarRef}
         className="min-w-72 max-w-96 bg-black h-screen p-10 border-r border-r-shop_light_green flex flex-col gap-6"
       >
-        <div className="flex items-center justify-between gap-5">
+        <button
+          className="hover:text-shop_light_green flex justify-end hoverEffect"
+          onClick={onClose}
+        >
+          <X />
+        </button>
+        <div className="flex items-center ">
           <Link href={"/"}>
             <h2
               className={cn(
-                "text-2xl text-shop_orange font-black tracking-wider hover:text-shop_light_green hoverEffect group font-sans",
+                "text-lg text-shop_orange font-black tracking-widest hover:text-shop_light_green hoverEffect group font-sans",
                 className
               )}
             >
-              🎁 Regalos del
+              🎁 Regalos del{" "}
               <span
                 className={cn(
                   "text-shop_light_green group-hover:text-shop_orange hoverEffect",
@@ -57,12 +63,6 @@ const SideMenu: FC<SidebarProps> = ({
               </span>
             </h2>
           </Link>{" "}
-          <button
-            className="hover:text-shop_light_green hoverEffect"
-            onClick={onClose}
-          >
-            <X />
-          </button>
         </div>
         <div className="">
           <ClerkLoaded>
@@ -75,13 +75,13 @@ const SideMenu: FC<SidebarProps> = ({
             </div>
           </ClerkLoaded>
         </div>
-        <div className=" flex flex-col  space-y-3.5 tracking-wide capitalize font-semibold ">
+        <div className=" flex flex-col h-full space-y-3.5 tracking-wide capitalize font-semibold my-10">
           {headerData?.map((item) => (
             <Link
               href={item?.href}
               key={item?.title}
               onClick={onClose}
-              className={`hover:text-shop_light_green hoverEffect ${
+              className={`hover:text-shop_light_green mb-5 hoverEffect ${
                 pathname === item?.href && "text-shop_light_green"
               }`}
             >
