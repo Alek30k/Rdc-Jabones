@@ -2,7 +2,7 @@ import React from "react";
 import Container from "./Container";
 import Logo from "./Logo";
 import SocialMedia from "./SocialMedia";
-import { categoriesData, quickLinksData } from "@/constants/data";
+import { productType, quickLinksData } from "@/constants/data";
 import Link from "next/link";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -18,8 +18,11 @@ const Footer = () => {
           <div className="space-y-4">
             <Logo />
             <SubText>
-              Discover curated furniture collections at Shopcartyt, blending
-              style and comfort to elevate your living spaces.
+              Descubre colecciones de jabones artesanales cuidadosamente
+              elaborados en Regalos del Corazón, que nutren tu piel y deleitan
+              tus sentidos. Explora la variedad de jabones únicos que combinan
+              ingredientes naturales y aromas cautivadores diseñados para mimar
+              tu piel y transformar tu rutina de cuidado personal.
             </SubText>
             <SocialMedia
               className="text-darkColor/60"
@@ -28,7 +31,7 @@ const Footer = () => {
             />
           </div>
           <div>
-            <SubTitle>Quick Links</SubTitle>
+            <SubTitle>Enlaces rápidos</SubTitle>
             <ul className="space-y-3 mt-4">
               {quickLinksData?.map((item) => (
                 <li key={item?.title}>
@@ -43,9 +46,9 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <SubTitle>Categories</SubTitle>
+            <SubTitle>Categorías</SubTitle>
             <ul className="space-y-3 mt-4">
-              {categoriesData?.map((item) => (
+              {productType?.map((item) => (
                 <li key={item?.title}>
                   <Link
                     href={`/category/${item?.href}`}
@@ -58,14 +61,14 @@ const Footer = () => {
             </ul>
           </div>
           <div className="space-y-4">
-            <SubTitle>Newsletter</SubTitle>
+            <SubTitle>Hoja informativa</SubTitle>
             <SubText>
-              Subscribe to our newsletter to receive updates and exclusive
-              offers
+              Suscríbete a nuestro boletín para recibir actualizaciones y
+              ofertas exclusivas.
             </SubText>
             <form className="space-y-3">
               <Input placeholder="Enter your email" type="email" required />
-              <Button className="w-full">Subscribe</Button>
+              <Button className="w-full">Suscríbete</Button>
             </form>
           </div>
         </div>

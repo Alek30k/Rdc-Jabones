@@ -1,17 +1,17 @@
 export const headerData = [
-  { title: "Home", href: "/" },
-  { title: "Shop", href: "/shop" },
+  { title: "Inicio", href: "/" },
+  { title: "Productos", href: "/shop" },
   // { title: "Blog", href: "/blog" },
-  { title: "Hot Deal", href: "/deal" },
+  { title: "Oferta Especial", href: "/deal" },
   //   { title: "Contact", href: "/contact" },
 ];
 export const quickLinksData = [
-  { title: "About us", href: "/about" },
-  { title: "Contact us", href: "/contact" },
-  { title: "Terms & Conditions", href: "/terms" },
-  { title: "Privacy Policy", href: "/privacy" },
-  { title: "FAQs", href: "/faqs" },
-  { title: "Help", href: "/help" },
+  { title: "Sobre nosotros", href: "/about" },
+  { title: "Contáctanos", href: "/contact" },
+  { title: "Términos y condiciones", href: "/terms" },
+  { title: "Política de privacidad", href: "/privacy" },
+  { title: "Preguntas frecuentes", href: "/faqs" },
+  { title: "Ayuda", href: "/help" },
 ];
 export const categoriesData = [
   { title: "Mobiles", href: "mobiles" },
