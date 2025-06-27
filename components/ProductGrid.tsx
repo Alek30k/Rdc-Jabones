@@ -18,14 +18,16 @@ const ProductGrid = () => {
   const [loading, setLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(productType[0]?.title || "");
 
-  console.log(selectedTab);
+  // Nuevo estado para controlar el número de productos a mostrar
+  const [productsToShow, setProductsToShow] = useState(10);
 
   const router = useRouter();
 
-  // Modifica esta línea para limitar a 8 productos
-  const query = `*[_type == "product" && variant == $variant] | order(name asc)[0...8]{
+  // La consulta de Sanity ahora trae todos los productos relevantes (sin límite)
+  const query = `*[_type == "product" && variant == $variant] | order(name asc){
   ...,"categories": categories[]->title
 }`;
+
   const params = { variant: selectedTab.toLowerCase() };
 
   useEffect(() => {
@@ -43,6 +45,28 @@ const ProductGrid = () => {
     fetchData();
   }, [selectedTab]);
 
+  // Nuevo useEffect para detectar el tamaño de la pantalla
+  useEffect(() => {
+    const handleResize = () => {
+      // Define el breakpoint para dispositivos móviles (ej. 768px para tabletas/móviles)
+      if (window.innerWidth < 768) {
+        setProductsToShow(6); // 6 productos para móviles
+      } else {
+        setProductsToShow(10); // 8 productos para escritorio
+      }
+    };
+
+    // Llama a handleResize al montar el componente y al redimensionar la ventana
+    handleResize(); // Establece el valor inicial
+    window.addEventListener("resize", handleResize);
+
+    // Limpia el event listener al desmontar el componente
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // El array vacío asegura que este efecto se ejecute solo una vez al montar
+
+  // Filtra los productos antes de renderizarlos
+  const displayedProducts = products.slice(0, productsToShow);
+
   return (
     <Container className="flex flex-col lg:px-0 my-10">
       <HomeTabbar selectedTab={selectedTab} onTabSelect={setSelectedTab} />
@@ -53,21 +77,25 @@ const ProductGrid = () => {
             <span>El producto se está cargando...</span>
           </motion.div>
         </div>
-      ) : products?.length ? (
+      ) : displayedProducts?.length ? ( // Usa displayedProducts aquí
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 mt-10">
           <>
-            {products?.map((product) => (
-              <AnimatePresence key={product?._id}>
-                <motion.div
-                  layout
-                  initial={{ opacity: 0.2 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <ProductCard key={product?._id} product={product} />
-                </motion.div>
-              </AnimatePresence>
-            ))}
+            {displayedProducts?.map(
+              (
+                product // Itera sobre displayedProducts
+              ) => (
+                <AnimatePresence key={product?._id}>
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0.2 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <ProductCard key={product?._id} product={product} />
+                  </motion.div>
+                </AnimatePresence>
+              )
+            )}
           </>
         </div>
       ) : (
