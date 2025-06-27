@@ -22,7 +22,8 @@ const ProductGrid = () => {
 
   const router = useRouter();
 
-  const query = `*[_type == "product" && variant == $variant] | order(name asc){
+  // Modifica esta línea para limitar a 8 productos
+  const query = `*[_type == "product" && variant == $variant] | order(name asc)[0...8]{
   ...,"categories": categories[]->title
 }`;
   const params = { variant: selectedTab.toLowerCase() };
