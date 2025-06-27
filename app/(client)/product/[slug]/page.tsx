@@ -15,14 +15,10 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { getProductBySlug } from "@/sanity/queries";
-import { ArrowLeft, CornerDownLeft, Truck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
-import { FaRegQuestionCircle } from "react-icons/fa";
-import { FiShare2 } from "react-icons/fi";
-import { RxBorderSplit } from "react-icons/rx";
-import { TbTruckDelivery } from "react-icons/tb";
 
 const SingleProductPage = async ({
   params,
@@ -92,17 +88,6 @@ const SingleProductPage = async ({
           {product?.images && (
             <ImageView images={product?.images} isStock={product?.stock} />
           )}
-
-          {/* --- Sección de Descripción (ahora dentro de la columna de la imagen) --- */}
-          {product?.description && (
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="text-xl font-bold mb-4">Descripción</h3>
-              <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                {product.description}
-              </p>
-            </div>
-          )}
-          {/* --- Fin Sección de Descripción --- */}
         </div>
 
         {/* Columna Derecha: Detalles del Producto, Precio, CTA, etc. */}
@@ -135,50 +120,19 @@ const SingleProductPage = async ({
             <FavoriteButton showProduct={true} product={product} />
           </div>
           <ProductCharacteristics product={product} />
-          <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-b-gray-200 py-5 -mt-2">
-            <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
-              <RxBorderSplit className="text-lg" />
-              <p>Compare color</p>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
-              <FaRegQuestionCircle className="text-lg" />
-              <p>Ask a question</p>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
-              <TbTruckDelivery className="text-lg" />
-              <p>Delivery & Return</p>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect">
-              <FiShare2 className="text-lg" />
-              <p>Share</p>
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <div className="border border-lightColor/25 border-b-0 p-3 flex items-center gap-2.5">
-              <Truck size={30} className="text-shop_orange" />
-              <div>
-                <p className="text-base font-semibold text-black">
-                  Free Delivery
-                </p>
-                <p className="text-sm text-gray-500 underline underline-offset-2">
-                  Enter your Postal code for Delivey Availability.
-                </p>
-              </div>
-            </div>
-            <div className="border border-lightColor/25 p-3 flex items-center gap-2.5">
-              <CornerDownLeft size={30} className="text-shop_orange" />
-              <div>
-                <p className="text-base font-semibold text-black">
-                  Return Delivery
-                </p>
-                <p className="text-sm text-gray-500 ">
-                  Free 30days Delivery Returns.{" "}
-                  <span className="underline underline-offset-2">Details</span>
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
+      </Container>
+      {/* --- Sección de Descripción (ahora dentro de la columna de la imagen) --- */}
+      <Container>
+        {product?.description && (
+          <div className="bg-white  md:w-[60%] p-6 rounded-lg shadow-sm mb-5">
+            <h3 className="text-xl font-bold mb-4">Descripción</h3>
+            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+              {product.description}
+            </p>
+          </div>
+        )}
+        {/* --- Fin Sección de Descripción --- */}
       </Container>
     </div>
   );
