@@ -16,7 +16,7 @@
   --color-lightOrange: #fca99b;
   --color-shop_light_green: #3b9c3c;
   --color-deal-bg: #f1f3f8;
-  /* --color-shop_bgcardorange: #fff8f2; */
+  --color-shop_bgcardorange: #f0f0f0;
 }
 
 @theme inline {

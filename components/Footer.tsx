@@ -4,17 +4,46 @@ import Logo from "./Logo";
 import SocialMedia from "./SocialMedia";
 import { productType, quickLinksData } from "@/constants/data";
 import Link from "next/link";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import FooterTop from "./FooterTop";
 import { SubText, SubTitle } from "./ui/Text";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
+
+interface ContactItemData {
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+}
 
 const Footer = () => {
+  const data: ContactItemData[] = [
+    {
+      title: "Visítanos",
+      subtitle: "General Manuel Belgrano, FORMOSA",
+      icon: (
+        <MapPin className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
+      ),
+    },
+    {
+      title: "Llámanos",
+      subtitle: "+54 3704 678598",
+      icon: (
+        <Phone className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
+      ),
+    },
+
+    {
+      title: "Envíenos un email",
+      subtitle: "rdc@gmail.com",
+      icon: (
+        <Mail className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
+      ),
+    },
+  ];
+
   return (
-    <footer className="bg-white border-t">
+    <footer className="bg-shop_bgcardorange  border-t">
       <Container>
-        <FooterTop />
-        <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* <FooterTop /> */}
+        <div className="p-12 px-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
             <Logo />
             <SubText>
@@ -24,14 +53,9 @@ const Footer = () => {
               ingredientes naturales y aromas cautivadores diseñados para mimar
               tu piel y transformar tu rutina de cuidado personal.
             </SubText>
-            <SocialMedia
-              className="text-darkColor/60"
-              iconClassName="border-darkColor/60 hover:border-shop_light_green hover:text-shop_light_green"
-              tooltipClassName="bg-darkColor text-white"
-            />
           </div>
           <div>
-            <SubTitle>Enlaces rápidos</SubTitle>
+            <SubTitle>Información</SubTitle>
             <ul className="space-y-3 mt-4">
               {quickLinksData?.map((item) => (
                 <li key={item?.title}>
@@ -60,22 +84,26 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-          <div className="space-y-4">
-            <SubTitle>Hoja informativa</SubTitle>
-            <SubText>
-              Suscríbete a nuestro boletín para recibir actualizaciones y
-              ofertas exclusivas.
-            </SubText>
-            <form className="space-y-3">
-              <Input
-                placeholder="Introduce tu correo electrónico"
-                type="email"
-                required
-              />
-              <Button className="w-full">Suscríbete</Button>
-            </form>
+          <div>
+            <SubTitle>Contácto</SubTitle>
+            <ul className="space-y-3 mt-4">
+              {data?.map((item) => (
+                <li key={item?.title}>
+                  <div className="flex gap-3 hover:text-shop_light_green hoverEffect font-medium">
+                    <p>{item?.icon}</p>
+                    {item?.subtitle}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
+        <SocialMedia
+          className="text-darkColor/60 justify-center mb-5"
+          iconClassName="border-darkColor/60 hover:border-shop_light_green hover:text-shop_light_green"
+          tooltipClassName="bg-darkColor text-white"
+        />
+
         <div className="py-6 border-t text-center text-sm text-gray-600">
           <div>
             © {new Date().getFullYear()} <Logo className="text-sm" />. Todos

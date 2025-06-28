@@ -6,8 +6,8 @@ export const headerData = [
   //   { title: "Contact", href: "/contact" },
 ];
 export const quickLinksData = [
-  { title: "Sobre nosotros", href: "/about" },
-  { title: "Contáctanos", href: "/contact" },
+  // { title: "Sobre nosotros", href: "/about" },
+  // { title: "Contáctanos", href: "/contact" },
   { title: "Términos y condiciones", href: "/terms" },
   { title: "Política de privacidad", href: "/privacy" },
   { title: "Preguntas frecuentes", href: "/faqs" },
