@@ -45,24 +45,9 @@ const ProductCard = ({ product }: { product: Product }) => {
       </div>
 
       <div className="p-3 sm:p-4  flex flex-col gap-2 sm:gap-3 ">
-        {product?.categories && (
-          <p className="uppercase line-clamp-1 text-xs font-medium text-lightText">
-            {product.categories.map((cat) => cat).join(", ")}
-          </p>
-        )}
-
         <Title className="text-sm sm:text-base line-clamp-1 leading-tight ">
           {product?.name}
         </Title>
-
-        <div className="flex items-center gap-2 text-xs sm:text-sm">
-          <p className="font-medium">En Stock</p>
-          <p
-            className={`${product?.stock === 0 ? "text-red-600" : "text-shop_dark_green/80 font-semibold"}`}
-          >
-            {(product?.stock as number) > 0 ? product?.stock : "unavailable"}
-          </p>
-        </div>
 
         <div className="flex flex-col gap-2 sm:gap-3">
           <PriceView
