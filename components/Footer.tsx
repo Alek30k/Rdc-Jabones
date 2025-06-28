@@ -40,7 +40,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-shop_bgcardorange  border-t">
+    <footer className="bg-shop_light_pink  border-t">
       <Container>
         {/* <FooterTop /> */}
         <div className="p-12 px-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
