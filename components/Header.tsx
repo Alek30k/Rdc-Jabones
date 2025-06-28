@@ -26,7 +26,7 @@ const Header = async () => {
     : null;
 
   return (
-    <header className="sticky top-0 z-50 py-2 md:py-5 bg-white/70 backdrop-blur-md">
+    <header className="sticky top-0  z-50 py-2 md:py-5 bg-white/70 backdrop-blur-md">
       <Container className="flex items-center justify-between text-lightColor">
         <div className="w-auto md:w-1/3 flex items-center gap-2.5 justify-start md:gap-0">
           <MobileMenu user={serializedUser} />
@@ -55,7 +55,7 @@ const Header = async () => {
           </ClerkLoaded>
         </div>
       </Container>
-      <div className="md:hidden ">
+      <div className="md:hidden px-2 ">
         <SearchBar />
       </div>
     </header>
