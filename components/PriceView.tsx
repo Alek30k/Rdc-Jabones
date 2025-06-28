@@ -12,11 +12,7 @@ const PriceView = ({ price, discount, className }: Props) => {
   return (
     <div className="flex items-center  justify-between gap-5">
       <div className="flex items-center gap-2">
-        <PriceFormatter
-          amount={price}
-          className={cn("text-shop_dark_green", className)}
-        />
-        <div className="hidden sm:flex">
+        <div className="">
           {price && discount !== undefined && (
             <>
               {discount > 0 && (
@@ -39,6 +35,10 @@ const PriceView = ({ price, discount, className }: Props) => {
             </>
           )}
         </div>
+        <PriceFormatter
+          amount={price}
+          className={cn("text-shop_dark_green", className)}
+        />
       </div>
     </div>
   );
