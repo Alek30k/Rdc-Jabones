@@ -9,7 +9,7 @@ import MobileMenu from "./MobileMenu";
 import { currentUser } from "@clerk/nextjs/server";
 import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
-import { rdc } from "@/images";
+import { logo } from "@/images";
 import Link from "next/link";
 
 const Header = async () => {
@@ -34,8 +34,8 @@ const Header = async () => {
         </div>
         <HeaderMenu />
         <Link href={"/"}>
-          <div className="md:hidden">
-            <Image src={rdc} alt="logo" className="w-10" />
+          <div className="md:hidden ">
+            <Image src={logo} alt="logo" className="w-14" />
           </div>
         </Link>
         <div className="w-auto md:w-1/3 flex items-center justify-end gap-5">
