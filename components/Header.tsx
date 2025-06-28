@@ -35,7 +35,7 @@ const Header = async () => {
         <HeaderMenu />
         <Link href={"/"}>
           <div className="md:hidden ">
-            <Image src={logo} alt="logo" className="w-14" />
+            <Image src={logo} alt="logo" className="w-12" />
           </div>
         </Link>
         <div className="w-auto md:w-1/3 flex items-center justify-end gap-5">
