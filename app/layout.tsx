@@ -1,3 +1,4 @@
+import CookieConsentBanner from "@/components/cookie-consent-banner";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
@@ -15,6 +16,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             },
           }}
         />
+        <CookieConsentBanner />
       </body>
     </html>
   );
