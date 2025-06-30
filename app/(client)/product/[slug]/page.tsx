@@ -96,7 +96,7 @@ const SingleProductPage = async ({
       </div>
 
       {/* Contenedor principal de la página del producto */}
-      <Container className="flex flex-col md:flex-row gap-10 py-10">
+      <Container className="flex p-4 flex-col md:flex-row gap-10 py-10">
         {/* Columna Izquierda: Imagen y Descripción */}
         <div className="w-full md:w-3/4 flex flex-col gap-10">
           {product?.images && (
@@ -105,7 +105,7 @@ const SingleProductPage = async ({
         </div>
 
         {/* Columna Derecha: Detalles del Producto, Precio, CTA, etc. */}
-        <div className="w-full md:w-1/2 flex flex-col gap-5">
+        <div className="w-full md:w-1/2 p-4 flex flex-col gap-5">
           <div className="space-y-1">
             <h2 className="text-2xl font-bold">{product?.name}</h2>
           </div>
@@ -152,7 +152,7 @@ const SingleProductPage = async ({
         )}
       </Container>
 
-      <Container>
+      <Container className="p-4 ">
         <RelatedProducts products={relatedProducts} />
       </Container>
     </div>
