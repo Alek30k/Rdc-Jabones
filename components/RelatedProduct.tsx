@@ -1,9 +1,4 @@
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import PriceView from "@/components/PriceView";
-import AddToCartButton from "./AddToCartButton";
 import ProductCard from "./ProductCard";
 
 export type RelatedProduct = {

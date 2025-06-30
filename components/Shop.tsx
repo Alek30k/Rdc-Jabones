@@ -9,7 +9,6 @@ import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
 import CategoryList from "./shop/CategoryList";
 import PriceList from "./shop/PriceList";
-// import { useMobile } from "@/hooks/use-mobile";
 import FilterSheet from "./FilterSheet";
 import { useMobile } from "@/hooks/use-mobile";
 
