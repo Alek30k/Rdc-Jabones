@@ -128,6 +128,7 @@ export type Product = {
       _type: "reference";
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      url: string;
     };
     media?: unknown;
     hotspot?: SanityImageHotspot;

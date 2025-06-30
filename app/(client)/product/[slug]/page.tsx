@@ -14,6 +14,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import { Product } from "@/sanity.types";
 import { getProductBySlug, getRelatedProducts } from "@/sanity/queries";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -37,7 +38,8 @@ const SingleProductPage = async ({
   const categoryIds = product.categories?.map((cat) => cat._ref) || [];
 
   // Obtener productos relacionados si hay IDs de categoría
-  let relatedProducts = [];
+  let relatedProducts: Product[] = [];
+
   if (categoryIds.length > 0) {
     relatedProducts = await getRelatedProducts(
       categoryIds,

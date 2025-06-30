@@ -1,19 +1,10 @@
 import { cn } from "@/lib/utils";
 import ProductCard from "./ProductCard";
 import Title from "./Title";
-
-export type RelatedProduct = {
-  _id: string;
-  name: string;
-  slug: { current: string };
-  price: number;
-  discount?: number;
-  images?: { asset: { url: string } }[];
-  stock?: number;
-};
+import { Product } from "@/sanity.types";
 
 interface RelatedProductsProps {
-  products: RelatedProduct[];
+  products: Product[];
   className?: string;
 }
 

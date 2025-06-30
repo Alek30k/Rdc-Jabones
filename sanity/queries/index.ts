@@ -230,6 +230,7 @@ export async function getRelatedProducts(
     slug,
     price,
     discount,
+    description,
     images[]{
       asset->{
         url

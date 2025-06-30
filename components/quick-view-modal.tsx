@@ -12,23 +12,12 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { X } from "lucide-react";
 import PriceView from "./PriceView";
-import AddToCartButton from "./AddToCartButton"; // Asegúrate de que este es un Client Component
-import { urlFor } from "@/sanity/lib/image"; // Asumiendo que tienes urlFor para Sanity
-
-// Define el tipo de producto para el modal (puede ser el mismo que RelatedProduct o Product)
-export type QuickViewProduct = {
-  _id: string;
-  name: string;
-  slug: { current: string };
-  price: number;
-  discount?: number;
-  images?: { asset: { url: string } }[];
-  stock?: number;
-  description?: string; // Asumimos que el producto tiene una descripción
-};
+import AddToCartButton from "./AddToCartButton";
+import { urlFor } from "@/sanity/lib/image";
+import { Product } from "@/sanity.types";
 
 interface QuickViewModalProps {
-  product: QuickViewProduct;
+  product: Product;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -78,9 +67,9 @@ export default function QuickViewModal({
               <DialogTitle className="text-2xl font-bold text-gray-900 mb-2">
                 {product.name}
               </DialogTitle>
-              {product.description && (
+              {product?.description && (
                 <p className="text-sm text-gray-600 line-clamp-4">
-                  {product.description}
+                  {product?.description}
                 </p>
               )}
             </DialogHeader>
