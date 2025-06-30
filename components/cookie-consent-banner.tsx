@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import CookiePreferenceCenter, {
   CookiePreferences,
 } from "./cookie-preferent-center";
+import Link from "next/link";
 
 export default function CookieConsentBanner() {
   const [isVisible, setIsVisible] = useState(false);
@@ -75,14 +76,19 @@ export default function CookieConsentBanner() {
           <CardContent className="flex flex-col md:flex-row items-center justify-between p-4 md:p-6 gap-4">
             <div className="flex items-center gap-3 flex-grow">
               <Cookie className="h-6 w-6 text-shop_orange flex-shrink-0" />
-              <p className="text-sm text-gray-700 leading-relaxed">
-                En RDC, utilizamos cookies propias y de terceros para
-                asegurarnos que la web funciona de manera correcta y ofrecerte
-                una mejor experiencia de navegación. Puedes aceptar todas las
-                cookies pulsando el botón “aceptar”, rechazarlas o configurarlas
-                para elegir libremente las que mejor se adaptan a tus
-                necesidades.
+              <p className=" text-sm text-gray-700 leading-relaxed">
+                En <span className=" text-shop_orange font-bold">RDC</span>,
+                utilizamos cookies propias y de terceros para asegurarnos que la
+                web funciona de manera correcta y ofrecerte una mejor
+                experiencia de navegación. Puedes aceptar todas las cookies
+                pulsando el botón “aceptar”, rechazarlas o configurarlas para
+                elegir libremente las que mejor se adaptan a tus necesidades.{" "}
+                <Link className="text-shop_orange" href="/privacy">
+                  Saber más...
+                </Link>
               </p>
+              {/* <Button variant="outline" size="sm" asChild> */}
+              {/* </Button> */}
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
               <Button
