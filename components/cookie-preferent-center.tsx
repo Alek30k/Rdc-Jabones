@@ -79,9 +79,7 @@ export default function CookiePreferenceCenter({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className="sm:max-w-[600px] p-6 flex flex-col max-h-[90vh] overflow-y-auto" // Añadimos flex-col, max-h-[90vh] y overflow-y-auto
-      >
+      <DialogContent className="sm:max-w-[600px] p-6 flex flex-col  overflow-y-auto">
         <DialogHeader className="flex-shrink-0">
           {" "}
           {/* Asegura que el header no se encoja */}
