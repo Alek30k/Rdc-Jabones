@@ -1,3 +1,4 @@
+import { groq } from "next-sanity";
 import { client } from "../lib/client";
 import { sanityFetch } from "../lib/live";
 import {
@@ -12,6 +13,7 @@ import {
   PRODUCT_BY_SLUG_QUERY,
   SINGLE_BLOG_QUERY,
 } from "./query";
+import { Product } from "@/sanity.types";
 
 const getCategories = async (quantity?: number) => {
   try {
@@ -212,6 +214,30 @@ export async function getProductsByCategory(categorySlug: string) {
     console.error("Error fetching products by category:", error);
     return [];
   }
+}
+
+export async function getRelatedProducts(
+  categoryIds: string[],
+  currentProductSlug: string
+): Promise<Product[]> {
+  if (!categoryIds || categoryIds.length === 0) {
+    return []; // Si no hay IDs de categoría, no hay productos relacionados
+  }
+  // La consulta GROQ para encontrar productos que compartan al menos una categoría
+  const query = groq`*[_type == "product" && count(categories[]->_ref[@in $categoryIds]) > 0 && slug.current != $currentProductSlug][0...4]{
+    _id,
+    name,
+    slug,
+    price,
+    discount,
+    images[]{
+      asset->{
+        url
+      }
+    },
+    stock
+  }`;
+  return client.fetch(query, { categoryIds, currentProductSlug });
 }
 
 export {

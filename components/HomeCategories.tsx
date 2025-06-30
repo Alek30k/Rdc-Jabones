@@ -38,13 +38,13 @@ const HomeCategories = ({
 
   return (
     <section className="bg-white border border-shop_light_green/20 my-10 md:my-20 p-6 lg:p-8 rounded-xl shadow-sm">
-      <div className="text-center mb-8">
-        <Title className="border-b pb-4 mb-6  ">
+      <div className="text-center mb-8 ">
+        <Title className="border-b pb-4 mb-6  flex flex-col">
           <span className="bg-gradient-to-r from-shop_orange to-shop_dark_green bg-clip-text text-transparent">
             Nuestras Lineas de Productos
           </span>
           {/* <p className="text-sm text-gray-400"> */}
-          <p className=" line-clamp-1 text-sm font-medium text-lightText">
+          <p className="hidden md:inline-flex  justify-center line-clamp-1 text-sm font-medium text-lightText">
             Explora nuestros productos destacados y las mejores ofertas
           </p>
         </Title>

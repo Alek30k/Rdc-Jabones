@@ -2,10 +2,10 @@ import AddToCartButton from "@/components/AddToCartButton";
 import Container from "@/components/Container";
 import FavoriteButton from "@/components/FavoriteButton";
 import ImageView from "@/components/ImageView";
-
 import PriceView from "@/components/PriceView";
 import ProductCharacteristics from "@/components/ProductCharacteristics";
 import ProductPromotions from "@/components/ProductPromotions";
+import RelatedProducts from "@/components/RelatedProduct";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,11 +14,10 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { getProductBySlug } from "@/sanity/queries";
+import { getProductBySlug, getRelatedProducts } from "@/sanity/queries";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import React from "react";
 
 const SingleProductPage = async ({
   params,
@@ -27,11 +26,27 @@ const SingleProductPage = async ({
 }) => {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
+
   if (!product) {
+    console.log("Producto no encontrado, retornando notFound().");
     return notFound();
   }
 
-  console.log(product);
+  // Extraer los IDs de todas las categorías del producto actual
+  // USAR cat._ref, que es lo que tu console.log muestra que recibes
+  const categoryIds = product.categories?.map((cat) => cat._ref) || [];
+
+  // Obtener productos relacionados si hay IDs de categoría
+  let relatedProducts = [];
+  if (categoryIds.length > 0) {
+    relatedProducts = await getRelatedProducts(
+      categoryIds,
+      product.slug.current
+    );
+  } else {
+    console.log("No hay categoryIds para buscar productos relacionados.");
+  }
+
   return (
     <div className="min-h-screen bg-gray-50/30">
       {/* Breadcrumb Section */}
@@ -65,7 +80,6 @@ const SingleProductPage = async ({
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
-
             <Button
               variant="ghost"
               size="sm"
@@ -95,6 +109,7 @@ const SingleProductPage = async ({
           <div className="space-y-1">
             <h2 className="text-2xl font-bold">{product?.name}</h2>
           </div>
+
           <div className="space-y-2 border-t border-b border-gray-200 py-5">
             <PriceView
               price={product?.price}
@@ -115,13 +130,16 @@ const SingleProductPage = async ({
               />
             )}{" "}
           </div>
+
           <div className="flex items-center gap-2.5 lg:gap-3">
             <AddToCartButton product={product} />
             <FavoriteButton showProduct={true} product={product} />
           </div>
+
           <ProductCharacteristics product={product} />
         </div>
       </Container>
+
       {/* --- Sección de Descripción (ahora dentro de la columna de la imagen) --- */}
       <Container>
         {product?.description && (
@@ -132,7 +150,10 @@ const SingleProductPage = async ({
             </p>
           </div>
         )}
-        {/* --- Fin Sección de Descripción --- */}
+      </Container>
+
+      <Container>
+        <RelatedProducts products={relatedProducts} />
       </Container>
     </div>
   );
