@@ -1,31 +1,54 @@
 "use client";
-import { Product } from "@/sanity.types";
+
+import type { Product } from "@/sanity.types"; // Tu tipo base de Sanity
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { ShoppingBag } from "lucide-react";
-import useStore from "@/store";
+import { ShoppingBag } from "lucide-react"; // Importamos Loader2
+import useStore from "@/store"; // Tu store de Zustand
 import toast from "react-hot-toast";
 import PriceFormatter from "./PriceFormatter";
 import QuantityButtons from "./QuantityButtons";
 
+// Define la interfaz para la personalización
+export interface ProductCustomization {
+  soapType: string | null;
+  notes: string;
+}
+
+// Extiende el tipo Product para incluir la personalización
+export interface ProductWithCustomization extends Product {
+  customization?: ProductCustomization;
+}
+
 interface Props {
-  product: Product;
+  product: ProductWithCustomization; // Usamos el tipo extendido aquí
   className?: string;
 }
 
 const AddToCartButton = ({ product, className }: Props) => {
   const { addItem, getItemCount } = useStore();
+
   const itemCount = getItemCount(product?._id);
   const isOutOfStock = product?.stock === 0;
 
   const handleAddToCart = () => {
+    // Validación para personalización (si aplica)
+    if (product.customization && !product.customization.soapType) {
+      toast.error("Por favor, selecciona un tipo de jabón para personalizar.");
+      return;
+    }
+
     if ((product?.stock as number) > itemCount) {
+      // Pasamos el producto COMPLETO, incluyendo la propiedad `customization` si existe
       addItem(product);
-      toast.success(`${product?.name?.substring(0, 12)}... añadido con éxito!`);
+      toast.success(
+        `${product?.name?.substring(0, 12)}... ${product.customization ? `(${product.customization.soapType})` : ""} añadido con éxito!`
+      );
     } else {
-      toast.error("Can not add more than available stock");
+      toast.error("No se puede añadir más de la cantidad disponible en stock.");
     }
   };
+
   return (
     <div className="w-full h-12 flex items-center">
       {itemCount ? (
@@ -50,7 +73,7 @@ const AddToCartButton = ({ product, className }: Props) => {
             className
           )}
         >
-          <ShoppingBag /> {isOutOfStock ? "Out of Stock" : "Agregar"}
+          <ShoppingBag /> {isOutOfStock ? "Agotado" : "Agregar"}
         </Button>
       )}
     </div>

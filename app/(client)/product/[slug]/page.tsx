@@ -1,10 +1,11 @@
-import AddToCartButton from "@/components/AddToCartButton";
+"use client";
+
+import { useState, useEffect } from "react";
 import Container from "@/components/Container";
 import FavoriteButton from "@/components/FavoriteButton";
 import ImageView from "@/components/ImageView";
 import PriceView from "@/components/PriceView";
 import ProductCharacteristics from "@/components/ProductCharacteristics";
-import ProductPromotions from "@/components/ProductPromotions";
 import RelatedProducts from "@/components/RelatedProduct";
 import {
   Breadcrumb,
@@ -14,40 +15,109 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/sanity.types";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import AddToCartButton from "@/components/AddToCartButton"; // Importa ProductCustomization
+import type { Product } from "@/sanity.types";
 import { getProductBySlug, getRelatedProducts } from "@/sanity/queries";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
-const SingleProductPage = async ({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) => {
-  const { slug } = await params;
-  const product = await getProductBySlug(slug);
+// Define los tipos de jabón
+const soapTypes = [
+  { id: "arroz", name: "Arroz", description: "Suavizante y aclarante." },
+  { id: "cafe", name: "Café", description: "Exfoliante y energizante." },
+  { id: "cacao", name: "Cacao", description: "Hidratante y antioxidante." },
+  {
+    id: "curcuma",
+    name: "Cúrcuma",
+    description: "Antiinflamatorio y purificante.",
+  },
+  { id: "avena", name: "Avena", description: "Calmante y nutritivo." },
+];
+
+const SingleProductPage = ({ params }: { params: { slug: string } }) => {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Estados para la personalización
+  const [isCustomizationEnabled, setIsCustomizationEnabled] = useState(false);
+  const [selectedSoapType, setSelectedSoapType] = useState<string | null>(null);
+  const [customizationNotes, setCustomizationNotes] = useState("");
+
+  useEffect(() => {
+    const fetchProductData = async () => {
+      setLoading(true);
+      const fetchedProduct = await getProductBySlug(params.slug);
+      if (!fetchedProduct) {
+        console.log("Producto no encontrado, retornando notFound().");
+        setProduct(null);
+        setLoading(false);
+        return;
+      }
+      setProduct(fetchedProduct);
+
+      const categoryIds =
+        fetchedProduct.categories?.map((cat) => cat._ref) || [];
+      let fetchedRelatedProducts: Product[] = [];
+      if (categoryIds.length > 0) {
+        fetchedRelatedProducts = await getRelatedProducts(
+          categoryIds,
+          fetchedProduct.slug.current
+        );
+      } else {
+        console.log("No hay categoryIds para buscar productos relacionados.");
+      }
+      setRelatedProducts(fetchedRelatedProducts);
+      setLoading(false);
+    };
+
+    fetchProductData();
+  }, [params.slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Cargando producto...</p>
+      </div>
+    );
+  }
 
   if (!product) {
-    console.log("Producto no encontrado, retornando notFound().");
-    return notFound();
-  }
-
-  // Extraer los IDs de todas las categorías del producto actual
-  // USAR cat._ref, que es lo que tu console.log muestra que recibes
-  const categoryIds = product.categories?.map((cat) => cat._ref) || [];
-
-  // Obtener productos relacionados si hay IDs de categoría
-  let relatedProducts: Product[] = [];
-
-  if (categoryIds.length > 0) {
-    relatedProducts = await getRelatedProducts(
-      categoryIds,
-      product.slug.current
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-center p-4">
+        <h2 className="text-2xl font-bold mb-4">Producto no encontrado</h2>
+        <p className="text-gray-600 mb-6">
+          Lo sentimos, el producto que buscas no existe o ha sido eliminado.
+        </p>
+        <Link href="/shop">
+          <Button className="bg-shop_orange hover:bg-shop_orange/90 text-white">
+            Volver a la tienda
+          </Button>
+        </Link>
+      </div>
     );
-  } else {
-    console.log("No hay categoryIds para buscar productos relacionados.");
   }
+
+  // Construye el objeto de personalización para pasar al AddToCartButton
+  const productWithCustomization = {
+    ...product,
+    customization: isCustomizationEnabled
+      ? {
+          soapType: selectedSoapType,
+          notes: customizationNotes,
+        }
+      : undefined, // Si no está habilitado, no se pasa la personalización
+  };
 
   return (
     <div className="min-h-screen bg-gray-50/30">
@@ -123,18 +193,93 @@ const SingleProductPage = async ({
             >
               {(product?.stock as number) > 0 ? "In Stock" : "Out of Stock"}
             </p>
-            {product?.price && (
-              <ProductPromotions
-                basePrice={product.price}
-                shippingCost={1234} // Ejemplo: Pasa el costo de envío real si lo tienes
-                pickupCost={8953.99} // Ejemplo: Pasa el costo de retiro real
-                pickupOriginalCost={9443.99} // Ejemplo: Pasa el costo original de retiro
-              />
-            )}{" "}
+
+            {/* Sección de Personalización de Jabón */}
+            <div className="mt-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="flex items-center justify-between mb-4">
+                <Label
+                  htmlFor="personalizar-jabon"
+                  className="text-base font-semibold"
+                >
+                  Personalizar Jabón
+                </Label>
+                <Switch
+                  id="personalizar-jabon"
+                  checked={isCustomizationEnabled}
+                  onCheckedChange={setIsCustomizationEnabled}
+                  className="data-[state=checked]:bg-shop_orange"
+                />
+              </div>
+
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger className="text-base font-medium">
+                    Elige tu tipo de jabón
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <RadioGroup
+                      value={selectedSoapType || ""}
+                      onValueChange={setSelectedSoapType}
+                      className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
+                      disabled={!isCustomizationEnabled} // Deshabilitar si la personalización no está activa
+                    >
+                      {soapTypes.map((soap) => (
+                        <div
+                          key={soap.id}
+                          className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
+                          ${selectedSoapType === soap.id ? "border-shop_orange ring-2 ring-shop_orange/50" : "border-gray-200"}
+                          ${!isCustomizationEnabled ? "opacity-50 cursor-not-allowed bg-gray-100" : "hover:bg-gray-50"}`}
+                          onClick={() =>
+                            isCustomizationEnabled &&
+                            setSelectedSoapType(soap.id)
+                          }
+                        >
+                          <RadioGroupItem
+                            value={soap.id}
+                            id={`soap-${soap.id}`}
+                          />
+                          <Label
+                            htmlFor={`soap-${soap.id}`}
+                            className="flex flex-col cursor-pointer"
+                          >
+                            <span className="font-medium">{soap.name}</span>
+                            <span className="text-xs text-gray-500">
+                              {soap.description}
+                            </span>
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+
+                    {isCustomizationEnabled && (
+                      <div className="mt-6">
+                        <Label
+                          htmlFor="notas-personalizacion"
+                          className="mb-2 block text-sm font-medium"
+                        >
+                          Notas adicionales para la personalización (opcional)
+                        </Label>
+                        <Textarea
+                          id="notas-personalizacion"
+                          placeholder="Ej: 'Con menos aroma', 'Para piel sensible', etc."
+                          value={customizationNotes}
+                          onChange={(e) =>
+                            setCustomizationNotes(e.target.value)
+                          }
+                          disabled={!isCustomizationEnabled}
+                          className="min-h-[80px]"
+                        />
+                      </div>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
           </div>
 
           <div className="flex items-center gap-2.5 lg:gap-3">
-            <AddToCartButton product={product} />
+            {/* Pasamos el producto con la personalización al AddToCartButton */}
+            <AddToCartButton product={productWithCustomization} />
             <FavoriteButton showProduct={true} product={product} />
           </div>
 

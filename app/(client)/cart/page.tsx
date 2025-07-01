@@ -22,7 +22,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import type { Address } from "@/sanity.types";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import useStore from "@/store";
+import useStore from "@/store"; // Tu store de Zustand
 import { useAuth, useUser } from "@clerk/nextjs";
 import {
   ShoppingBag,
@@ -31,7 +31,8 @@ import {
   CreditCard,
   MapPin,
   Package2,
-} from "lucide-react";
+  Info,
+} from "lucide-react"; // Importamos Info
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,16 +40,11 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const CartPage = () => {
-  const {
-    deleteCartProduct,
-    getTotalPrice,
-    getItemCount,
-    getSubTotalPrice,
-    resetCart,
-  } = useStore();
+  const { deleteCartProduct, getTotalPrice, getSubTotalPrice, resetCart } =
+    useStore();
   const [loading, setLoading] = useState(false);
   const [addressLoading, setAddressLoading] = useState(false);
-  const groupedItems = useStore((state) => state.getGroupedItems());
+  const groupedItems = useStore((state) => state.getGroupedItems()); // Obtiene los ítems del carrito
   const { isSignedIn } = useAuth();
   const { user } = useUser();
   const [addresses, setAddresses] = useState<Address[] | null>(null);
@@ -59,7 +55,7 @@ const CartPage = () => {
   const fetchAddresses = async () => {
     setAddressLoading(true);
     try {
-      const query = `*[_type=="address"] | order(publishedAt desc)`;
+      const query = `*[_type=="address" && user._ref == "${user?.id}"] | order(publishedAt desc)`; // Asegúrate de filtrar por usuario
       const data = await client.fetch(query);
       setAddresses(data);
       const defaultAddress = data.find((addr: Address) => addr.default);
@@ -80,7 +76,7 @@ const CartPage = () => {
     if (isSignedIn && needsDelivery) {
       fetchAddresses();
     }
-  }, [isSignedIn, needsDelivery]);
+  }, [isSignedIn, needsDelivery, user?.id]); // Añadir user?.id a las dependencias
 
   const handleResetCart = () => {
     const confirmed = window.confirm(
@@ -93,6 +89,11 @@ const CartPage = () => {
   };
 
   const handleProceedToCheckout = async () => {
+    if (groupedItems.length === 0) {
+      toast.error("Tu carrito está vacío.");
+      return;
+    }
+
     if (needsDelivery && !selectedAddress) {
       toast.error("Por favor selecciona una dirección de entrega");
       return;
@@ -104,11 +105,10 @@ const CartPage = () => {
     }
 
     setLoading(true);
-
     try {
       // Prepare checkout data
       const checkoutData = {
-        items: groupedItems,
+        items: groupedItems, // groupedItems ya incluye la personalización
         address: needsDelivery ? selectedAddress : null,
         needsDelivery,
         customer: {
@@ -170,11 +170,14 @@ const CartPage = () => {
               {/* Cart Items */}
               <div className="lg:col-span-2 rounded-lg">
                 <div className="border bg-white rounded-md">
-                  {groupedItems?.map(({ product }) => {
-                    const itemCount = getItemCount(product?._id);
+                  {groupedItems?.map((item) => {
+                    // Usamos 'item' directamente, que ya es CartItem
+                    const product = item.product;
+                    const itemCount = item.quantity; // La cantidad ya está en el item
+
                     return (
                       <div
-                        key={product?._id}
+                        key={`${product?._id}-${JSON.stringify(product.customization || {})}`} // Clave única para ítems personalizados
                         className="border-b p-2.5 last:border-b-0 flex items-center justify-between gap-5"
                       >
                         <div className="flex flex-1 items-start gap-2 h-36 md:h-44">
@@ -196,11 +199,43 @@ const CartPage = () => {
                               />
                             </Link>
                           )}
+
                           <div className="h-full flex flex-1 flex-col justify-between py-1">
                             <div className="flex flex-col gap-0.5 md:gap-1.5">
                               <h2 className="text-base font-semibold line-clamp-1">
                                 {product?.name}
                               </h2>
+                              {/* Mostrar personalización si existe */}
+                              {product.customization && (
+                                <div className="text-sm text-gray-600 flex items-center gap-1">
+                                  <Info className="w-4 h-4 text-blue-500" />{" "}
+                                  {/* Icono de información */}
+                                  <span className="font-medium">
+                                    Personalizado:
+                                  </span>
+                                  <span className="text-blue-700">
+                                    {product.customization.soapType
+                                      ? `Jabón de ${product.customization.soapType}`
+                                      : "Sin tipo específico"}
+                                  </span>
+                                  {product.customization.notes && (
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <span className="ml-1 text-gray-500 cursor-help">
+                                            (Notas)
+                                          </span>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-xs p-2 text-sm">
+                                          <p>{product.customization.notes}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  )}
+                                </div>
+                              )}
+                              {/* Fin de la personalización */}
+
                               <p className="text-sm capitalize">
                                 Variante:{" "}
                                 <span className="font-semibold">
@@ -222,6 +257,7 @@ const CartPage = () => {
                                 </span>
                               </p>
                             </div>
+
                             <div className="flex items-center gap-2">
                               <TooltipProvider>
                                 <Tooltip>
@@ -239,7 +275,7 @@ const CartPage = () => {
                                   <TooltipTrigger>
                                     <Trash
                                       onClick={() => {
-                                        deleteCartProduct(product?._id);
+                                        deleteCartProduct(product?._id); // Esto eliminará todas las instancias del producto por ID
                                         toast.success(
                                           "Producto eliminado exitosamente!"
                                         );
@@ -255,11 +291,13 @@ const CartPage = () => {
                             </div>
                           </div>
                         </div>
+
                         <div className="flex flex-col items-start justify-between h-36 md:h-44 p-0.5 md:p-1">
                           <PriceFormatter
                             amount={(product?.price as number) * itemCount}
                             className="font-bold text-lg"
                           />
+                          {/* QuantityButtons también necesitaría ser actualizado si quieres controlar la cantidad de ítems personalizados individualmente */}
                           <QuantityButtons product={product} />
                         </div>
                       </div>
@@ -357,7 +395,6 @@ const CartPage = () => {
                             Necesito envío a domicilio
                           </Label>
                         </div>
-
                         {!needsDelivery && (
                           <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
                             <p className="text-sm text-blue-800">
@@ -436,7 +473,10 @@ const CartPage = () => {
                                   </div>
                                 ))}
                               </RadioGroup>
-                              <Button variant="outline" className="w-full mt-4">
+                              <Button
+                                variant="outline"
+                                className="w-full mt-4 bg-transparent"
+                              >
                                 Agregar Nueva Dirección
                               </Button>
                             </CardContent>

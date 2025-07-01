@@ -1,23 +1,34 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Product } from "./sanity.types";
+import type { Product } from "@/sanity.types"; // Tu tipo base de Sanity
+import type { ProductCustomization } from "@/components/AddToCartButton"; // Importa la interfaz de personalización
 
+// Extiende el tipo Product para incluir la personalización
+export interface ProductWithCustomization extends Product {
+  customization?: ProductCustomization;
+}
+
+// Actualiza la interfaz CartItem para incluir la personalización
 export interface CartItem {
-  product: Product;
+  product: ProductWithCustomization; // El producto en el carrito ahora puede tener personalización
   quantity: number;
 }
 
 interface StoreState {
   items: CartItem[];
-  addItem: (product: Product) => void;
+  addItem: (product: ProductWithCustomization) => void;
   removeItem: (productId: string) => void;
   deleteCartProduct: (productId: string) => void;
   resetCart: () => void;
   getTotalPrice: () => number;
   getSubTotalPrice: () => number;
-  getItemCount: (productId: string) => number;
+  getItemCount: (
+    productId: string,
+    customization?: ProductCustomization
+  ) => number;
   getGroupedItems: () => CartItem[];
-  //   // favorite
+
+  // favorite
   favoriteProduct: Product[];
   addToFavorite: (product: Product) => Promise<void>;
   removeFromFavorite: (productId: string) => void;
@@ -29,19 +40,29 @@ const useStore = create<StoreState>()(
     (set, get) => ({
       items: [],
       favoriteProduct: [],
+
       addItem: (product) =>
         set((state) => {
-          const existingItem = state.items.find(
-            (item) => item.product._id === product._id
-          );
-          if (existingItem) {
-            return {
-              items: state.items.map((item) =>
-                item.product._id === product._id
-                  ? { ...item, quantity: item.quantity + 1 }
-                  : item
-              ),
-            };
+          const existingItemIndex = state.items.findIndex((item) => {
+            if (item.product._id !== product._id) return false;
+
+            if (item.product.customization && product.customization) {
+              return (
+                JSON.stringify(item.product.customization) ===
+                JSON.stringify(product.customization)
+              );
+            }
+
+            if (item.product.customization || product.customization)
+              return false;
+
+            return true;
+          });
+
+          if (existingItemIndex > -1) {
+            const newItems = [...state.items];
+            newItems[existingItemIndex].quantity += 1;
+            return { items: newItems };
           } else {
             return { items: [...state.items, { product, quantity: 1 }] };
           }
@@ -69,6 +90,7 @@ const useStore = create<StoreState>()(
         })),
 
       resetCart: () => set({ items: [] }),
+
       getTotalPrice: () => {
         return get().items.reduce(
           (total, item) => total + (item.product.price ?? 0) * item.quantity,
@@ -85,20 +107,31 @@ const useStore = create<StoreState>()(
         }, 0);
       },
 
-      getItemCount: (productId) => {
-        const item = get().items.find((item) => item.product._id === productId);
-        return item ? item.quantity : 0;
+      getItemCount: (productId, customization) => {
+        if (customization) {
+          const item = get().items.find(
+            (item) =>
+              item.product._id === productId &&
+              JSON.stringify(item.product.customization) ===
+                JSON.stringify(customization)
+          );
+          return item ? item.quantity : 0;
+        } else {
+          return get()
+            .items.filter((item) => item.product._id === productId)
+            .reduce((count, item) => count + item.quantity, 0);
+        }
       },
 
-      // favorite
-
       getGroupedItems: () => get().items,
+
       addToFavorite: (product: Product) => {
         return new Promise<void>((resolve) => {
           set((state: StoreState) => {
             const isFavorite = state.favoriteProduct.some(
               (item) => item._id === product._id
             );
+
             return {
               favoriteProduct: isFavorite
                 ? state.favoriteProduct.filter(

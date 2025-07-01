@@ -53,6 +53,22 @@ const ProductCharacteristics = ({
     }
   };
 
+  // Nueva función para formatear el texto del ingrediente
+  const formatIngredientText = (text: string) => {
+    const parts = text.split(":");
+    if (parts.length > 1) {
+      const boldPart = parts[0];
+      const rest = parts.slice(1).join(":"); // Une el resto por si hay más de un ':'
+      return (
+        <>
+          <span className="font-bold">{boldPart}:</span>
+          {rest}
+        </>
+      );
+    }
+    return text; // Si no hay ':', devuelve el texto original
+  };
+
   // Características del producto con valores por defecto para jabones
   const characteristics = [
     {
@@ -86,7 +102,6 @@ const ProductCharacteristics = ({
       value: product.skinType || "Todo tipo de piel",
       description: "Piel recomendada",
     },
-
     {
       type: "origin",
       label: "Origen",
@@ -97,10 +112,10 @@ const ProductCharacteristics = ({
 
   // Ingredientes principales
   const mainIngredients = product.ingredients || [
-    "Aceite de Oliva",
-    "Aceite de Coco",
-    "Manteca de Karité",
-    "Hidróxido de Sodio",
+    "Aceite de Oliva: Nutritivo e hidratante",
+    "Aceite de Coco: Limpiador y espumoso",
+    "Manteca de Karité: Suavizante y protectora",
+    "Hidróxido de Sodio: Agente saponificador",
   ];
 
   return (
@@ -141,9 +156,7 @@ const ProductCharacteristics = ({
                 </div>
               ))}
             </div>
-
             <Separator className="my-4" />
-
             {/* Estado del Stock */}
             <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
               <div className="flex items-center gap-3">
@@ -168,7 +181,6 @@ const ProductCharacteristics = ({
             </div>
           </AccordionContent>
         </AccordionItem>
-
         {/* Ingredientes */}
         <AccordionItem
           value="ingredients"
@@ -185,19 +197,33 @@ const ProductCharacteristics = ({
               <p className="text-sm text-gray-600 mb-3">
                 Nuestros jabones están elaborados con ingredientes naturales:
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {mainIngredients.map((ingredient, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 p-2 bg-green-50 rounded-md"
-                  >
-                    <Droplets className="w-3 h-3 text-green-600 flex-shrink-0" />
-                    <span className="text-sm text-green-800 font-medium">
-                      {ingredient}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              {product.ingredients ? (
+                <>
+                  {product.ingredients.map((ingrediente, index) => (
+                    <div className="flex gap-4" key={index}>
+                      <span>✨</span>
+                      <p className="text-gray-700 tracking-tight text-lg leading-relaxed whitespace-pre-line">
+                        {formatIngredientText(ingrediente)}
+                      </p>{" "}
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {mainIngredients.map((ingredient, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 p-2 bg-green-50 rounded-md"
+                    >
+                      <Droplets className="w-3 h-3 text-green-600 flex-shrink-0" />
+                      <span className="text-sm text-green-800 font-medium">
+                        {formatIngredientText(ingredient)}{" "}
+                        {/* Y aquí también */}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </AccordionContent>
         </AccordionItem>
