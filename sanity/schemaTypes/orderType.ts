@@ -1,3 +1,4 @@
+// schemas/order.ts
 import { defineField, defineType } from "sanity";
 
 export const order = defineType({
@@ -9,67 +10,13 @@ export const order = defineType({
       name: "orderNumber",
       title: "Order Number",
       type: "string",
-      validation: (rule) => rule.required(),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "clerkUserId",
-      title: "Clerk User ID",
-      type: "string",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "customerName",
-      title: "Customer Name",
-      type: "string",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "email",
-      title: "Email",
-      type: "string",
-      validation: (rule) => rule.required().email(),
-    }),
-    defineField({
-      name: "currency",
-      title: "Currency",
-      type: "string",
-      initialValue: "ARS",
-    }),
-    defineField({
-      name: "amountDiscount",
-      title: "Amount Discount",
-      type: "number",
-      initialValue: 0,
-    }),
-    defineField({
-      name: "products",
-      title: "Products",
-      type: "array",
-      of: [
-        {
-          type: "object",
-          fields: [
-            defineField({
-              name: "product",
-              title: "Product",
-              type: "reference",
-              to: [{ type: "product" }],
-            }),
-            defineField({
-              name: "quantity",
-              title: "Quantity",
-              type: "number",
-              validation: (rule) => rule.required().min(1),
-            }),
-          ],
-        },
-      ],
-    }),
-    defineField({
-      name: "totalPrice",
-      title: "Total Price",
-      type: "number",
-      validation: (rule) => rule.required(),
+      name: "orderDate",
+      title: "Order Date",
+      type: "datetime",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "status",
@@ -77,117 +24,83 @@ export const order = defineType({
       type: "string",
       options: {
         list: [
-          { title: "Pending", value: "pending" },
-          { title: "Confirmed", value: "confirmed" },
+          { title: "Pending Confirmation", value: "pending_confirmation" },
           { title: "Processing", value: "processing" },
           { title: "Shipped", value: "shipped" },
           { title: "Delivered", value: "delivered" },
           { title: "Cancelled", value: "cancelled" },
         ],
+        layout: "dropdown",
       },
-      initialValue: "pending",
+      initialValue: "pending_confirmation",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "orderDate",
-      title: "Order Date",
-      type: "datetime",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "needsDelivery",
-      title: "Needs Delivery",
-      type: "boolean",
-      initialValue: false,
-    }),
-    defineField({
-      name: "deliveryMethod",
-      title: "Delivery Method",
-      type: "string",
-      options: {
-        list: [
-          { title: "Pickup", value: "pickup" },
-          { title: "Delivery", value: "delivery" },
-        ],
-      },
-      initialValue: "pickup",
-    }),
-    defineField({
-      name: "shippingAddress",
-      title: "Shipping Address",
+      name: "customer",
+      title: "Customer",
       type: "object",
       fields: [
-        defineField({
-          name: "name",
-          title: "Name",
-          type: "string",
-        }),
-        defineField({
-          name: "address",
-          title: "Address",
-          type: "string",
-        }),
-        defineField({
-          name: "city",
-          title: "City",
-          type: "string",
-        }),
-        defineField({
-          name: "state",
-          title: "State",
-          type: "string",
-        }),
-        defineField({
-          name: "zip",
-          title: "ZIP Code",
-          type: "string",
-        }),
+        defineField({ name: "name", title: "Name", type: "string" }),
+        defineField({ name: "email", title: "Email", type: "string" }),
+        defineField({ name: "id", title: "ID", type: "string" }), // Si manejas IDs de usuario
       ],
-      hidden: ({ document }) => !document?.needsDelivery,
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "paymentMethod",
-      title: "Payment Method",
-      type: "string",
-      options: {
-        list: [
-          { title: "Bank Transfer", value: "bank_transfer" },
-          { title: "Credit Card", value: "credit_card" },
-          { title: "Cash", value: "cash" },
-        ],
-      },
-      initialValue: "bank_transfer",
+      name: "items",
+      title: "Items",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            defineField({
+              name: "productRef",
+              title: "Product Reference",
+              type: "reference",
+              to: [{ type: "product" }], // Asegúrate que 'product' sea el tipo de tu schema de productos
+            }),
+            defineField({
+              name: "name",
+              title: "Product Name",
+              type: "string",
+            }),
+            defineField({ name: "price", title: "Price", type: "number" }),
+            defineField({ name: "variant", title: "Variant", type: "string" }), // Si tienes variantes
+            defineField({
+              name: "quantity",
+              title: "Quantity",
+              type: "number",
+            }), // Cantidad del producto
+          ],
+        },
+      ],
+      validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
-      name: "paymentStatus",
-      title: "Payment Status",
-      type: "string",
-      options: {
-        list: [
-          { title: "Pending", value: "pending" },
-          { title: "Paid", value: "paid" },
-          { title: "Failed", value: "failed" },
-          { title: "Refunded", value: "refunded" },
-        ],
-      },
-      initialValue: "pending",
+      name: "totals",
+      title: "Totals",
+      type: "object",
+      fields: [
+        defineField({ name: "subtotal", title: "Subtotal", type: "number" }),
+        defineField({ name: "discount", title: "Discount", type: "number" }),
+        defineField({ name: "total", title: "Total", type: "number" }),
+      ],
+      validation: (Rule) => Rule.required(),
     }),
-    defineField({
-      name: "notes",
-      title: "Notes",
-      type: "text",
-    }),
+    // Puedes añadir más campos como dirección de envío, método de pago, etc.
   ],
   preview: {
     select: {
-      title: "orderNumber",
-      subtitle: "customerName",
-      media: "products.0.product.images.0",
+      orderNumber: "orderNumber",
+      customerName: "customer.name",
+      status: "status",
+      total: "totals.total",
     },
-    prepare({ title, subtitle, media }) {
+    prepare({ orderNumber, customerName, status, total }) {
       return {
-        title: `Order ${title}`,
-        subtitle: `Customer: ${subtitle}`,
-        media,
+        title: `${orderNumber} - ${customerName}`,
+        subtitle: `${status} - Total: $${total}`,
       };
     },
   },
