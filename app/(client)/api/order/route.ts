@@ -1,10 +1,42 @@
 // app/api/order/route.ts
-import { client } from "@/sanity/lib/client";
 import { NextResponse } from "next/server";
+import { Product } from "@/sanity.types"; // Importa Product si lo necesitas para la tipificación
+import { client } from "@/sanity/lib/client";
+
+// Define la interfaz para cada item dentro del array de items del pedido
+// Esta interfaz debe coincidir con cómo se envía el item desde el frontend
+interface OrderItem {
+  product: Product; // Asumiendo que Product viene de '@/sanity.types'
+  quantity: number;
+  // Añade aquí cualquier otra propiedad que cada item pueda tener
+  variant?: string; // Por ejemplo, si variant es opcional
+}
+
+// Define la interfaz para el cuerpo completo de la solicitud que esperas recibir
+interface RequestBody {
+  orderData: {
+    orderNumber: string;
+    orderDate: string; // ISO string
+    status: string;
+    customer: {
+      name: string;
+      email: string;
+      id: string;
+    };
+    items: OrderItem[]; // Usa la interfaz OrderItem aquí
+    totals: {
+      subtotal: number;
+      discount: number;
+      total: number;
+    };
+    // Puedes añadir otros campos como shippingAddress si los manejas
+  };
+}
 
 export async function POST(req: Request) {
   try {
-    const { orderData } = await req.json();
+    // Aquí tipamos explícitamente el cuerpo de la solicitud
+    const { orderData }: RequestBody = await req.json();
 
     if (!orderData) {
       return NextResponse.json(
@@ -21,18 +53,18 @@ export async function POST(req: Request) {
       status: orderData.status,
       customer: orderData.customer,
       totals: orderData.totals,
-      items: orderData.items.map((item: any, index: number) => ({
-        // <-- Añadimos 'index' aquí
-        _key: `${item.product._id}-${index}`, // <-- ¡Añade esta línea para generar una key única!
+      // Ahora 'item' está correctamente tipado como OrderItem
+      items: orderData.items.map((item, index: number) => ({
+        _key: `${item.product._id}-${index}`,
         _type: "itemOrdered", // Si no tienes este schema en Sanity, puedes omitirlo o dejarlo como objeto
         productRef: {
           _ref: item.product._id,
           _type: "reference",
         },
         name: item.product.name,
-        price: item.product.price,
+        price: item.product.price, // TypeScript ya no debería quejarse si Product tiene price
         variant: item.product.variant,
-        quantity: item.quantity || 1,
+        quantity: item.quantity, // quantity ya está tipado y debería existir
       })),
     };
 
