@@ -42,39 +42,98 @@ const soapTypes = [
     description: "Antiinflamatorio y purificante.",
   },
   { id: "avena", name: "Avena", description: "Calmante y nutritivo." },
+  { id: "Carbon", name: "Carbón Activado", description: "purificación" },
 ];
 
-// Define los colores disponibles para el jabón
-const soapColors = [
+// Define los colores naturales disponibles para el jabón
+const naturalSoapColors = [
   {
-    id: "blanco",
-    name: "Blanco",
+    id: "blanco-natural",
+    name: "Blanco Natural",
     hex: "#FFFFFF",
     description: "Color natural, sin aditivos.",
   },
   {
-    id: "rosa",
-    name: "Rosa",
+    id: "rosa-arcilla",
+    name: "Rosa Arcilla",
     hex: "#FFC0CB",
     description: "Con arcilla rosa, suave y delicado.",
   },
   {
-    id: "verde",
-    name: "Verde",
+    id: "verde-espirulina",
+    name: "Verde Espirulina",
     hex: "#90EE90",
     description: "Con espirulina, fresco y purificante.",
   },
   {
-    id: "amarillo",
-    name: "Amarillo",
+    id: "amarillo-curcuma",
+    name: "Amarillo Cúrcuma",
     hex: "#FFFF00",
     description: "Con cúrcuma, vibrante y antioxidante.",
   },
   {
-    id: "marron",
-    name: "Marrón",
+    id: "marron-cacao",
+    name: "Marrón Cacao",
     hex: "#A52A2A",
     description: "Con cacao, cálido y nutritivo.",
+  },
+  {
+    id: "Negro-Carbón",
+    name: "Negro Carbón",
+    hex: "#000000",
+    description: "Con carbón activado, purificación.",
+  },
+];
+
+// Define los colores artificiales disponibles para el jabón
+const artificialSoapColors = [
+  {
+    id: "azul",
+    name: "Azul Brillante",
+    hex: "#0000FF",
+    description: "Color azul intenso, vibrante.",
+  },
+  {
+    id: "rojo",
+    name: "Rojo",
+    hex: "#FF0000",
+    description: "Color rojo vivo, llamativo.",
+  },
+  {
+    id: "verde",
+    name: "Verde",
+    hex: "#39FF14",
+    description: "Color verde, moderno.",
+  },
+  {
+    id: "morado",
+    name: "Morado",
+    hex: "#BF00FF",
+    description: "Color morado, audaz.",
+  },
+  {
+    id: "amarillo",
+    name: "Amarillo",
+    hex: "#f7dc3e",
+    description: "Color amarillo, radiante.",
+  },
+  {
+    id: "naranja",
+    name: "Naranja",
+    hex: "#e8892a",
+    description: "Color naranja, cálido.",
+  },
+  {
+    id: "blanco",
+    name: "Blanco",
+    hex: "#fafcfa",
+    description: "Color blanco, claro.",
+  },
+  {
+    id: "negro",
+    name: "Negro",
+    hex: "#000000",
+    description: "Color negro, intenso.",
   },
 ];
 
@@ -86,9 +145,9 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   // Estados para la personalización
   const [isCustomizationEnabled, setIsCustomizationEnabled] = useState(false);
   const [isColorCustomizationEnabled, setIsColorCustomizationEnabled] =
-    useState(false); // Nuevo estado para habilitar el color
+    useState(false);
   const [selectedSoapType, setSelectedSoapType] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null); // Este estado manejará tanto colores naturales como artificiales
   const [customizationNotes, setCustomizationNotes] = useState("");
 
   useEffect(() => {
@@ -320,11 +379,11 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                     />
                   </div>
 
-                  {/* Nuevo AccordionItem para el color, habilitado por isColorCustomizationEnabled */}
+                  {/* Acordeones de color, habilitados por isColorCustomizationEnabled */}
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="item-2">
                       <AccordionTrigger className="text-base font-medium">
-                        Elige tu color
+                        Elige tu color natural
                       </AccordionTrigger>
                       <AccordionContent>
                         <RadioGroup
@@ -333,7 +392,55 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                           className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
                           disabled={!isColorCustomizationEnabled} // Deshabilitar si la personalización de color no está activa
                         >
-                          {soapColors.map((color) => (
+                          {naturalSoapColors.map((color) => (
+                            <div
+                              key={color.id}
+                              className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
+                              ${selectedColor === color.id ? "border-shop_orange ring-2 ring-shop_orange/50" : "border-gray-200"}
+                              ${!isColorCustomizationEnabled ? "opacity-50 cursor-not-allowed bg-gray-100" : "hover:bg-gray-50"}`}
+                              onClick={() =>
+                                isColorCustomizationEnabled &&
+                                setSelectedColor(color.id)
+                              }
+                            >
+                              <RadioGroupItem
+                                value={color.id}
+                                id={`color-${color.id}`}
+                              />
+                              <Label
+                                htmlFor={`color-${color.id}`}
+                                className="flex flex-col cursor-pointer"
+                              >
+                                <span className="font-medium flex items-center gap-2">
+                                  {color.name}
+                                  <span
+                                    className="w-4 h-4 rounded-full border border-gray-300"
+                                    style={{ backgroundColor: color.hex }}
+                                  ></span>
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  {color.description}
+                                </span>
+                              </Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    {/* Nuevo AccordionItem para colores artificiales */}
+                    <AccordionItem value="item-3">
+                      <AccordionTrigger className="text-base font-medium">
+                        Elige tu color artificial
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <RadioGroup
+                          value={selectedColor || ""}
+                          onValueChange={setSelectedColor}
+                          className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
+                          disabled={!isColorCustomizationEnabled} // Deshabilitar si la personalización de color no está activa
+                        >
+                          {artificialSoapColors.map((color) => (
                             <div
                               key={color.id}
                               className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
@@ -369,7 +476,6 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
-                  {/* Fin del nuevo AccordionItem para el color */}
 
                   <div className="mt-6">
                     <Label
