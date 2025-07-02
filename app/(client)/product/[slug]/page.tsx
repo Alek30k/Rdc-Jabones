@@ -364,10 +364,10 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                   </Accordion>
 
                   {/* Nuevo Switch para habilitar la personalización de color */}
-                  <div className="flex items-center justify-between mt-6">
+                  <div className="flex items-center justify-between mt-6  border-t px-3">
                     <Label
                       htmlFor="personalizar-color"
-                      className="text-base font-semibold"
+                      className="text-base font-semibold mt-6"
                     >
                       Habilitar personalización de color
                     </Label>
