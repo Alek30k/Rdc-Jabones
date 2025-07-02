@@ -1,6 +1,6 @@
 // app/api/order/route.ts
 import { NextResponse } from "next/server";
-import { serverClient } from "@/sanity/lib/client";
+import { client } from "@/sanity/lib/client";
 
 export async function POST(req: Request) {
   try {
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     };
 
     // Crear el documento en Sanity
-    const createdOrder = await serverClient.create(doc);
+    const createdOrder = await client.create(doc);
 
     return NextResponse.json(
       { message: "Order created successfully", order: createdOrder },
