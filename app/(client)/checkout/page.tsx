@@ -114,8 +114,24 @@ const CheckoutPage = () => {
       setTimeout(() => {
         router.push("/order-confirmation");
       }, 500);
-    } catch (error: any) {
-      toast.error(`Error al confirmar el pago: ${error.message}`);
+    } catch (error: unknown) {
+      // <-- ¡Cambiado de 'any' a 'unknown'!
+      let errorMessage = "Hubo un error desconocido al confirmar el pago.";
+
+      // Verificamos si el error es una instancia de Error
+      if (error instanceof Error) {
+        errorMessage = `Error al confirmar el pago: ${error.message}`;
+      } else if (
+        typeof error === "object" &&
+        error !== null &&
+        "message" in error &&
+        typeof (error as { message: unknown }).message === "string"
+      ) {
+        // En caso de que el error sea un objeto con una propiedad 'message' (por ejemplo, del JSON de tu API)
+        errorMessage = `Error al confirmar el pago: ${(error as { message: string }).message}`;
+      }
+
+      toast.error(errorMessage);
       console.error("Error confirming payment:", error);
       setIsConfirming(false);
     }
