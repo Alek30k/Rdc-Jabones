@@ -75,35 +75,54 @@ export async function POST(req: Request) {
       { message: "Order created successfully", order: createdOrder },
       { status: 201 }
     );
-  } catch (error: any) {
-    console.error("Error creating order:", error);
+  } catch (error: unknown) {
+    // <-- ¡Cambiado de 'any' a 'unknown'!
+    console.error("Error creating order in API route:", error);
 
-    if (error.statusCode === 401) {
-      return NextResponse.json(
-        {
-          message: "Authentication error with Sanity API. Check your token.",
-          error: error.message,
-        },
-        { status: 401 }
-      );
+    let errorMessage = "Internal server error during order creation.";
+    let statusCode = 500;
+
+    // Verificar si el error es una instancia de Error
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      // Podrías añadir lógica para errores específicos de Sanity aquí
+      // Por ejemplo, si Sanity client lanza un error con una propiedad 'statusCode'
+      // if ('statusCode' in error && typeof error.statusCode === 'number') {
+      //     statusCode = error.statusCode;
+      // }
+    } else if (
+      typeof error === "object" &&
+      error !== null &&
+      "message" in error &&
+      typeof (error as { message: unknown }).message === "string"
+    ) {
+      // Para errores devueltos como objetos con una propiedad 'message'
+      errorMessage = (error as { message: string }).message;
+      // Similar, si tuviera un statusCode en el objeto de error
+      // if ('statusCode' in error && typeof (error as { statusCode: unknown }).statusCode === 'number') {
+      //     statusCode = (error as { statusCode: number }).statusCode;
+      // }
     }
-    if (error.statusCode === 400) {
-      return NextResponse.json(
-        {
-          message:
-            "Invalid data for Sanity document. Check schema and data structure.",
-          error: error.message,
-        },
-        { status: 400 }
-      );
+
+    // Aquí manejamos errores específicos de Sanity si tienen un formato conocido
+    // Por ejemplo, si el cliente de Sanity lanza errores con un statusCode
+    // Nota: Esto depende de cómo el cliente de Sanity expone sus errores.
+    // Podrías necesitar inspeccionar el 'error' en la consola para ver su estructura real.
+    if (
+      errorMessage.includes("Authentication error") ||
+      errorMessage.includes("token")
+    ) {
+      statusCode = 401;
+    } else if (
+      errorMessage.includes("Missing required field") ||
+      errorMessage.includes("Invalid value")
+    ) {
+      statusCode = 400; // Posiblemente un error de validación de schema
     }
 
     return NextResponse.json(
-      {
-        message: "Internal server error during order creation.",
-        error: error.message,
-      },
-      { status: 500 }
+      { message: `Error al crear el pedido: ${errorMessage}`, error: error }, // Puedes incluir el objeto 'error' completo para depuración, pero ten cuidado con datos sensibles
+      { status: statusCode }
     );
   }
 }
