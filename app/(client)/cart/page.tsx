@@ -206,34 +206,42 @@ const CartPage = () => {
                                 {product?.name}
                               </h2>
                               {/* Mostrar personalización si existe */}
-                              {product.customization && (
-                                <div className="text-sm text-gray-600 flex items-center gap-1">
-                                  <Info className="w-4 h-4 text-blue-500" />{" "}
-                                  {/* Icono de información */}
-                                  <span className="font-medium">
-                                    Personalizado:
-                                  </span>
-                                  <span className="text-blue-700">
-                                    {product.customization.soapType
-                                      ? `Jabón de ${product.customization.soapType}`
-                                      : "Sin tipo específico"}
-                                  </span>
-                                  {product.customization.notes && (
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <span className="ml-1 text-gray-500 cursor-help">
-                                            (Notas)
-                                          </span>
-                                        </TooltipTrigger>
-                                        <TooltipContent className="max-w-xs p-2 text-sm">
-                                          <p>{product.customization.notes}</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  )}
-                                </div>
-                              )}
+                              {product.customization &&
+                                (product.customization.soapType ||
+                                  product.customization.color) && (
+                                  <div className="text-sm text-gray-600 flex items-center gap-1">
+                                    <Info className="w-4 h-4 text-blue-500" />{" "}
+                                    {/* Icono de información */}
+                                    <span className="font-medium">
+                                      Personalizado:
+                                    </span>
+                                    {product.customization.soapType && (
+                                      <span className="text-blue-700">
+                                        Jabón de{" "}
+                                        {product.customization.soapType}
+                                      </span>
+                                    )}
+                                    {product.customization.color && (
+                                      <span className="text-purple-700 ml-1">
+                                        Color: {product.customization.color}
+                                      </span>
+                                    )}
+                                    {product.customization.notes && (
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <span className="ml-1 text-gray-500 cursor-help">
+                                              (Notas)
+                                            </span>
+                                          </TooltipTrigger>
+                                          <TooltipContent className="max-w-xs p-2 text-sm">
+                                            <p>{product.customization.notes}</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                    )}
+                                  </div>
+                                )}
                               {/* Fin de la personalización */}
 
                               <p className="text-sm capitalize">

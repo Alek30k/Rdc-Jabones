@@ -12,6 +12,7 @@ import QuantityButtons from "./QuantityButtons";
 // Define la interfaz para la personalización
 export interface ProductCustomization {
   soapType: string | null;
+  color: string | null; // Añadimos el color aquí
   notes: string;
 }
 
@@ -32,17 +33,35 @@ const AddToCartButton = ({ product, className }: Props) => {
   const isOutOfStock = product?.stock === 0;
 
   const handleAddToCart = () => {
-    // Validación para personalización (si aplica)
-    if (product.customization && !product.customization.soapType) {
-      toast.error("Por favor, selecciona un tipo de jabón para personalizar.");
+    // Validación para personalización:
+    // Si la personalización está habilitada (product.customization existe)
+    // y NO se ha seleccionado ni tipo de jabón NI color, entonces mostrar error.
+    if (
+      product.customization &&
+      !product.customization.soapType &&
+      !product.customization.color
+    ) {
+      toast.error(
+        "Por favor, selecciona al menos una opción de personalización (tipo de jabón o color)."
+      );
       return;
     }
 
     if ((product?.stock as number) > itemCount) {
       // Pasamos el producto COMPLETO, incluyendo la propiedad `customization` si existe
       addItem(product);
+      let customizationText = "";
+      if (product.customization) {
+        if (product.customization.soapType && product.customization.color) {
+          customizationText = `(${product.customization.soapType}, ${product.customization.color})`;
+        } else if (product.customization.soapType) {
+          customizationText = `(${product.customization.soapType})`;
+        } else if (product.customization.color) {
+          customizationText = `(${product.customization.color})`;
+        }
+      }
       toast.success(
-        `${product?.name?.substring(0, 12)}... ${product.customization ? `(${product.customization.soapType})` : ""} añadido con éxito!`
+        `${product?.name?.substring(0, 12)}... ${customizationText} añadido con éxito!`
       );
     } else {
       toast.error("No se puede añadir más de la cantidad disponible en stock.");

@@ -44,6 +44,40 @@ const soapTypes = [
   { id: "avena", name: "Avena", description: "Calmante y nutritivo." },
 ];
 
+// Define los colores disponibles para el jabón
+const soapColors = [
+  {
+    id: "blanco",
+    name: "Blanco",
+    hex: "#FFFFFF",
+    description: "Color natural, sin aditivos.",
+  },
+  {
+    id: "rosa",
+    name: "Rosa",
+    hex: "#FFC0CB",
+    description: "Con arcilla rosa, suave y delicado.",
+  },
+  {
+    id: "verde",
+    name: "Verde",
+    hex: "#90EE90",
+    description: "Con espirulina, fresco y purificante.",
+  },
+  {
+    id: "amarillo",
+    name: "Amarillo",
+    hex: "#FFFF00",
+    description: "Con cúrcuma, vibrante y antioxidante.",
+  },
+  {
+    id: "marron",
+    name: "Marrón",
+    hex: "#A52A2A",
+    description: "Con cacao, cálido y nutritivo.",
+  },
+];
+
 const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -51,7 +85,10 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
 
   // Estados para la personalización
   const [isCustomizationEnabled, setIsCustomizationEnabled] = useState(false);
+  const [isColorCustomizationEnabled, setIsColorCustomizationEnabled] =
+    useState(false); // Nuevo estado para habilitar el color
   const [selectedSoapType, setSelectedSoapType] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [customizationNotes, setCustomizationNotes] = useState("");
 
   useEffect(() => {
@@ -80,9 +117,25 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
       setRelatedProducts(fetchedRelatedProducts);
       setLoading(false);
     };
-
     fetchProductData();
   }, [params.slug]);
+
+  // Efecto para resetear la personalización de color si la personalización general se deshabilita
+  useEffect(() => {
+    if (!isCustomizationEnabled) {
+      setIsColorCustomizationEnabled(false);
+      setSelectedSoapType(null);
+      setSelectedColor(null);
+      setCustomizationNotes("");
+    }
+  }, [isCustomizationEnabled]);
+
+  // Efecto para resetear el color seleccionado si la personalización de color se deshabilita
+  useEffect(() => {
+    if (!isColorCustomizationEnabled) {
+      setSelectedColor(null);
+    }
+  }, [isColorCustomizationEnabled]);
 
   if (loading) {
     return (
@@ -114,6 +167,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
     customization: isCustomizationEnabled
       ? {
           soapType: selectedSoapType,
+          color: isColorCustomizationEnabled ? selectedColor : null, // Solo incluye el color si su switch está habilitado
           notes: customizationNotes,
         }
       : undefined, // Si no está habilitado, no se pasa la personalización
@@ -166,7 +220,6 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
           </div>
         </Container>
       </div>
-
       {/* Contenedor principal de la página del producto */}
       <Container className="flex p-4 flex-col md:flex-row gap-10 py-10">
         {/* Columna Izquierda: Imagen y Descripción */}
@@ -175,13 +228,11 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
             <ImageView images={product?.images} isStock={product?.stock} />
           )}
         </div>
-
         {/* Columna Derecha: Detalles del Producto, Precio, CTA, etc. */}
         <div className="w-full md:w-1/2 p-4 flex flex-col gap-5">
           <div className="space-y-1">
             <h2 className="text-2xl font-bold">{product?.name}</h2>
           </div>
-
           <div className="space-y-2 border-t border-b border-gray-200 py-5">
             <PriceView
               price={product?.price}
@@ -211,94 +262,154 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                 />
               </div>
 
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="item-1">
-                  <AccordionTrigger className="text-base font-medium">
-                    Elige tu tipo de jabón
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <RadioGroup
-                      value={selectedSoapType || ""}
-                      onValueChange={setSelectedSoapType}
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
-                      disabled={!isCustomizationEnabled} // Deshabilitar si la personalización no está activa
-                    >
-                      {soapTypes.map((soap) => (
-                        <div
-                          key={soap.id}
-                          className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
-                          ${selectedSoapType === soap.id ? "border-shop_orange ring-2 ring-shop_orange/50" : "border-gray-200"}
-                          ${!isCustomizationEnabled ? "opacity-50 cursor-not-allowed bg-gray-100" : "hover:bg-gray-50"}`}
-                          onClick={() =>
-                            isCustomizationEnabled &&
-                            setSelectedSoapType(soap.id)
-                          }
+              {/* Contenedor para las opciones de personalización, solo visible si isCustomizationEnabled */}
+              {isCustomizationEnabled && (
+                <div className="space-y-4 mt-4">
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger className="text-base font-medium">
+                        Elige tu tipo de jabón
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <RadioGroup
+                          value={selectedSoapType || ""}
+                          onValueChange={setSelectedSoapType}
+                          className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
                         >
-                          <RadioGroupItem
-                            value={soap.id}
-                            id={`soap-${soap.id}`}
-                          />
-                          <Label
-                            htmlFor={`soap-${soap.id}`}
-                            className="flex flex-col cursor-pointer"
-                          >
-                            <span className="font-medium">{soap.name}</span>
-                            <span className="text-xs text-gray-500">
-                              {soap.description}
-                            </span>
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
+                          {soapTypes.map((soap) => (
+                            <div
+                              key={soap.id}
+                              className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
+                              ${selectedSoapType === soap.id ? "border-shop_orange ring-2 ring-shop_orange/50" : "border-gray-200"}
+                              hover:bg-gray-50`}
+                              onClick={() => setSelectedSoapType(soap.id)}
+                            >
+                              <RadioGroupItem
+                                value={soap.id}
+                                id={`soap-${soap.id}`}
+                              />
+                              <Label
+                                htmlFor={`soap-${soap.id}`}
+                                className="flex flex-col cursor-pointer"
+                              >
+                                <span className="font-medium">{soap.name}</span>
+                                <span className="text-xs text-gray-500">
+                                  {soap.description}
+                                </span>
+                              </Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
 
-                    {isCustomizationEnabled && (
-                      <div className="mt-6">
-                        <Label
-                          htmlFor="notas-personalizacion"
-                          className="mb-2 block text-sm font-medium"
+                  {/* Nuevo Switch para habilitar la personalización de color */}
+                  <div className="flex items-center justify-between mt-6">
+                    <Label
+                      htmlFor="personalizar-color"
+                      className="text-base font-semibold"
+                    >
+                      Habilitar personalización de color
+                    </Label>
+                    <Switch
+                      id="personalizar-color"
+                      checked={isColorCustomizationEnabled}
+                      onCheckedChange={setIsColorCustomizationEnabled}
+                      className="data-[state=checked]:bg-shop_orange"
+                    />
+                  </div>
+
+                  {/* Nuevo AccordionItem para el color, habilitado por isColorCustomizationEnabled */}
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="item-2">
+                      <AccordionTrigger className="text-base font-medium">
+                        Elige tu color
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <RadioGroup
+                          value={selectedColor || ""}
+                          onValueChange={setSelectedColor}
+                          className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
+                          disabled={!isColorCustomizationEnabled} // Deshabilitar si la personalización de color no está activa
                         >
-                          Notas adicionales para la personalización (opcional)
-                        </Label>
-                        <Textarea
-                          id="notas-personalizacion"
-                          placeholder="Ej: 'Con menos aroma', 'Para piel sensible', etc."
-                          value={customizationNotes}
-                          onChange={(e) =>
-                            setCustomizationNotes(e.target.value)
-                          }
-                          disabled={!isCustomizationEnabled}
-                          className="min-h-[80px]"
-                        />
-                      </div>
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                          {soapColors.map((color) => (
+                            <div
+                              key={color.id}
+                              className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
+                              ${selectedColor === color.id ? "border-shop_orange ring-2 ring-shop_orange/50" : "border-gray-200"}
+                              ${!isColorCustomizationEnabled ? "opacity-50 cursor-not-allowed bg-gray-100" : "hover:bg-gray-50"}`}
+                              onClick={() =>
+                                isColorCustomizationEnabled &&
+                                setSelectedColor(color.id)
+                              }
+                            >
+                              <RadioGroupItem
+                                value={color.id}
+                                id={`color-${color.id}`}
+                              />
+                              <Label
+                                htmlFor={`color-${color.id}`}
+                                className="flex flex-col cursor-pointer"
+                              >
+                                <span className="font-medium flex items-center gap-2">
+                                  {color.name}
+                                  <span
+                                    className="w-4 h-4 rounded-full border border-gray-300"
+                                    style={{ backgroundColor: color.hex }}
+                                  ></span>
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  {color.description}
+                                </span>
+                              </Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                  {/* Fin del nuevo AccordionItem para el color */}
+
+                  <div className="mt-6">
+                    <Label
+                      htmlFor="notas-personalizacion"
+                      className="mb-2 block text-sm font-medium"
+                    >
+                      Notas adicionales para la personalización (opcional)
+                    </Label>
+                    <Textarea
+                      id="notas-personalizacion"
+                      placeholder="Ej: 'Con menos aroma', 'Para piel sensible', etc."
+                      value={customizationNotes}
+                      onChange={(e) => setCustomizationNotes(e.target.value)}
+                      disabled={!isCustomizationEnabled} // Las notas dependen de la personalización general
+                      className="min-h-[80px]"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-
           <div className="flex items-center gap-2.5 lg:gap-3">
             {/* Pasamos el producto con la personalización al AddToCartButton */}
             <AddToCartButton product={productWithCustomization} />
             <FavoriteButton showProduct={true} product={product} />
           </div>
-
           <ProductCharacteristics product={product} />
         </div>
       </Container>
-
       {/* --- Sección de Descripción (ahora dentro de la columna de la imagen) --- */}
       <Container>
         {product?.description && (
           <div className="bg-white  md:w-[60%] p-6 rounded-lg shadow-sm mb-5">
             <h3 className="text-xl font-bold mb-4">Descripción</h3>
-            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+            <p className="text-gray-700 text-lg tracking-tight leading-relaxed whitespace-pre-line">
               {product.description}
             </p>
           </div>
         )}
       </Container>
-
       <Container className="p-4 ">
         <RelatedProducts products={relatedProducts} />
       </Container>

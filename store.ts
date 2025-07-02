@@ -43,20 +43,27 @@ const useStore = create<StoreState>()(
 
       addItem: (product) =>
         set((state) => {
+          // Generar una clave única para el ítem del carrito, incluyendo la personalización
+          const getCustomizationKey = (
+            custom: ProductCustomization | undefined
+          ) => {
+            if (!custom) return "";
+            return `${custom.soapType || ""}-${custom.color || ""}-${custom.notes || ""}`;
+          };
+
+          const newItemCustomizationKey = getCustomizationKey(
+            product.customization
+          );
+
           const existingItemIndex = state.items.findIndex((item) => {
+            // Compara el ID del producto
             if (item.product._id !== product._id) return false;
 
-            if (item.product.customization && product.customization) {
-              return (
-                JSON.stringify(item.product.customization) ===
-                JSON.stringify(product.customization)
-              );
-            }
-
-            if (item.product.customization || product.customization)
-              return false;
-
-            return true;
+            // Compara las personalizaciones usando la clave generada
+            const existingItemCustomizationKey = getCustomizationKey(
+              item.product.customization
+            );
+            return existingItemCustomizationKey === newItemCustomizationKey;
           });
 
           if (existingItemIndex > -1) {
@@ -108,19 +115,22 @@ const useStore = create<StoreState>()(
       },
 
       getItemCount: (productId, customization) => {
-        if (customization) {
-          const item = get().items.find(
-            (item) =>
-              item.product._id === productId &&
-              JSON.stringify(item.product.customization) ===
-                JSON.stringify(customization)
-          );
-          return item ? item.quantity : 0;
-        } else {
-          return get()
-            .items.filter((item) => item.product._id === productId)
-            .reduce((count, item) => count + item.quantity, 0);
-        }
+        const getCustomizationKey = (
+          custom: ProductCustomization | undefined
+        ) => {
+          if (!custom) return "";
+          return `${custom.soapType || ""}-${custom.color || ""}-${custom.notes || ""}`;
+        };
+
+        const targetCustomizationKey = getCustomizationKey(customization);
+
+        const item = get().items.find(
+          (item) =>
+            item.product._id === productId &&
+            getCustomizationKey(item.product.customization) ===
+              targetCustomizationKey
+        );
+        return item ? item.quantity : 0;
       },
 
       getGroupedItems: () => get().items,
