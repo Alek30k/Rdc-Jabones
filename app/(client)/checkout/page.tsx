@@ -195,7 +195,9 @@ const CheckoutPage = () => {
                         </div>
                         <div className="text-right">
                           <PriceFormatter
-                            amount={product.price * quantity} // Calcula el total por ítem
+                            // Calcula el total por ítem
+                            // Si product.price es undefined, usa 0 en su lugar.
+                            amount={(product?.price || 0) * quantity}
                             className="font-semibold"
                           />
                         </div>
