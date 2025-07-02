@@ -5,6 +5,7 @@ import { productType } from "./productType";
 import { authorType } from "./authorType";
 import { addressType } from "./addressType";
 import { order } from "./orderType";
+import { itemOrdered } from "./itemOrdered";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -12,6 +13,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     blockContentType,
     productType,
     order,
+    itemOrdered,
     authorType,
     addressType,
   ],

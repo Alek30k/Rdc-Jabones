@@ -52,27 +52,27 @@ export const order = defineType({
       type: "array",
       of: [
         {
-          type: "object",
-          fields: [
-            defineField({
-              name: "productRef",
-              title: "Product Reference",
-              type: "reference",
-              to: [{ type: "product" }], // Asegúrate que 'product' sea el tipo de tu schema de productos
-            }),
-            defineField({
-              name: "name",
-              title: "Product Name",
-              type: "string",
-            }),
-            defineField({ name: "price", title: "Price", type: "number" }),
-            defineField({ name: "variant", title: "Variant", type: "string" }), // Si tienes variantes
-            defineField({
-              name: "quantity",
-              title: "Quantity",
-              type: "number",
-            }), // Cantidad del producto
-          ],
+          type: "itemOrdered",
+          // fields: [
+          //   defineField({
+          //     name: "productRef",
+          //     title: "Product Reference",
+          //     type: "reference",
+          //     to: [{ type: "product" }], // Asegúrate que 'product' sea el tipo de tu schema de productos
+          //   }),
+          //   defineField({
+          //     name: "name",
+          //     title: "Product Name",
+          //     type: "string",
+          //   }),
+          //   defineField({ name: "price", title: "Price", type: "number" }),
+          //   defineField({ name: "variant", title: "Variant", type: "string" }), // Si tienes variantes
+          //   defineField({
+          //     name: "quantity",
+          //     title: "Quantity",
+          //     type: "number",
+          //   }), // Cantidad del producto
+          // ],
         },
       ],
       validation: (Rule) => Rule.required().min(1),
