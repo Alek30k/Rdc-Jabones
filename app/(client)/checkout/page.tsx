@@ -1,3 +1,4 @@
+// components/CheckoutPage.tsx (o como lo tengas nombrado)
 "use client";
 
 import Container from "@/components/Container";
@@ -25,6 +26,7 @@ import toast from "react-hot-toast";
 interface CheckoutData {
   items: Array<{
     product: Product;
+    quantity: number; // ASUMO QUE AGREGARÁS LA CANTIDAD AQUÍ
   }>;
   customer: {
     name: string;
@@ -70,30 +72,51 @@ const CheckoutPage = () => {
     setIsConfirming(true);
 
     try {
-      // Simular procesamiento de 3 segundos
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      // Simular procesamiento de 3 segundos (esto ahora se encargará de la API)
+      // await new Promise((resolve) => setTimeout(resolve, 3000));
 
-      // Store order data for confirmation page
-      const orderData = {
+      // Datos del pedido a enviar a Sanity
+      const orderToSave = {
         ...checkoutData,
         orderNumber,
         orderDate: new Date().toISOString(),
         status: "pending_confirmation",
       };
 
-      localStorage.setItem("orderData", JSON.stringify(orderData));
+      // 1. Enviar el pedido a Sanity a través de tu API Route
+      const response = await fetch("/api/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orderData: orderToSave }), // Envuelve orderToSave en un objeto
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || "Failed to create order in Sanity"
+        );
+      }
+
+      const result = await response.json();
+      console.log("Order saved to Sanity:", result.order);
+      toast.success("¡Pedido creado en Sanity! Redirigiendo...");
+
+      // 2. Almacenar datos para la página de confirmación (si es necesario)
+      localStorage.setItem("orderData", JSON.stringify(result.order)); // Usa el resultado de Sanity si tiene más campos
       localStorage.removeItem("checkoutData");
 
-      toast.success("¡Transferencia confirmada! Redirigiendo...");
+      // 3. Resetear el carrito
       resetCart();
 
       // Pequeño delay adicional para mostrar el toast
       setTimeout(() => {
         router.push("/order-confirmation");
       }, 500);
-    } catch (error) {
-      toast.error("Hubo un error. Por favor intenta nuevamente.");
-      console.log(error);
+    } catch (error: any) {
+      toast.error(`Error al confirmar el pago: ${error.message}`);
+      console.error("Error confirming payment:", error);
       setIsConfirming(false);
     }
   };
@@ -141,45 +164,50 @@ const CheckoutPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {checkoutData.items.map(({ product }) => (
-                    <div
-                      key={product._id}
-                      className="flex items-center gap-4 p-3 border rounded-lg"
-                    >
-                      {product.images && (
-                        <Image
-                          src={
-                            urlFor(product.images[0]).url() ||
-                            "/placeholder.svg"
-                          }
-                          alt={product.name}
-                          width={60}
-                          height={60}
-                          className="rounded-md object-cover"
-                        />
-                      )}
-                      <div className="flex-1">
-                        <h3 className="font-semibold line-clamp-1">
-                          {product.name}
-                        </h3>
-                        <p className="text-sm text-gray-600 capitalize">
-                          {product.variant}
-                        </p>
+                  {checkoutData.items.map(
+                    (
+                      { product, quantity } // Asegúrate de desestructurar 'quantity'
+                    ) => (
+                      <div
+                        key={product._id}
+                        className="flex items-center gap-4 p-3 border rounded-lg"
+                      >
+                        {product.images && (
+                          <Image
+                            src={
+                              urlFor(product.images[0]).url() ||
+                              "/placeholder.svg"
+                            }
+                            alt={product.name}
+                            width={60}
+                            height={60}
+                            className="rounded-md object-cover"
+                          />
+                        )}
+                        <div className="flex-1">
+                          <h3 className="font-semibold line-clamp-1">
+                            {product.name}
+                          </h3>
+                          <p className="text-sm text-gray-600 capitalize">
+                            {product.variant} x {quantity}{" "}
+                            {/* Muestra la cantidad */}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <PriceFormatter
+                            amount={product.price * quantity} // Calcula el total por ítem
+                            className="font-semibold"
+                          />
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <PriceFormatter
-                          amount={product.price}
-                          className="font-semibold"
-                        />
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Payment Section */}
+          {/* Payment Section (el resto del código permanece igual) */}
           <div className="space-y-6">
             {/* Order Total */}
             <Card>
