@@ -68,19 +68,20 @@ export const itemOrdered = defineType({
           quantity: "quantity",
           price: "price",
           variant: "variant",
-          soapType: "customization.soapType", // Seleccionar el tipo de jabón para el preview
-          color: "customization.color", // Seleccionar el color para el preview
-          notes: "customization.notes",
+          soapType: "soapType",
+          color: "color",
+          notes: "notes",
         },
         prepare({ name, quantity, price, variant, soapType, color, notes }) {
           const subtitleParts = [];
           if (variant) subtitleParts.push(variant);
           if (soapType) subtitleParts.push(`Jabón: ${soapType}`);
           if (color) subtitleParts.push(`Color: ${color}`);
-          if (notes) subtitleParts.push(`Notas`); // Solo indicar que hay notas
+          if (notes) subtitleParts.push(`Notas: ${notes.substring(0, 30)}...`); // Muestra un extracto
+
           return {
-            title: `${name} (${quantity})`,
-            subtitle: `${subtitleParts.join(" | ")} - $${price}`,
+            title: "Detalles de Personalización",
+            subtitle: subtitleParts.join(" | "),
           };
         },
       },
@@ -92,11 +93,19 @@ export const itemOrdered = defineType({
       quantity: "quantity",
       price: "price",
       variant: "variant",
+      soapType: "customization.soapType", // Seleccionar el tipo de jabón para el preview
+      color: "customization.color", // Seleccionar el color para el preview
+      notes: "customization.notes",
     },
-    prepare({ name, quantity, price, variant }) {
+    prepare({ name, quantity, price, variant, soapType, color, notes }) {
+      const subtitleParts = [];
+      if (variant) subtitleParts.push(variant);
+      if (soapType) subtitleParts.push(`Jabón: ${soapType}`);
+      if (color) subtitleParts.push(`Color: ${color}`);
+      if (notes) subtitleParts.push(`Notas`); // Solo indicar que hay notas
       return {
         title: `${name} (${quantity})`,
-        subtitle: `${variant ? variant + " - " : ""}$${price}`,
+        subtitle: `${subtitleParts.join(" | ")} - $${price}`,
       };
     },
   },
