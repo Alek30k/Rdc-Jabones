@@ -64,15 +64,12 @@ export const itemOrdered = defineType({
 
       preview: {
         select: {
-          name: "name",
-          quantity: "quantity",
-          price: "price",
           variant: "variant",
           soapType: "soapType",
           color: "color",
           notes: "notes",
         },
-        prepare({ name, quantity, price, variant, soapType, color, notes }) {
+        prepare({ variant, soapType, color, notes }) {
           const subtitleParts = [];
           if (variant) subtitleParts.push(variant);
           if (soapType) subtitleParts.push(`Jabón: ${soapType}`);
