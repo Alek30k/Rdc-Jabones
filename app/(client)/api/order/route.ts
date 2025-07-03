@@ -65,6 +65,14 @@ export async function POST(req: Request) {
         price: item.product.price, // TypeScript ya no debería quejarse si Product tiene price
         variant: item.product.variant,
         quantity: item.quantity, // quantity ya está tipado y debería existir
+        customization: item.product.customization // <-- ESTA LÍNEA ES CLAVE
+          ? {
+              // Si customization existe en el producto, copiamos sus propiedades
+              soapType: item.product.customization.soapType ?? null, // Usamos ?? null para que Sanity reciba null si es undefined
+              color: item.product.customization.color ?? null,
+              notes: item.product.customization.notes ?? null,
+            }
+          : undefined,
       })),
     };
 
