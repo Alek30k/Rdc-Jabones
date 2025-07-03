@@ -38,15 +38,53 @@ export const itemOrdered = defineType({
       type: "number",
       validation: (Rule) => Rule.required().min(1),
     }),
-    // Puedes añadir otros campos si es necesario, por ejemplo, una URL de imagen para el thumbnail
-    // defineField({
-    //   name: "image",
-    //   title: "Image",
-    //   type: "image",
-    //   options: {
-    //     hotspot: true, // Si quieres que la imagen sea editable con punto de interés
-    //   },
-    // }),
+    defineField({
+      name: "customization",
+      title: "Customization",
+      type: "object", // Define un objeto para agrupar los campos de personalización
+      fields: [
+        defineField({
+          name: "soapType",
+          title: "Tipo de Jabón",
+          type: "string",
+        }),
+        defineField({
+          name: "color",
+          title: "Color",
+          type: "string",
+        }),
+        defineField({
+          name: "notes",
+          title: "Notas de Personalización",
+          type: "text", // Usamos 'text' para notas más largas
+        }),
+      ],
+      // Puedes añadir un preview para el objeto de personalización si quieres
+      // Por ejemplo, para que aparezca "Personalización: Jabón de Leche (Rojo)"
+
+      preview: {
+        select: {
+          name: "name",
+          quantity: "quantity",
+          price: "price",
+          variant: "variant",
+          soapType: "customization.soapType", // Seleccionar el tipo de jabón para el preview
+          color: "customization.color", // Seleccionar el color para el preview
+          notes: "customization.notes",
+        },
+        prepare({ name, quantity, price, variant, soapType, color, notes }) {
+          const subtitleParts = [];
+          if (variant) subtitleParts.push(variant);
+          if (soapType) subtitleParts.push(`Jabón: ${soapType}`);
+          if (color) subtitleParts.push(`Color: ${color}`);
+          if (notes) subtitleParts.push(`Notas`); // Solo indicar que hay notas
+          return {
+            title: `${name} (${quantity})`,
+            subtitle: `${subtitleParts.join(" | ")} - $${price}`,
+          };
+        },
+      },
+    }),
   ],
   preview: {
     select: {
