@@ -12,11 +12,11 @@ interface Props {
 }
 const QuantityButtons = ({ product, className }: Props) => {
   const { addItem, removeItem, getItemCount } = useStore();
-  const itemCount = getItemCount(product?._id);
+  const itemCount = getItemCount(product?._id, product.customization);
   const isOutOfStock = product?.stock === 0;
 
   const handleRemoveProduct = () => {
-    removeItem(product?._id);
+    removeItem(product?._id, product.customization);
     if (itemCount > 1) {
       toast.success("Cantidad disminuida exitosamente!");
     } else {

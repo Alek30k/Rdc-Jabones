@@ -283,7 +283,10 @@ const CartPage = () => {
                                   <TooltipTrigger>
                                     <Trash
                                       onClick={() => {
-                                        deleteCartProduct(product?._id); // Esto eliminará todas las instancias del producto por ID
+                                        deleteCartProduct(
+                                          product?._id,
+                                          product.customization
+                                        ); // Esto eliminará todas las instancias del producto por ID
                                         toast.success(
                                           "Producto eliminado exitosamente!"
                                         );

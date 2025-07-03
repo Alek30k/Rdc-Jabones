@@ -17,8 +17,11 @@ export interface CartItem {
 interface StoreState {
   items: CartItem[];
   addItem: (product: ProductWithCustomization) => void;
-  removeItem: (productId: string) => void;
-  deleteCartProduct: (productId: string) => void;
+  removeItem: (productId: string, customization?: ProductCustomization) => void;
+  deleteCartProduct: (
+    productId: string,
+    customization?: ProductCustomization
+  ) => void;
   resetCart: () => void;
   getTotalPrice: () => number;
   getSubTotalPrice: () => number;
@@ -75,26 +78,64 @@ const useStore = create<StoreState>()(
           }
         }),
 
-      removeItem: (productId) =>
-        set((state) => ({
-          items: state.items.reduce((acc, item) => {
-            if (item.product._id === productId) {
+      removeItem: (productId, customization) =>
+        set((state) => {
+          const getCustomizationKey = (
+            custom: ProductCustomization | undefined
+          ) => {
+            if (!custom) return "";
+            return `${custom.soapType ?? ""}-${custom.color ?? ""}-${custom.notes ?? ""}`;
+          };
+
+          const targetCustomizationKey = getCustomizationKey(customization);
+
+          const newItems = state.items.reduce((acc, item) => {
+            const currentItemCustomizationKey = getCustomizationKey(
+              item.product.customization
+            );
+
+            if (
+              item.product._id === productId &&
+              currentItemCustomizationKey === targetCustomizationKey
+            ) {
               if (item.quantity > 1) {
                 acc.push({ ...item, quantity: item.quantity - 1 });
               }
+              // Si la cantidad es 1, simplemente no lo agregamos al 'acc'
             } else {
               acc.push(item);
             }
             return acc;
-          }, [] as CartItem[]),
-        })),
+          }, [] as CartItem[]);
+          return { items: newItems };
+        }),
 
-      deleteCartProduct: (productId) =>
-        set((state) => ({
-          items: state.items.filter(
-            ({ product }) => product?._id !== productId
-          ),
-        })),
+      deleteCartProduct: (
+        productId,
+        customization // AHORA RECIBE PERSONALIZACIÓN
+      ) =>
+        set((state) => {
+          const getCustomizationKey = (
+            custom: ProductCustomization | undefined
+          ) => {
+            if (!custom) return "";
+            return `${custom.soapType ?? ""}-${custom.color ?? ""}-${custom.notes ?? ""}`;
+          };
+
+          const targetCustomizationKey = getCustomizationKey(customization);
+
+          return {
+            items: state.items.filter(({ product }) => {
+              const currentProductCustomizationKey = getCustomizationKey(
+                product.customization
+              );
+              return !(
+                product._id === productId &&
+                currentProductCustomizationKey === targetCustomizationKey
+              );
+            }),
+          };
+        }),
 
       resetCart: () => set({ items: [] }),
 
