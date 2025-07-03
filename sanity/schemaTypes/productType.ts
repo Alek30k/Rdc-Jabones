@@ -125,6 +125,29 @@ export const productType = defineType({
       type: "array",
       of: [{ type: "string" }],
     }),
+    defineField({
+      name: "customization",
+      title: "Personalización",
+      type: "object",
+      fields: [
+        defineField({
+          name: "soapType",
+          title: "Tipo de Jabón",
+          type: "string", // Sin validación .nullable() si no quieres null
+        }),
+        defineField({
+          name: "color",
+          title: "Color",
+          type: "string", // Sin validación .nullable() si no quieres null
+        }),
+        defineField({
+          name: "notes",
+          title: "Notas",
+          type: "text", // Sin validación .nullable() si no quieres null
+        }),
+      ],
+      // ... cualquier preview para la personalización
+    }),
   ],
 
   preview: {
