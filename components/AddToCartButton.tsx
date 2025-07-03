@@ -11,9 +11,9 @@ import QuantityButtons from "./QuantityButtons";
 
 // Define la interfaz para la personalización
 export interface ProductCustomization {
-  soapType: string | null;
-  color: string | null; // Añadimos el color aquí
-  notes: string;
+  soapType?: string; // Ahora es string | undefined
+  color?: string; // Ahora es string | undefined
+  notes?: string; // Ahora es string | undefined
 }
 
 // Extiende el tipo Product para incluir la personalización
