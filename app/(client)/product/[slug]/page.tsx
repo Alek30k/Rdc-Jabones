@@ -187,8 +187,8 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   useEffect(() => {
     if (!isCustomizationEnabled) {
       setIsColorCustomizationEnabled(false);
-      setSelectedSoapType(null);
-      setSelectedColor(null);
+      setSelectedSoapType(undefined);
+      setSelectedColor(undefined);
       setCustomizationNotes("");
     }
   }, [isCustomizationEnabled]);
@@ -196,7 +196,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   // Efecto para resetear el color seleccionado si la personalización de color se deshabilita
   useEffect(() => {
     if (!isColorCustomizationEnabled) {
-      setSelectedColor(null);
+      setSelectedColor(undefined);
     }
   }, [isColorCustomizationEnabled]);
 
