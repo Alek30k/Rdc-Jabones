@@ -146,9 +146,13 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   const [isCustomizationEnabled, setIsCustomizationEnabled] = useState(false);
   const [isColorCustomizationEnabled, setIsColorCustomizationEnabled] =
     useState(false);
-  const [selectedSoapType, setSelectedSoapType] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null); // Este estado manejará tanto colores naturales como artificiales
-  const [customizationNotes, setCustomizationNotes] = useState("");
+  const [selectedSoapType, setSelectedSoapType] = useState<string | undefined>(
+    undefined
+  );
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(
+    undefined
+  );
+  const [customizationNotes, setCustomizationNotes] = useState<string>(""); // Las notas siempre son un string, incluso vacío
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -226,7 +230,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
     customization: isCustomizationEnabled
       ? {
           soapType: selectedSoapType,
-          color: isColorCustomizationEnabled ? selectedColor : null, // Solo incluye el color si su switch está habilitado
+          color: isColorCustomizationEnabled ? selectedColor : undefined, // Solo incluye el color si su switch está habilitado
           notes: customizationNotes,
         }
       : undefined, // Si no está habilitado, no se pasa la personalización
