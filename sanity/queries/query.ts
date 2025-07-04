@@ -20,20 +20,12 @@ const DEAL_PRODUCTS = defineQuery(
 const PRODUCT_BY_SLUG_QUERY = defineQuery(
   `*[_type == "product" && slug.current == $slug] | order(name asc) [0]{
     ..., // Esto selecciona todas las propiedades de nivel superior del producto
-    categories[]->{ // ¡Ahora esto está correctamente dentro de las llaves del objeto principal!
+    categories[]->{ 
       _id,
-      name, // Obtener el nombre de la categoría
+      name, 
       slug,
-      // ... otros campos de categoría si los necesitas
+      
     },
-    // Si tienes el campo 'customization' en tu esquema de producto,
-    // Sanity lo incluirá automáticamente con el '...' si no lo desestructuras.
-    // Si necesitas asegurarte de que se incluye de una forma específica, podrías añadirlo explícitamente:
-    // customization {
-    //   soapType,
-    //   color,
-    //   notes
-    // }
   }`
 );
 
