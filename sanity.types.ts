@@ -276,6 +276,9 @@ export type Product = {
   price?: number;
   discount?: number;
   categories?: Array<{
+    _id: string;
+    name?: string; // Ahora es un string, no solo una referencia
+    slug?: { current?: string; _type: "slug" };
     _ref: string;
     _type: "reference";
     _weak?: boolean;

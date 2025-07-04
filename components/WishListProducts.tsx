@@ -170,7 +170,7 @@ const WishListProducts = () => {
                                   variant="secondary"
                                   className="text-xs"
                                 >
-                                  {cat}
+                                  {cat.name}
                                 </Badge>
                               ))}
                           </div>
@@ -271,7 +271,7 @@ const WishListProducts = () => {
                             variant="secondary"
                             className="text-xs"
                           >
-                            {cat}
+                            {cat.name}
                           </Badge>
                         ))}
                       </div>
