@@ -23,7 +23,7 @@ export const categoriesData = [
   { title: "gadget accessories", href: "gadget-accessories" },
 ];
 export const productType = [
-  { title: "Jabones", value: "jabones" },
-  { title: "Regalos", value: "regalos" },
-  { title: "Combos", value: "combos" },
+  { title: "Jabones", value: "jabones", href: "/jabones" },
+  { title: "Regalos", value: "regalos", href: "/regalos" },
+  { title: "Combos", value: "combos", href: "/combos" },
 ];
