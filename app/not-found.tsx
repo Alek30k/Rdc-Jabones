@@ -10,11 +10,11 @@ const NotFoundPage = () => {
           <Logo />
 
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Looking for something?
+            ¿Buscas algo?
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            We&apos;re sorry. The Web address you entered is not a functioning
-            page on our site.
+            Lo sentimos. La dirección web que ingresó no es una página funcional
+            de nuestro sitio.
           </p>
         </div>
         <div className="mt-8 space-y-6">
@@ -23,31 +23,31 @@ const NotFoundPage = () => {
               href="/"
               className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-semibold rounded-md text-white bg-shop_dark_green/80 hover:bg-shop_dark_green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amazonOrangeDark hoverEffect"
             >
-              Go to Shopcart&apos;s home page
+              Ir a la página de inicio de RDC
             </Link>
             <Link
               href="/help"
               className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-semibold rounded-md text-amazonBlue bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amazonBlue"
             >
-              Help
+              Ayuda
             </Link>
           </div>
         </div>
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-600">
-            Need help? Visit the{" "}
+            ¿Necesitas ayuda? Visita la{" "}
             <Link
               href="/help"
               className="font-medium text-amazon-blue hover:text-amazon-blue-dark"
             >
-              Help section
+              Sección de ayuda
             </Link>{" "}
-            or{" "}
+            o{" "}
             <Link
               href="/contact"
               className="font-medium text-amazon-blue hover:text-amazon-blue-dark"
             >
-              contact us
+              Contacta con nosotros
             </Link>
           </p>
         </div>
