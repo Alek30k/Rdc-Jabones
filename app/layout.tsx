@@ -1,6 +1,7 @@
 import CookieConsentBanner from "@/components/cookie-consent-banner";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -17,6 +18,10 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           }}
         />
         <CookieConsentBanner />
+        <WhatsAppButton
+          phoneNumber="+543704678598"
+          message="Hola, me gustaría más información sobre sus productos."
+        />
       </body>
     </html>
   );
