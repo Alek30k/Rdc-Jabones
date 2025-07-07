@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { Facebook, Instagram, Twitter } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
