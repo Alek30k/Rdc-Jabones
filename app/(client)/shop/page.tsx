@@ -6,7 +6,7 @@ const ShopPage = async () => {
   const categories = await getCategories();
 
   return (
-    <div className="bg-white">
+    <div className="bg-white mb-4">
       <Shop categories={categories} />
     </div>
   );

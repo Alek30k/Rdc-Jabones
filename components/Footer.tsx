@@ -6,6 +6,8 @@ import { productType, quickLinksData } from "@/constants/data";
 import Link from "next/link";
 import { SubText, SubTitle } from "./ui/Text";
 import { Mail, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
+import { logo } from "@/images";
 
 interface ContactItemData {
   title: string;
@@ -45,7 +47,7 @@ const Footer = () => {
         {/* <FooterTop /> */}
         <div className="p-12 px-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <Logo />
+            cc
             <SubText>
               Descubre colecciones de jabones artesanales cuidadosamente
               elaborados en Regalos del Corazón, que nutren tu piel y deleitan
@@ -105,9 +107,18 @@ const Footer = () => {
         />
 
         <div className="py-6 border-t text-center text-sm text-gray-600">
-          <div>
-            © {new Date().getFullYear()} <Logo className="text-sm" />. Todos
-            los derechos reservados
+          <div className="gap-2">
+            © {new Date().getFullYear()}{" "}
+            <Link href={"/"}>
+              <div className="hidden md:inline-block ml-5 relative group">
+                <Image
+                  src={logo}
+                  alt="logo"
+                  className="w-20 hover:scale-110 transition-transform duration-300"
+                />
+              </div>
+            </Link>
+            . Todos los derechos reservados
           </div>
         </div>
       </Container>

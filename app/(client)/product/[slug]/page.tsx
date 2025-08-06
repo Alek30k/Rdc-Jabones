@@ -313,7 +313,11 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
               <div className="flex items-center justify-between mb-4">
                 <Label
                   htmlFor="personalizar-jabon"
-                  className="text-base font-semibold"
+                  className={
+                    !isCustomizationEnabled
+                      ? "text-base font-semibold text-gray-500"
+                      : "text-base font-semibold "
+                  }
                 >
                   Personalizar Jabón
                 </Label>
@@ -368,12 +372,16 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                   </Accordion>
 
                   {/* Nuevo Switch para habilitar la personalización de color */}
-                  <div className="flex items-center justify-between mt-6  border-t px-3">
+                  <div className="flex items-center justify-between mt-6  border-t ">
                     <Label
                       htmlFor="personalizar-color"
-                      className="text-base font-semibold mt-6"
+                      className={
+                        !isCustomizationEnabled
+                          ? "text-base font-semibold text-gray-500 mt-6"
+                          : "text-base font-semibold "
+                      }
                     >
-                      Habilitar personalización de color
+                      Personaliza con tu color favorito
                     </Label>
                     <Switch
                       id="personalizar-color"
