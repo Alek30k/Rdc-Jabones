@@ -1,6 +1,5 @@
 import React from "react";
 import Container from "./Container";
-import Logo from "./Logo";
 import SocialMedia from "./SocialMedia";
 import { productType, quickLinksData } from "@/constants/data";
 import Link from "next/link";
