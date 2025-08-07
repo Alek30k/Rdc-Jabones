@@ -7,13 +7,7 @@ import ImageView from "@/components/ImageView";
 import PriceView from "@/components/PriceView";
 import ProductCharacteristics from "@/components/ProductCharacteristics";
 import RelatedProducts from "@/components/RelatedProduct";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -28,114 +22,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import AddToCartButton from "@/components/AddToCartButton"; // Importa ProductCustomization
 import type { Product } from "@/sanity.types";
 import { getProductBySlug, getRelatedProducts } from "@/sanity/queries";
-import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-
-// Define los tipos de jabón
-const soapTypes = [
-  { id: "arroz", name: "Arroz", description: "Suavizante y aclarante." },
-  { id: "cafe", name: "Café", description: "Exfoliante y energizante." },
-  { id: "cacao", name: "Cacao", description: "Hidratante y antioxidante." },
-  {
-    id: "curcuma",
-    name: "Cúrcuma",
-    description: "Antiinflamatorio y purificante.",
-  },
-  { id: "avena", name: "Avena", description: "Calmante y nutritivo." },
-  { id: "Carbon", name: "Carbón Activado", description: "purificación" },
-];
-
-// Define los colores naturales disponibles para el jabón
-const naturalSoapColors = [
-  {
-    id: "blanco-natural",
-    name: "Blanco Natural",
-    hex: "#FFFFFF",
-    description: "Color natural, sin aditivos.",
-  },
-  {
-    id: "rosa-arcilla",
-    name: "Rosa Arcilla",
-    hex: "#FFC0CB",
-    description: "Con arcilla rosa, suave y delicado.",
-  },
-  {
-    id: "verde-espirulina",
-    name: "Verde Espirulina",
-    hex: "#90EE90",
-    description: "Con espirulina, fresco y purificante.",
-  },
-  {
-    id: "amarillo-curcuma",
-    name: "Amarillo Cúrcuma",
-    hex: "#FFFF00",
-    description: "Con cúrcuma, vibrante y antioxidante.",
-  },
-  {
-    id: "marron-cacao",
-    name: "Marrón Cacao",
-    hex: "#A52A2A",
-    description: "Con cacao, cálido y nutritivo.",
-  },
-  {
-    id: "Negro-Carbón",
-    name: "Negro Carbón",
-    hex: "#000000",
-    description: "Con carbón activado, purificación.",
-  },
-];
-
-// Define los colores artificiales disponibles para el jabón
-const artificialSoapColors = [
-  {
-    id: "azul",
-    name: "Azul Brillante",
-    hex: "#0000FF",
-    description: "Color azul intenso, vibrante.",
-  },
-  {
-    id: "rojo",
-    name: "Rojo",
-    hex: "#FF0000",
-    description: "Color rojo vivo, llamativo.",
-  },
-  {
-    id: "verde",
-    name: "Verde",
-    hex: "#39FF14",
-    description: "Color verde, moderno.",
-  },
-  {
-    id: "morado",
-    name: "Morado",
-    hex: "#BF00FF",
-    description: "Color morado, audaz.",
-  },
-  {
-    id: "amarillo",
-    name: "Amarillo",
-    hex: "#f7dc3e",
-    description: "Color amarillo, radiante.",
-  },
-  {
-    id: "naranja",
-    name: "Naranja",
-    hex: "#e8892a",
-    description: "Color naranja, cálido.",
-  },
-  {
-    id: "blanco",
-    name: "Blanco",
-    hex: "#fafcfa",
-    description: "Color blanco, claro.",
-  },
-  {
-    id: "negro",
-    name: "Negro",
-    hex: "#000000",
-    description: "Color negro, intenso.",
-  },
-];
+import BreadcrumbComponent from "@/components/Breadcrumb";
+import {
+  artificialSoapColors,
+  naturalSoapColors,
+  soapTypes,
+} from "@/constants/data";
 
 const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   const [product, setProduct] = useState<Product | null>(null);
@@ -144,6 +37,8 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
 
   // Estados para la personalización
   const [isCustomizationEnabled, setIsCustomizationEnabled] = useState(false);
+  const [isCustomizationEnabledColor, setIsCustomizationEnabledColor] =
+    useState(false);
   const [isColorCustomizationEnabled, setIsColorCustomizationEnabled] =
     useState(false);
   const [selectedSoapType, setSelectedSoapType] = useState<string | undefined>(
@@ -239,50 +134,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   return (
     <div className="min-h-screen bg-gray-50/30">
       {/* Breadcrumb Section */}
-      <div className="bg-white border-b">
-        <Container className="">
-          <div className="flex items-center justify-between">
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink
-                    href="/"
-                    className="text-gray-600 hover:text-gray-900"
-                  >
-                    Inicio
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink
-                    href="/shop"
-                    className="text-gray-600 hover:text-gray-900"
-                  >
-                    Productos
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <span className="text-gray-900 font-medium line-clamp-1">
-                    {product?.name}
-                  </span>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-            <Button
-              variant="ghost"
-              size="sm"
-              asChild
-              className="hidden sm:flex"
-            >
-              <Link href="/shop" className="flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Volver a productos
-              </Link>
-            </Button>
-          </div>
-        </Container>
-      </div>
+      <BreadcrumbComponent product={product} />
       {/* Contenedor principal de la página del producto */}
       <Container className="flex p-4 flex-col md:flex-row gap-10 py-10">
         {/* Columna Izquierda: Imagen y Descripción */}
@@ -370,28 +222,32 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
+                </div>
+              )}
+              {/* Nuevo Switch para habilitar la personalización de color */}
 
-                  {/* Nuevo Switch para habilitar la personalización de color */}
-                  <div className="flex items-center justify-between mt-6  border-t ">
-                    <Label
-                      htmlFor="personalizar-color"
-                      className={
-                        !isCustomizationEnabled
-                          ? "text-base font-semibold text-gray-500 mt-6"
-                          : "text-base font-semibold "
-                      }
-                    >
-                      Personaliza con tu color favorito
-                    </Label>
-                    <Switch
-                      id="personalizar-color"
-                      checked={isColorCustomizationEnabled}
-                      onCheckedChange={setIsColorCustomizationEnabled}
-                      className="data-[state=checked]:bg-shop_orange"
-                    />
-                  </div>
+              <div className="flex items-center justify-between mt-6  border-t ">
+                <Label
+                  htmlFor="personalizar-color"
+                  className={
+                    !isCustomizationEnabledColor
+                      ? "text-base font-semibold text-gray-500  mt-6"
+                      : "text-base font-semibold  mt-6"
+                  }
+                >
+                  Personaliza con tu color favorito
+                </Label>
+                <Switch
+                  id="personalizar-color"
+                  checked={isCustomizationEnabledColor}
+                  onCheckedChange={setIsCustomizationEnabledColor}
+                  className="data-[state=checked]:bg-shop_orange"
+                />
+              </div>
 
-                  {/* Acordeones de color, habilitados por isColorCustomizationEnabled */}
+              {/* Acordeones de color, habilitados por isColorCustomizationEnabled */}
+              {isCustomizationEnabledColor && (
+                <>
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="item-2">
                       <AccordionTrigger className="text-base font-medium">
@@ -402,16 +258,16 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                           value={selectedColor || ""}
                           onValueChange={setSelectedColor}
                           className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
-                          disabled={!isColorCustomizationEnabled} // Deshabilitar si la personalización de color no está activa
+                          disabled={!isCustomizationEnabledColor} // Deshabilitar si la personalización de color no está activa
                         >
                           {naturalSoapColors.map((color) => (
                             <div
                               key={color.id}
                               className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
                               ${selectedColor === color.id ? "border-shop_orange ring-2 ring-shop_orange/50" : "border-gray-200"}
-                              ${!isColorCustomizationEnabled ? "opacity-50 cursor-not-allowed bg-gray-100" : "hover:bg-gray-50"}`}
+                              ${!isCustomizationEnabledColor ? "opacity-50 cursor-not-allowed bg-gray-100" : "hover:bg-gray-50"}`}
                               onClick={() =>
-                                isColorCustomizationEnabled &&
+                                isCustomizationEnabledColor &&
                                 setSelectedColor(color.id)
                               }
                             >
@@ -450,16 +306,16 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                           value={selectedColor || ""}
                           onValueChange={setSelectedColor}
                           className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
-                          disabled={!isColorCustomizationEnabled} // Deshabilitar si la personalización de color no está activa
+                          disabled={!isCustomizationEnabledColor} // Deshabilitar si la personalización de color no está activa
                         >
                           {artificialSoapColors.map((color) => (
                             <div
                               key={color.id}
                               className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
                               ${selectedColor === color.id ? "border-shop_orange ring-2 ring-shop_orange/50" : "border-gray-200"}
-                              ${!isColorCustomizationEnabled ? "opacity-50 cursor-not-allowed bg-gray-100" : "hover:bg-gray-50"}`}
+                              ${!isCustomizationEnabledColor ? "opacity-50 cursor-not-allowed bg-gray-100" : "hover:bg-gray-50"}`}
                               onClick={() =>
-                                isColorCustomizationEnabled &&
+                                isCustomizationEnabledColor &&
                                 setSelectedColor(color.id)
                               }
                             >
@@ -488,7 +344,6 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
-
                   <div className="mt-6">
                     <Label
                       htmlFor="notas-personalizacion"
@@ -501,11 +356,11 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                       placeholder="Ej: 'Con menos aroma', 'Para piel sensible', etc."
                       value={customizationNotes}
                       onChange={(e) => setCustomizationNotes(e.target.value)}
-                      disabled={!isCustomizationEnabled} // Las notas dependen de la personalización general
+                      disabled={!isCustomizationEnabledColor} // Las notas dependen de la personalización general
                       className="min-h-[80px]"
                     />
                   </div>
-                </div>
+                </>
               )}
             </div>
           </div>
