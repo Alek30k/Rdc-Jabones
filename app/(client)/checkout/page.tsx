@@ -57,6 +57,8 @@ const CheckoutPage = () => {
     }
 
     const parsedData = JSON.parse(data);
+
+    console.log(parsedData);
     setCheckoutData(parsedData);
     setOrderNumber(`ORD-${Date.now()}`);
   }, [router]);
@@ -101,7 +103,7 @@ const CheckoutPage = () => {
 
       const result = await response.json();
       console.log("Order saved to Sanity:", result.order);
-      toast.success("¡Pedido creado en Sanity! Redirigiendo...");
+      toast.success("Pago confirmado. Gracias por tu compra!");
 
       // 2. Almacenar datos para la página de confirmación (si es necesario)
       localStorage.setItem("orderData", JSON.stringify(result.order)); // Usa el resultado de Sanity si tiene más campos

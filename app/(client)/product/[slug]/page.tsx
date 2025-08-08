@@ -122,13 +122,17 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   // Construye el objeto de personalización para pasar al AddToCartButton
   const productWithCustomization = {
     ...product,
-    customization: isCustomizationEnabled
-      ? {
-          soapType: selectedSoapType,
-          color: isColorCustomizationEnabled ? selectedColor : undefined, // Solo incluye el color si su switch está habilitado
-          notes: customizationNotes,
-        }
-      : undefined, // Si no está habilitado, no se pasa la personalización
+    customization:
+      isCustomizationEnabled || isCustomizationEnabledColor
+        ? {
+            soapType: isCustomizationEnabled ? selectedSoapType : undefined,
+            color: isCustomizationEnabledColor ? selectedColor : undefined,
+            notes:
+              isCustomizationEnabled || isCustomizationEnabledColor
+                ? customizationNotes
+                : "",
+          }
+        : undefined,
   };
 
   return (
@@ -183,46 +187,66 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
 
               {/* Contenedor para las opciones de personalización, solo visible si isCustomizationEnabled */}
               {isCustomizationEnabled && (
-                <div className="space-y-4 mt-4">
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger className="text-base font-medium">
-                        Elige tu tipo de jabón
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <RadioGroup
-                          value={selectedSoapType || ""}
-                          onValueChange={setSelectedSoapType}
-                          className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
-                        >
-                          {soapTypes.map((soap) => (
-                            <div
-                              key={soap.id}
-                              className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
+                <>
+                  <div className="space-y-4 mt-4">
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="item-1">
+                        <AccordionTrigger className="text-base font-medium">
+                          Elige tu tipo de jabón
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <RadioGroup
+                            value={selectedSoapType || ""}
+                            onValueChange={setSelectedSoapType}
+                            className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
+                          >
+                            {soapTypes.map((soap) => (
+                              <div
+                                key={soap.id}
+                                className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
                               ${selectedSoapType === soap.id ? "border-shop_orange ring-2 ring-shop_orange/50" : "border-gray-200"}
                               hover:bg-gray-50`}
-                              onClick={() => setSelectedSoapType(soap.id)}
-                            >
-                              <RadioGroupItem
-                                value={soap.id}
-                                id={`soap-${soap.id}`}
-                              />
-                              <Label
-                                htmlFor={`soap-${soap.id}`}
-                                className="flex flex-col cursor-pointer"
+                                onClick={() => setSelectedSoapType(soap.id)}
                               >
-                                <span className="font-medium">{soap.name}</span>
-                                <span className="text-xs text-gray-500">
-                                  {soap.description}
-                                </span>
-                              </Label>
-                            </div>
-                          ))}
-                        </RadioGroup>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </div>
+                                <RadioGroupItem
+                                  value={soap.id}
+                                  id={`soap-${soap.id}`}
+                                />
+                                <Label
+                                  htmlFor={`soap-${soap.id}`}
+                                  className="flex flex-col cursor-pointer"
+                                >
+                                  <span className="font-medium">
+                                    {soap.name}
+                                  </span>
+                                  <span className="text-xs text-gray-500">
+                                    {soap.description}
+                                  </span>
+                                </Label>
+                              </div>
+                            ))}
+                          </RadioGroup>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </div>
+                  <div className="mt-6">
+                    <Label
+                      htmlFor="notas-personalizacion"
+                      className="mb-2 block text-sm font-medium"
+                    >
+                      Notas adicionales para la personalización (opcional)
+                    </Label>
+                    <Textarea
+                      id="notas-personalizacion"
+                      placeholder="Ej: 'Con menos aroma', 'Para piel sensible', etc."
+                      value={customizationNotes}
+                      onChange={(e) => setCustomizationNotes(e.target.value)}
+                      disabled={!isCustomizationEnabled} // Las notas dependen de la personalización general
+                      className="min-h-[80px]"
+                    />
+                  </div>
+                </>
               )}
               {/* Nuevo Switch para habilitar la personalización de color */}
 
