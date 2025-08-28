@@ -6,7 +6,6 @@ import Link from "next/link";
 import { SubText, SubTitle } from "./ui/Text";
 import { Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
-import { logo } from "@/images";
 
 interface ContactItemData {
   title: string;
@@ -25,7 +24,7 @@ const Footer = () => {
     },
     {
       title: "Llámanos",
-      subtitle: "+54 3704 678598",
+      subtitle: "+54 3718 462342",
       icon: (
         <Phone className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
       ),
@@ -33,7 +32,7 @@ const Footer = () => {
 
     {
       title: "Envíenos un email",
-      subtitle: "rdc@gmail.com",
+      subtitle: "rdcjabones@gmail.com",
       icon: (
         <Mail className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
       ),
@@ -46,7 +45,17 @@ const Footer = () => {
         {/* <FooterTop /> */}
         <div className="p-12 px-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
-            cc
+            <Link href={"/"}>
+              <div className="hidden md:inline-block relative group">
+                <Image
+                  src="/logo.png"
+                  alt="logo"
+                  width={80}
+                  height={40}
+                  className="hover:scale-110 transition-transform duration-300"
+                />
+              </div>
+            </Link>
             <SubText>
               Descubre colecciones de jabones artesanales cuidadosamente
               elaborados en Regalos del Corazón, que nutren tu piel y deleitan
@@ -86,7 +95,7 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <SubTitle>Contácto</SubTitle>
+            <SubTitle>Contáctanos</SubTitle>
             <ul className="space-y-3 mt-4">
               {data?.map((item) => (
                 <li key={item?.title}>
@@ -109,11 +118,13 @@ const Footer = () => {
           <div className="gap-2">
             © {new Date().getFullYear()}{" "}
             <Link href={"/"}>
-              <div className="hidden md:inline-block ml-5 relative group">
+              <div className="hidden md:inline-block ml-2 relative group">
                 <Image
-                  src={logo}
+                  src="/logo.png"
                   alt="logo"
-                  className="w-20 hover:scale-110 transition-transform duration-300"
+                  width={80}
+                  height={40}
+                  className="hover:scale-110 transition-transform duration-300"
                 />
               </div>
             </Link>

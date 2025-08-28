@@ -19,7 +19,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         />
         <CookieConsentBanner />
         <WhatsAppButton
-          phoneNumber="+543704678598"
+          phoneNumber="+543718462342"
           message="¡Hola! Estoy interesado en un producto de su tienda."
         />
       </body>
