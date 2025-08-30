@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Twitter } from "lucide-react";
+import { Facebook, Instagram, MessageCircle, Twitter } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -7,8 +7,6 @@ import {
 } from "./ui/tooltip";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import Image from "next/image";
-import { whatFooter } from "@/images";
 
 interface Props {
   className?: string;
@@ -20,7 +18,7 @@ const socialLink = [
   {
     title: "Whatsapp",
     href: `https://wa.me/${+543704678598}?text=${"¡Hola! Estoy interesado en un producto de su tienda."}`,
-    icon: <Image src={whatFooter} alt="logo" className="w-6 h-6 " />,
+    icon: <MessageCircle className="w-5 h-5" />,
   },
   {
     title: "Facebook",
