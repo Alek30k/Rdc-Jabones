@@ -83,7 +83,7 @@ const Shop = ({ categories }: Props) => {
 
   return (
     <div className="border-t">
-      <Container className="mt-5">
+      <Container className="">
         <div className="sticky top-0 z-10 mb-5 bg-white/95 backdrop-blur-sm py-2">
           <div className="flex items-center justify-between">
             {/* Mobile Filter Button */}
