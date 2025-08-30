@@ -17,7 +17,7 @@ interface Props {
 const socialLink = [
   {
     title: "Whatsapp",
-    href: `https://wa.me/${+543704678598}?text=${"¡Hola! Estoy interesado en un producto de su tienda."}`,
+    href: `https://wa.me/${+543718462342}?text=${"¡Hola! Estoy interesado en un producto de su tienda."}`,
     icon: <MessageCircle className="w-5 h-5" />,
   },
   {
