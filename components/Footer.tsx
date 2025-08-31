@@ -58,10 +58,13 @@ const Footer = () => {
             </Link>
             <SubText>
               ¿Buscas un regalo especial o un detalle único para vos?
-              Consultanos por jabones personalizados, combos exclusivos,
-              descuentos o cualquier idea que tengas en mente. 💌 Tu consulta
-              siempre es bienvenida: estamos para ayudarte a encontrar el
-              obsequio perfecto!.
+              Consultanos por{" "}
+              <span className="font-semibold text-shop_light_green">
+                jabones personalizados, combos exclusivos , descuentos{" "}
+              </span>{" "}
+              o cualquier idea que tengas en mente. Tu consulta siempre es
+              bienvenida: estamos para ayudarte a encontrar el obsequio
+              perfecto!. 🌿✨🎁
             </SubText>
           </div>
           <div>
