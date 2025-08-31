@@ -1,4 +1,3 @@
-// components/CheckoutPage.tsx (o como lo tengas nombrado)
 "use client";
 
 import Container from "@/components/Container";
@@ -58,7 +57,6 @@ const CheckoutPage = () => {
 
     const parsedData = JSON.parse(data);
 
-    console.log(parsedData);
     setCheckoutData(parsedData);
     setOrderNumber(`ORD-${Date.now()}`);
   }, [router]);
@@ -117,7 +115,6 @@ const CheckoutPage = () => {
         router.push("/order-confirmation");
       }, 500);
     } catch (error: unknown) {
-      // <-- ¡Cambiado de 'any' a 'unknown'!
       let errorMessage = "Hubo un error desconocido al confirmar el pago.";
 
       // Verificamos si el error es una instancia de Error
@@ -182,46 +179,42 @@ const CheckoutPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {checkoutData.items.map(
-                    (
-                      { product, quantity } // Asegúrate de desestructurar 'quantity'
-                    ) => (
-                      <div
-                        key={product._id}
-                        className="flex items-center gap-4 p-3 border rounded-lg"
-                      >
-                        {product.images && (
-                          <Image
-                            src={
-                              urlFor(product.images[0]).url() ||
-                              "/placeholder.svg"
-                            }
-                            alt={product.name}
-                            width={60}
-                            height={60}
-                            className="rounded-md object-cover"
-                          />
-                        )}
-                        <div className="flex-1">
-                          <h3 className="font-semibold line-clamp-1">
-                            {product.name}
-                          </h3>
-                          <p className="text-sm text-gray-600 capitalize">
-                            {product.variant} x {quantity}{" "}
-                            {/* Muestra la cantidad */}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <PriceFormatter
-                            // Calcula el total por ítem
-                            // Si product.price es undefined, usa 0 en su lugar.
-                            amount={(product?.price || 0) * quantity}
-                            className="font-semibold"
-                          />
-                        </div>
+                  {checkoutData.items.map(({ product, quantity }) => (
+                    <div
+                      key={product._id}
+                      className="flex items-center gap-4 p-3 border rounded-lg"
+                    >
+                      {product.images && (
+                        <Image
+                          src={
+                            urlFor(product.images[0]).url() ||
+                            "/placeholder.svg"
+                          }
+                          alt={product.name}
+                          width={60}
+                          height={60}
+                          className="rounded-md object-cover"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <h3 className="font-semibold line-clamp-1">
+                          {product.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 capitalize">
+                          {product.variant} x {quantity}{" "}
+                          {/* Muestra la cantidad */}
+                        </p>
                       </div>
-                    )
-                  )}
+                      <div className="text-right">
+                        <PriceFormatter
+                          // Calcula el total por ítem
+                          // Si product.price es undefined, usa 0 en su lugar.
+                          amount={(product?.price || 0) * quantity}
+                          className="font-semibold"
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -245,7 +238,7 @@ const CheckoutPage = () => {
                 </div>
                 <div className="flex justify-between">
                   <span>Envío</span>
-                  <span className="text-green-600 font-semibold">Gratis</span>
+                  <span className="text-green-600 font-semibold">-</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between text-lg font-bold">
@@ -398,7 +391,7 @@ const CheckoutPage = () => {
                     disabled={isConfirming}
                   >
                     <a
-                      href="https://wa.me/1234567890"
+                      href="https://wa.me/+543718462342?text=Hola%2C%20quiero%20enviar%20el%20comprobante%20de%20mi%20pedido%20"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -411,7 +404,7 @@ const CheckoutPage = () => {
                     asChild
                     disabled={isConfirming}
                   >
-                    <a href="mailto:ventas@tutienda.com">Enviar por Email</a>
+                    <a href="mailto:rdcjabones@gmail.com">Enviar por Email</a>
                   </Button>
                 </div>
 

@@ -7,6 +7,7 @@ import PriceFormatter from "@/components/PriceFormatter";
 import ProductSideMenu from "@/components/ProductSideMenu";
 import QuantityButtons from "@/components/QuantityButtons";
 import Title from "@/components/Title";
+// import AddAddressModal from "@/components/AddAddressModal"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -22,7 +23,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import type { Address } from "@/sanity.types";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import useStore from "@/store"; // Tu store de Zustand
+import useStore from "@/store";
 import { useAuth, useUser } from "@clerk/nextjs";
 import {
   ShoppingBag,
@@ -32,19 +33,20 @@ import {
   MapPin,
   Package2,
   Info,
-} from "lucide-react"; // Importamos Info
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import AddAddressModal from "@/components/AddAddressModal";
 
 const CartPage = () => {
   const { deleteCartProduct, getTotalPrice, getSubTotalPrice, resetCart } =
     useStore();
   const [loading, setLoading] = useState(false);
   const [addressLoading, setAddressLoading] = useState(false);
-  const groupedItems = useStore((state) => state.getGroupedItems()); // Obtiene los ítems del carrito
+  const groupedItems = useStore((state) => state.getGroupedItems());
   const { isSignedIn } = useAuth();
   const { user } = useUser();
   const [addresses, setAddresses] = useState<Address[] | null>(null);
@@ -55,7 +57,7 @@ const CartPage = () => {
   const fetchAddresses = async () => {
     setAddressLoading(true);
     try {
-      const query = `*[_type=="address" && user._ref == "${user?.id}"] | order(publishedAt desc)`; // Asegúrate de filtrar por usuario
+      const query = `*[_type=="address" && user._ref == "${user?.id}"] | order(publishedAt desc)`;
       const data = await client.fetch(query);
       setAddresses(data);
       const defaultAddress = data.find((addr: Address) => addr.default);
@@ -72,11 +74,23 @@ const CartPage = () => {
     }
   };
 
+  const handleAddressAdded = (newAddress: Address) => {
+    setAddresses((prev) => {
+      const updated = prev ? [newAddress, ...prev] : [newAddress];
+      return updated;
+    });
+
+    // Si es la dirección predeterminada o la primera dirección, seleccionarla
+    if (newAddress.default || !selectedAddress) {
+      setSelectedAddress(newAddress);
+    }
+  };
+
   useEffect(() => {
     if (isSignedIn && needsDelivery) {
       fetchAddresses();
     }
-  }, [isSignedIn, needsDelivery, user?.id]); // Añadir user?.id a las dependencias
+  }, [isSignedIn, needsDelivery, user?.id]);
 
   const handleResetCart = () => {
     const confirmed = window.confirm(
@@ -106,9 +120,8 @@ const CartPage = () => {
 
     setLoading(true);
     try {
-      // Prepare checkout data
       const checkoutData = {
-        items: groupedItems, // groupedItems ya incluye la personalización
+        items: groupedItems,
         address: needsDelivery ? selectedAddress : null,
         needsDelivery,
         customer: {
@@ -125,10 +138,7 @@ const CartPage = () => {
         createdAt: new Date().toISOString(),
       };
 
-      // Store in localStorage for checkout page
       localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
-
-      // Navigate to checkout
       router.push("/checkout");
     } catch (error) {
       console.error("Error preparing checkout:", error);
@@ -171,13 +181,12 @@ const CartPage = () => {
               <div className="lg:col-span-2 rounded-lg">
                 <div className="border bg-white rounded-md">
                   {groupedItems?.map((item) => {
-                    // Usamos 'item' directamente, que ya es CartItem
                     const product = item.product;
-                    const itemCount = item.quantity; // La cantidad ya está en el item
+                    const itemCount = item.quantity;
 
                     return (
                       <div
-                        key={`${product?._id}-${JSON.stringify(product.customization || {})}`} // Clave única para ítems personalizados
+                        key={`${product?._id}-${JSON.stringify(product.customization || {})}`}
                         className="border-b p-2.5 last:border-b-0 flex items-center justify-between gap-5"
                       >
                         <div className="flex flex-1 items-start gap-2 h-36 md:h-44">
@@ -205,13 +214,11 @@ const CartPage = () => {
                               <h2 className="text-base font-semibold line-clamp-1">
                                 {product?.name}
                               </h2>
-                              {/* Mostrar personalización si existe */}
                               {product.customization &&
                                 (product.customization.soapType ||
                                   product.customization.color) && (
                                   <div className="text-sm text-gray-600 flex items-center gap-1">
-                                    <Info className="w-4 h-4 text-blue-500" />{" "}
-                                    {/* Icono de información */}
+                                    <Info className="w-4 h-4 text-blue-500" />
                                     <span className="font-medium">
                                       Personalizado:
                                     </span>
@@ -242,7 +249,6 @@ const CartPage = () => {
                                     )}
                                   </div>
                                 )}
-                              {/* Fin de la personalización */}
 
                               <p className="text-sm capitalize">
                                 Variante:{" "}
@@ -286,7 +292,7 @@ const CartPage = () => {
                                         deleteCartProduct(
                                           product?._id,
                                           product.customization
-                                        ); // Esto eliminará todas las instancias del producto por ID
+                                        );
                                         toast.success(
                                           "Producto eliminado exitosamente!"
                                         );
@@ -308,7 +314,6 @@ const CartPage = () => {
                             amount={(product?.price as number) * itemCount}
                             className="font-bold text-lg"
                           />
-                          {/* QuantityButtons también necesitaría ser actualizado si quieres controlar la cantidad de ítems personalizados individualmente */}
                           <QuantityButtons product={product} />
                         </div>
                       </div>
@@ -484,12 +489,10 @@ const CartPage = () => {
                                   </div>
                                 ))}
                               </RadioGroup>
-                              <Button
-                                variant="outline"
-                                className="w-full mt-4 bg-transparent"
-                              >
-                                Agregar Nueva Dirección
-                              </Button>
+                              <AddAddressModal
+                                onAddressAdded={handleAddressAdded}
+                                className="w-full mt-4"
+                              />
                             </CardContent>
                           </Card>
                         </div>
@@ -506,9 +509,10 @@ const CartPage = () => {
                               <p className="text-gray-600 mb-4">
                                 No tienes direcciones guardadas
                               </p>
-                              <Button className="w-full">
-                                Agregar Dirección
-                              </Button>
+                              <AddAddressModal
+                                onAddressAdded={handleAddressAdded}
+                                className="w-full"
+                              />
                             </CardContent>
                           </Card>
                         </div>
