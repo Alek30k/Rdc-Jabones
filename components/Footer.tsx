@@ -57,11 +57,11 @@ const Footer = () => {
               </div>
             </Link>
             <SubText>
-              Descubre colecciones de jabones artesanales cuidadosamente
-              elaborados en Regalos del Corazón, que nutren tu piel y deleitan
-              tus sentidos. Explora la variedad de jabones únicos que combinan
-              ingredientes naturales y aromas cautivadores diseñados para mimar
-              tu piel y transformar tu rutina de cuidado personal.
+              ¿Buscas un regalo especial o un detalle único para vos?
+              Consultanos por jabones personalizados, combos exclusivos,
+              descuentos o cualquier idea que tengas en mente. 💌 Tu consulta
+              siempre es bienvenida: estamos para ayudarte a encontrar el
+              obsequio perfecto!.
             </SubText>
           </div>
           <div>
