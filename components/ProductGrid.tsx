@@ -50,9 +50,9 @@ const ProductGrid = () => {
     const handleResize = () => {
       // Define el breakpoint para dispositivos móviles (ej. 768px para tabletas/móviles)
       if (window.innerWidth < 768) {
-        setProductsToShow(6); // 6 productos para móviles
+        setProductsToShow(8); // 8 productos para móviles
       } else {
-        setProductsToShow(10); // 8 productos para escritorio
+        setProductsToShow(10); // 10 productos para escritorio
       }
     };
 
