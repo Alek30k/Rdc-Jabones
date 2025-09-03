@@ -15,7 +15,6 @@ import {
   Heart,
   Sparkles,
   Clock,
-  MapPin,
   Shield,
   Info,
   LeafIcon,
