@@ -115,8 +115,8 @@ export const productType = defineType({
       type: "string",
     }),
     defineField({
-      name: "origin",
-      title: "Origen",
+      name: "benefits",
+      title: "Beneficios",
       type: "string",
     }),
     defineField({

@@ -18,6 +18,7 @@ import {
   MapPin,
   Shield,
   Info,
+  LeafIcon,
 } from "lucide-react";
 
 const ProductCharacteristics = ({
@@ -44,8 +45,8 @@ const ProductCharacteristics = ({
         return <Droplets className="w-4 h-4 text-cyan-600" />;
       case "curing":
         return <Clock className="w-4 h-4 text-orange-600" />;
-      case "origin":
-        return <MapPin className="w-4 h-4 text-red-600" />;
+      case "benefits":
+        return <LeafIcon className="w-4 h-4 text-red-600" />;
       case "certification":
         return <Shield className="w-4 h-4 text-indigo-600" />;
       default:
@@ -103,10 +104,10 @@ const ProductCharacteristics = ({
       description: "Piel recomendada",
     },
     {
-      type: "origin",
-      label: "Origen",
-      value: product.origin || "Artesanal Local",
-      description: "Lugar de elaboración",
+      type: "benefits",
+      label: "Beneficios",
+      value: product.benefits || "N/A",
+      description: "Beneficios del producto",
     },
   ];
 

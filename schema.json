@@ -885,7 +885,7 @@
         },
         "optional": true
       },
-      "origin": {
+      "benefits": {
         "type": "objectAttribute",
         "value": {
           "type": "string"

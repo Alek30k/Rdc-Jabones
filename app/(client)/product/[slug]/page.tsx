@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import AddToCartButton from "@/components/AddToCartButton"; // Importa ProductCustomization
+import AddToCartButton from "@/components/AddToCartButton";
 import type { Product } from "@/sanity.types";
 import { getProductBySlug, getRelatedProducts } from "@/sanity/queries";
 import Link from "next/link";
@@ -29,6 +29,7 @@ import {
   naturalSoapColors,
   soapTypes,
 } from "@/constants/data";
+import DescriptionPerfect from "@/components/DescriptionPerfect";
 
 const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   const [product, setProduct] = useState<Product | null>(null);
@@ -47,7 +48,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     undefined
   );
-  const [customizationNotes, setCustomizationNotes] = useState<string>(""); // Las notas siempre son un string, incluso vacío
+  const [customizationNotes, setCustomizationNotes] = useState<string>("");
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -139,14 +140,16 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
     <div className="min-h-screen bg-gray-50/30">
       {/* Breadcrumb Section */}
       <BreadcrumbComponent product={product} />
+
       {/* Contenedor principal de la página del producto */}
       <Container className="flex p-4 flex-col md:flex-row gap-10 py-10">
-        {/* Columna Izquierda: Imagen y Descripción */}
+        {/* Columna Izquierda: Imagen */}
         <div className="w-full md:w-3/4 flex flex-col gap-10">
           {product?.images && (
             <ImageView images={product?.images} isStock={product?.stock} />
           )}
         </div>
+
         {/* Columna Derecha: Detalles del Producto, Precio, CTA, etc. */}
         <div className="w-full md:w-1/2 p-4 flex flex-col gap-5">
           <div className="space-y-1">
@@ -185,7 +188,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                 />
               </div>
 
-              {/* Contenedor para las opciones de personalización, solo visible si isCustomizationEnabled */}
+              {/* Contenedor para las opciones de personalización */}
               {isCustomizationEnabled && (
                 <>
                   <div className="space-y-4 mt-4">
@@ -242,21 +245,21 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                       placeholder="Ej: 'Con menos aroma', 'Para piel sensible', etc."
                       value={customizationNotes}
                       onChange={(e) => setCustomizationNotes(e.target.value)}
-                      disabled={!isCustomizationEnabled} // Las notas dependen de la personalización general
+                      disabled={!isCustomizationEnabled}
                       className="min-h-[80px]"
                     />
                   </div>
                 </>
               )}
-              {/* Nuevo Switch para habilitar la personalización de color */}
 
-              <div className="flex items-center justify-between mt-6  border-t ">
+              {/* Switch para habilitar la personalización de color */}
+              <div className="flex items-center justify-between mt-6 border-t">
                 <Label
                   htmlFor="personalizar-color"
                   className={
                     !isCustomizationEnabledColor
-                      ? "text-base font-semibold text-gray-500  mt-6"
-                      : "text-base font-semibold  mt-6"
+                      ? "text-base font-semibold text-gray-500 mt-6"
+                      : "text-base font-semibold mt-6"
                   }
                 >
                   Personaliza con tu color favorito
@@ -269,7 +272,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                 />
               </div>
 
-              {/* Acordeones de color, habilitados por isColorCustomizationEnabled */}
+              {/* Acordeones de color */}
               {isCustomizationEnabledColor && (
                 <>
                   <Accordion type="single" collapsible className="w-full">
@@ -282,7 +285,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                           value={selectedColor || ""}
                           onValueChange={setSelectedColor}
                           className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
-                          disabled={!isCustomizationEnabledColor} // Deshabilitar si la personalización de color no está activa
+                          disabled={!isCustomizationEnabledColor}
                         >
                           {naturalSoapColors.map((color) => (
                             <div
@@ -320,7 +323,6 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                       </AccordionContent>
                     </AccordionItem>
 
-                    {/* Nuevo AccordionItem para colores artificiales */}
                     <AccordionItem value="item-3">
                       <AccordionTrigger className="text-base font-medium">
                         Elige tu color artificial
@@ -330,7 +332,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                           value={selectedColor || ""}
                           onValueChange={setSelectedColor}
                           className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
-                          disabled={!isCustomizationEnabledColor} // Deshabilitar si la personalización de color no está activa
+                          disabled={!isCustomizationEnabledColor}
                         >
                           {artificialSoapColors.map((color) => (
                             <div
@@ -370,17 +372,17 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                   </Accordion>
                   <div className="mt-6">
                     <Label
-                      htmlFor="notas-personalizacion"
+                      htmlFor="notas-personalizacion-color"
                       className="mb-2 block text-sm font-medium"
                     >
                       Notas adicionales para la personalización (opcional)
                     </Label>
                     <Textarea
-                      id="notas-personalizacion"
+                      id="notas-personalizacion-color"
                       placeholder="Ej: 'Con menos aroma', 'Para piel sensible', etc."
                       value={customizationNotes}
                       onChange={(e) => setCustomizationNotes(e.target.value)}
-                      disabled={!isCustomizationEnabledColor} // Las notas dependen de la personalización general
+                      disabled={!isCustomizationEnabledColor}
                       className="min-h-[80px]"
                     />
                   </div>
@@ -389,25 +391,25 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
             </div>
           </div>
           <div className="flex items-center gap-2.5 lg:gap-3">
-            {/* Pasamos el producto con la personalización al AddToCartButton */}
             <AddToCartButton product={productWithCustomization} />
             <FavoriteButton showProduct={true} product={product} />
           </div>
           <ProductCharacteristics product={product} />
         </div>
       </Container>
-      {/* --- Sección de Descripción (ahora dentro de la columna de la imagen) --- */}
+
+      {/* Sección de Descripción con efecto MercadoLibre */}
       <Container>
         {product?.description && (
-          <div className="bg-white  md:w-[60%] p-6 rounded-lg shadow-sm mb-5">
-            <h3 className="text-xl font-bold mb-4">Descripción</h3>
-            <p className="text-gray-700 text-lg tracking-tight leading-relaxed whitespace-pre-line">
-              {product.description}
-            </p>
-          </div>
+          <DescriptionPerfect
+            description={product.description}
+            maxLines={6}
+            className="md:w-[60%] text-gray-500 text-2xl"
+          />
         )}
       </Container>
-      <Container className="p-4 ">
+
+      <Container className="p-4">
         <RelatedProducts products={relatedProducts} />
       </Container>
     </div>
