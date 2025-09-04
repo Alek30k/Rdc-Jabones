@@ -53,8 +53,8 @@ const ProductShowcaseModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl p-0 overflow-hidden bg-gradient-to-br from-rose-50 via-white to-purple-50 border-0">
-        <div className="relative">
+      <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] p-0 overflow-hidden bg-gradient-to-br from-rose-50 via-white to-purple-50 border-0 mx-auto">
+        <div className="relative max-h-[90vh] overflow-y-auto">
           {/* Botón de cerrar */}
           <button
             onClick={onClose}
