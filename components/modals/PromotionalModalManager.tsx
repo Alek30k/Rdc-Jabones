@@ -63,6 +63,7 @@ const PromotionalModalManager = ({
         return <ProductShowcaseModal isOpen={isOpen} onClose={handleClose} />;
 
       default:
+        setCurrentModal("showcase");
         return null;
     }
   };
