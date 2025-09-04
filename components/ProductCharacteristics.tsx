@@ -149,11 +149,11 @@ const ProductCharacteristics = ({
                       <p className="text-xs text-gray-500">
                         {char.description}
                       </p>
-                      <span className="font-semibold text-gray-800">
-                        {char.value}
-                      </span>
                     </div>
                   </div>
+                  <span className="font-semibold text-gray-800">
+                    {char.value}{" "}
+                  </span>
                 </div>
               ))}
             </div>
