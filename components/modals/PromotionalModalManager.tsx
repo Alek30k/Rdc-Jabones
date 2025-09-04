@@ -57,12 +57,6 @@ const PromotionalModalManager = ({
     setIsOpen(false);
   };
 
-  // Función para cambiar el tipo de modal dinámicamente
-  const changeModal = (type: ModalType) => {
-    setCurrentModal(type);
-    setIsOpen(true);
-  };
-
   const renderModal = () => {
     switch (currentModal) {
       case "showcase":
