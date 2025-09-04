@@ -1,16 +1,19 @@
 "use client";
+
 import type { Category, Product } from "@/sanity.types";
 import { useEffect, useState } from "react";
 import Container from "./Container";
 import { useSearchParams } from "next/navigation";
 import { client } from "@/sanity/lib/client";
-import { Loader2 } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
 import CategoryList from "./shop/CategoryList";
 import PriceList from "./shop/PriceList";
 import FilterSheet from "./FilterSheet";
 import { useMobile } from "@/hooks/use-mobile";
+import ProductCardsLoading from "./shop/ProductCardsLoading";
+import ShopLoadingSkeleton from "./shop/ShopLoadingSkeleton";
+import ProductCardsLoadingMinimal from "./shop/ProductCardsLoadingMinimal";
 
 interface Props {
   categories: Category[];
@@ -23,7 +26,8 @@ const Shop = ({ categories }: Props) => {
   const isMobile = useMobile();
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true); // Loading inicial
+  const [filterLoading, setFilterLoading] = useState(false); // Loading de filtros
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     categoryParams || null
   );
@@ -31,6 +35,7 @@ const Shop = ({ categories }: Props) => {
     brandParams || null
   );
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
+  const [isFirstLoad, setIsFirstLoad] = useState(true); // Para distinguir primera carga
 
   const hasActiveFilters =
     selectedCategory !== null ||
@@ -43,8 +48,14 @@ const Shop = ({ categories }: Props) => {
     setSelectedPrice(null);
   };
 
-  const fetchProducts = async () => {
-    setLoading(true);
+  const fetchProducts = async (isInitial = false) => {
+    // Si es la primera carga, usar loading inicial, sino usar loading de filtros
+    if (isInitial) {
+      setInitialLoading(true);
+    } else {
+      setFilterLoading(true);
+    }
+
     try {
       let minPrice = 0;
       let maxPrice = 10000;
@@ -54,6 +65,7 @@ const Shop = ({ categories }: Props) => {
         minPrice = min;
         maxPrice = max;
       }
+
       const query = `
       *[_type == 'product' 
         && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
@@ -64,22 +76,44 @@ const Shop = ({ categories }: Props) => {
         ...,"categories": categories[]->title
       }
     `;
+
       const data = await client.fetch(
         query,
         { selectedCategory, selectedBrand, minPrice, maxPrice },
         { next: { revalidate: 0 } }
       );
+
       setProducts(data);
     } catch (error) {
       console.log("Shop product fetching Error", error);
     } finally {
-      setLoading(false);
+      if (isInitial) {
+        setInitialLoading(false);
+        setIsFirstLoad(false);
+      } else {
+        setFilterLoading(false);
+      }
     }
   };
 
+  // Efecto para la carga inicial
   useEffect(() => {
-    fetchProducts();
+    if (isFirstLoad) {
+      fetchProducts(true);
+    }
+  }, []);
+
+  // Efecto para los filtros (solo después de la primera carga)
+  useEffect(() => {
+    if (!isFirstLoad) {
+      fetchProducts(false);
+    }
   }, [selectedCategory, selectedBrand, selectedPrice]);
+
+  // Mostrar loading completo solo en la carga inicial
+  if (initialLoading) {
+    return <ShopLoadingSkeleton />;
+  }
 
   return (
     <div className="border-t">
@@ -102,6 +136,7 @@ const Shop = ({ categories }: Props) => {
                 <button
                   onClick={handleResetFilters}
                   className="text-shop_dark_green underline text-sm mt-2 font-medium hover:text-darkRed hoverEffect"
+                  disabled={filterLoading}
                 >
                   Restablecer filtros
                 </button>
@@ -110,9 +145,11 @@ const Shop = ({ categories }: Props) => {
 
             {/* Results count */}
             <div className="text-sm text-gray-600">
-              {loading
-                ? "Cargando..."
-                : `${products.length} producto${products.length !== 1 ? "s" : ""} encontrado${products.length !== 1 ? "s" : ""}`}
+              {filterLoading
+                ? "Filtrando..."
+                : `${products.length} producto${products.length !== 1 ? "s" : ""} encontrado${
+                    products.length !== 1 ? "s" : ""
+                  }`}
             </div>
           </div>
 
@@ -141,25 +178,25 @@ const Shop = ({ categories }: Props) => {
                 categories={categories}
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
+                disabled={filterLoading}
               />
 
               <PriceList
                 setSelectedPrice={setSelectedPrice}
                 selectedPrice={selectedPrice}
+                disabled={filterLoading}
               />
             </div>
           )}
 
           {/* Products Grid */}
           <div className="flex-1 pt-5">
-            <div className="h-[calc(100vh-160px)] overflow-y-auto pr-2 scrollbar-hide">
-              {loading ? (
-                <div className="p-20 flex flex-col gap-2 items-center justify-center bg-white">
-                  <Loader2 className="w-10 h-10 text-shop_dark_green animate-spin" />
-                  <p className="font-semibold tracking-wide text-base">
-                    El producto se está cargando . . .
-                  </p>
-                </div>
+            <div className="h-[calc(100vh-160px)] overflow-y-auto pr-2 scrollbar-hide relative">
+              {/* Overlay de loading para filtros */}
+              {filterLoading && <ProductCardsLoadingMinimal />}
+
+              {filterLoading ? (
+                <ProductCardsLoading count={12} />
               ) : products?.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
                   {products?.map((product) => (

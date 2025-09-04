@@ -30,6 +30,7 @@ import {
   soapTypes,
 } from "@/constants/data";
 import DescriptionPerfect from "@/components/DescriptionPerfect";
+import SoapLoadingBubbles from "@/components/SoapLoadingBubbles";
 
 const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   const [product, setProduct] = useState<Product | null>(null);
@@ -96,12 +97,9 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
     }
   }, [isColorCustomizationEnabled]);
 
+  // Mostrar loading creativo
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Cargando producto...</p>
-      </div>
-    );
+    return <SoapLoadingBubbles />;
   }
 
   if (!product) {
@@ -162,7 +160,11 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
               className="text-4xl leading-3 font-extralight"
             />
             <p
-              className={`px-4 py-1.5 mt-4 text-sm text-center inline-block font-semibold rounded-lg ${product?.stock === 0 ? "bg-red-100 text-red-600" : "text-green-600 bg-green-100"}`}
+              className={`px-4 py-1.5 mt-4 text-sm text-center inline-block font-semibold rounded-lg ${
+                product?.stock === 0
+                  ? "bg-red-100 text-red-600"
+                  : "text-green-600 bg-green-100"
+              }`}
             >
               {(product?.stock as number) > 0 ? "In Stock" : "Out of Stock"}
             </p>
@@ -207,7 +209,11 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                               <div
                                 key={soap.id}
                                 className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
-                              ${selectedSoapType === soap.id ? "border-shop_orange ring-2 ring-shop_orange/50" : "border-gray-200"}
+                              ${
+                                selectedSoapType === soap.id
+                                  ? "border-shop_orange ring-2 ring-shop_orange/50"
+                                  : "border-gray-200"
+                              }
                               hover:bg-gray-50`}
                                 onClick={() => setSelectedSoapType(soap.id)}
                               >
@@ -291,8 +297,16 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                             <div
                               key={color.id}
                               className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
-                              ${selectedColor === color.id ? "border-shop_orange ring-2 ring-shop_orange/50" : "border-gray-200"}
-                              ${!isCustomizationEnabledColor ? "opacity-50 cursor-not-allowed bg-gray-100" : "hover:bg-gray-50"}`}
+                              ${
+                                selectedColor === color.id
+                                  ? "border-shop_orange ring-2 ring-shop_orange/50"
+                                  : "border-gray-200"
+                              }
+                              ${
+                                !isCustomizationEnabledColor
+                                  ? "opacity-50 cursor-not-allowed bg-gray-100"
+                                  : "hover:bg-gray-50"
+                              }`}
                               onClick={() =>
                                 isCustomizationEnabledColor &&
                                 setSelectedColor(color.id)
@@ -338,8 +352,16 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                             <div
                               key={color.id}
                               className={`flex items-center space-x-2 p-3 border rounded-md cursor-pointer 
-                              ${selectedColor === color.id ? "border-shop_orange ring-2 ring-shop_orange/50" : "border-gray-200"}
-                              ${!isCustomizationEnabledColor ? "opacity-50 cursor-not-allowed bg-gray-100" : "hover:bg-gray-50"}`}
+                              ${
+                                selectedColor === color.id
+                                  ? "border-shop_orange ring-2 ring-shop_orange/50"
+                                  : "border-gray-200"
+                              }
+                              ${
+                                !isCustomizationEnabledColor
+                                  ? "opacity-50 cursor-not-allowed bg-gray-100"
+                                  : "hover:bg-gray-50"
+                              }`}
                               onClick={() =>
                                 isCustomizationEnabledColor &&
                                 setSelectedColor(color.id)
@@ -404,7 +426,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
           <DescriptionPerfect
             description={product.description}
             maxLines={6}
-            className="md:w-[60%] text-gray-500 text-2xl"
+            className="md:w-[60%]"
           />
         )}
       </Container>

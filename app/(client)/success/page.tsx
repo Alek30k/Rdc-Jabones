@@ -6,6 +6,7 @@ import { Suspense, useEffect } from "react";
 import { motion } from "motion/react";
 import { Check, Home, Package, ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import SoapLoadingLuxury from "@/components/SoapLoadingLuxury";
 
 const SuccessPageContent = () => {
   const { resetCart } = useStore();
@@ -78,7 +79,13 @@ const SuccessPageContent = () => {
 
 const SuccessPage = () => {
   return (
-    <Suspense fallback={<div>Cargando...</div>}>
+    <Suspense
+      fallback={
+        <div>
+          <SoapLoadingLuxury />
+        </div>
+      }
+    >
       <SuccessPageContent />
     </Suspense>
   );
