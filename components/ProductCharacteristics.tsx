@@ -139,21 +139,20 @@ const ProductCharacteristics = ({
               {characteristics.map((char, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center justify-between p-3 bg-orange-300 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex  items-center p-3 bg-orange-200 rounded-lg hover:bg-green-200 transition-colors gap-5 "
                 >
-                  <div className="flex items-center gap-3 ">
-                    {getCharacteristicIcon(char.type)}
-
-                    <div className="flex flex-col items-center">
+                  {getCharacteristicIcon(char.type)}
+                  <div className="flex items-center justify-center ">
+                    <div className="flex flex-col items-center ">
                       <p className="font-medium text-gray-900">{char.label}</p>
                       <p className="text-xs text-gray-500">
                         {char.description}
                       </p>
+                      <p className="font-semibold text-gray-800">
+                        {char.value}
+                      </p>
                     </div>
                   </div>
-                  <span className="font-semibold text-gray-800">
-                    {char.value}{" "}
-                  </span>
                 </div>
               ))}
             </div>
