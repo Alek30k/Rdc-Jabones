@@ -70,4 +70,3 @@ const ProductCardsLoading = ({ count = 12 }: ProductCardsLoadingProps) => {
 };
 
 export default ProductCardsLoading;
-s;
