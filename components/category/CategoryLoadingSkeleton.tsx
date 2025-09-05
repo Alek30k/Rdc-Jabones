@@ -1,7 +1,5 @@
 "use client";
 
-import { Package, Search } from "lucide-react";
-
 const CategoryLoadingSkeleton = () => {
   return (
     <div className="space-y-6">
