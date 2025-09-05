@@ -2,10 +2,10 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./ui/button";
+import { useState } from "react";
 import ProductCard from "./ProductCard";
 import NoProductAvailable from "./NoProductAvailable";
 import type { Product } from "@/sanity.types";
-import { useState } from "react";
 import CategoryLoadingLuxury from "./category/CategoryLoadingLuxury";
 import CategoryLoadingBubbles from "./category/CategoryLoadingBubbles";
 import CategoryLoadingMinimal from "./category/CategoryLoadingMinimal";
@@ -31,13 +31,12 @@ const ProductList = ({
   viewMode,
   loading,
 }: Props) => {
+  const [loadingType] = useState<LoadingType>("skeleton");
   if (products.length === 0) {
     return (
       <NoProductAvailable selectedTab={currentSlug} className="mt-0 w-full" />
     );
   }
-
-  const [loadingType] = useState<LoadingType>("skeleton");
 
   const renderLoadingComponent = () => {
     switch (loadingType) {
