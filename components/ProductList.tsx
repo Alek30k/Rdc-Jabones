@@ -32,11 +32,6 @@ const ProductList = ({
   loading,
 }: Props) => {
   const [loadingType] = useState<LoadingType>("skeleton");
-  if (products.length === 0) {
-    return (
-      <NoProductAvailable selectedTab={currentSlug} className="mt-0 w-full" />
-    );
-  }
 
   const renderLoadingComponent = () => {
     switch (loadingType) {
@@ -55,6 +50,12 @@ const ProductList = ({
 
   if (loading) {
     return renderLoadingComponent();
+  }
+
+  if (products.length === 0) {
+    return (
+      <NoProductAvailable selectedTab={currentSlug} className="mt-0 w-full" />
+    );
   }
 
   return (
