@@ -15,10 +15,10 @@ import {
 } from "./ui/select";
 import { Separator } from "./ui/separator";
 import { client } from "@/sanity/lib/client";
-import { AnimatePresence, motion } from "motion/react";
-import { Loader2, Search, SlidersHorizontal, Package } from "lucide-react";
-import NoProductAvailable from "./NoProductAvailable";
-import ProductCard from "./ProductCard";
+import { Search, SlidersHorizontal } from "lucide-react";
+
+import ProductList from "./ProductList";
+import SidebarFilters from "./SidebarFilters";
 
 interface Props {
   categories: Category[];
@@ -151,91 +151,18 @@ const CategoryProducts = ({ categories, slug }: Props) => {
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Desktop Sidebar */}
-        <div className="hidden md:block w-64 space-y-6">
-          {/* Categories */}
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Package className="w-4 h-4" />
-                Categorías
-              </h3>
-              <div className="space-y-1">
-                {categories.map((category) => (
-                  <Button
-                    key={category._id}
-                    variant={
-                      currentSlug === category.slug?.current
-                        ? "default"
-                        : "ghost"
-                    }
-                    className="w-full justify-start text-left h-auto py-2 px-3"
-                    onClick={() =>
-                      handleCategoryChange(category.slug?.current || "")
-                    }
-                  >
-                    <span className="capitalize truncate">
-                      {category.title}
-                    </span>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Filters */}
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4" />
-                Filtros
-              </h3>
-              <div className="space-y-4">
-                {/* Search */}
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Buscar producto
-                  </label>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <Input
-                      placeholder="Buscar..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-
-                {/* Price Range */}
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Rango de precio
-                  </label>
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <Input
-                        type="number"
-                        placeholder="Min"
-                        value={priceRange[0]}
-                        onChange={(e) =>
-                          setPriceRange([Number(e.target.value), priceRange[1]])
-                        }
-                      />
-                      <Input
-                        type="number"
-                        placeholder="Max"
-                        value={priceRange[1]}
-                        onChange={(e) =>
-                          setPriceRange([priceRange[0], Number(e.target.value)])
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <SidebarFilters
+          categories={categories}
+          currentSlug={currentSlug}
+          onCategoryChange={handleCategoryChange}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          onSearchChange={setSearchTerm}
+          priceRange={priceRange}
+          onPriceChange={setPriceRange}
+          handleCategoryChange={handleCategoryChange}
+          setPriceRange={setPriceRange}
+        />
 
         {/* Main Content */}
         <div className="flex-1 space-y-4">
@@ -322,97 +249,15 @@ const CategoryProducts = ({ categories, slug }: Props) => {
 
           {/* Products Grid/List */}
           <div className="min-h-[400px]">
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-                <p className="text-gray-600">Cargando productos...</p>
-              </div>
-            ) : paginatedProducts.length > 0 ? (
-              <>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`${currentSlug}-${currentPage}-${sortBy}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className={
-                      viewMode === "grid"
-                        ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
-                        : "space-y-4"
-                    }
-                  >
-                    {paginatedProducts.map((product, index) => (
-                      <motion.div
-                        key={product._id}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.2, delay: index * 0.05 }}
-                      >
-                        <ProductCard product={product} />
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 mt-8">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        setCurrentPage(Math.max(1, currentPage - 1))
-                      }
-                      disabled={currentPage === 1}
-                    >
-                      Anterior
-                    </Button>
-
-                    <div className="flex items-center gap-1">
-                      {Array.from(
-                        { length: Math.min(5, totalPages) },
-                        (_, i) => {
-                          const pageNum = i + 1;
-                          return (
-                            <Button
-                              key={pageNum}
-                              variant={
-                                currentPage === pageNum ? "default" : "outline"
-                              }
-                              size="sm"
-                              onClick={() => setCurrentPage(pageNum)}
-                              className="w-8 h-8 p-0"
-                            >
-                              {pageNum}
-                            </Button>
-                          );
-                        }
-                      )}
-                      {totalPages > 5 && (
-                        <span className="text-gray-500">...</span>
-                      )}
-                    </div>
-
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        setCurrentPage(Math.min(totalPages, currentPage + 1))
-                      }
-                      disabled={currentPage === totalPages}
-                    >
-                      Siguiente
-                    </Button>
-                  </div>
-                )}
-              </>
-            ) : (
-              <NoProductAvailable
-                selectedTab={currentSlug}
-                className="mt-0 w-full"
-              />
-            )}
+            <ProductList
+              products={paginatedProducts}
+              currentSlug={currentSlug}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+              viewMode={viewMode}
+              loading={loading}
+            />
           </div>
         </div>
       </div>
