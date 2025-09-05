@@ -7,8 +7,7 @@ import ProductCard from "./ProductCard";
 import NoProductAvailable from "./NoProductAvailable";
 import type { Product } from "@/sanity.types";
 import CategoryLoadingLuxury from "./category/CategoryLoadingLuxury";
-import CategoryLoadingBubbles from "./category/CategoryLoadingBubbles";
-import CategoryLoadingMinimal from "./category/CategoryLoadingMinimal";
+
 import CategoryLoadingSkeleton from "./category/CategoryLoadingSkeleton";
 
 interface Props {
@@ -35,12 +34,6 @@ const ProductList = ({
 
   const renderLoadingComponent = () => {
     switch (loadingType) {
-      case "luxury":
-        return <CategoryLoadingLuxury />;
-      case "bubbles":
-        return <CategoryLoadingBubbles />;
-      case "minimal":
-        return <CategoryLoadingMinimal />;
       case "skeleton":
         return <CategoryLoadingSkeleton />;
       default:
