@@ -181,7 +181,7 @@ const CategoryProducts = ({ categories, slug }: Props) => {
   }, []);
 
   // Stable key for AnimatePresence to prevent unnecessary animations
-  const animationKey = `${currentSlug}-${currentPage}`;
+  // const animationKey = `${currentSlug}-${currentPage}`;
 
   return (
     <div className="space-y-6">
