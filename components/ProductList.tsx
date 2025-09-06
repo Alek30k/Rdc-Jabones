@@ -2,13 +2,12 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./ui/button";
-import { useState } from "react";
 import ProductCard from "./ProductCard";
 import NoProductAvailable from "./NoProductAvailable";
 import type { Product } from "@/sanity.types";
-import CategoryLoadingLuxury from "./category/CategoryLoadingLuxury";
-
+import { useState } from "react";
 import CategoryLoadingSkeleton from "./category/CategoryLoadingSkeleton";
+import CategoryLoadingLuxury from "./category/CategoryLoadingLuxury";
 
 interface Props {
   products: Product[];
@@ -19,6 +18,7 @@ interface Props {
   viewMode: "grid" | "list";
   loading: boolean;
 }
+
 type LoadingType = "luxury" | "bubbles" | "minimal" | "skeleton";
 
 const ProductList = ({
@@ -32,6 +32,12 @@ const ProductList = ({
 }: Props) => {
   const [loadingType] = useState<LoadingType>("skeleton");
 
+  if (products.length === 0) {
+    return (
+      <NoProductAvailable selectedTab={currentSlug} className="mt-0 w-full" />
+    );
+  }
+
   const renderLoadingComponent = () => {
     switch (loadingType) {
       case "skeleton":
@@ -43,12 +49,6 @@ const ProductList = ({
 
   if (loading) {
     return renderLoadingComponent();
-  }
-
-  if (products.length === 0) {
-    return (
-      <NoProductAvailable selectedTab={currentSlug} className="mt-0 w-full" />
-    );
   }
 
   return (

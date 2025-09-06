@@ -42,7 +42,9 @@ const SidebarFilters = ({
               <Button
                 key={category._id}
                 variant={
-                  currentSlug === category.slug?.current ? "default" : "ghost"
+                  currentSlug === category.slug?.current
+                    ? "destructive"
+                    : "ghost"
                 }
                 className="w-full justify-start text-left h-auto py-2 px-3"
                 onClick={() =>

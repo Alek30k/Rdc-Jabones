@@ -2,10 +2,20 @@
 
 import type { Category, Product } from "@/sanity.types";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
-import { Button } from "./ui/button";
+import {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  useTransition,
+} from "react";
+import { client } from "@/sanity/lib/client";
+import { AnimatePresence, motion } from "framer-motion";
+import { Search, SlidersHorizontal, Package } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
+import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { Separator } from "./ui/separator";
 import {
   Select,
   SelectContent,
@@ -13,11 +23,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { Separator } from "./ui/separator";
-import { client } from "@/sanity/lib/client";
-import { Search, SlidersHorizontal } from "lucide-react";
-
-import ProductList from "./ProductList";
+import ProductCard from "./ProductCard";
+import NoProductAvailable from "./NoProductAvailable";
+import ProductsGridLoading from "./category/ProductsGridLoading";
 import SidebarFilters from "./SidebarFilters";
 
 interface Props {
@@ -32,6 +40,7 @@ type SortOption =
   | "price-desc"
   | "newest";
 type ViewMode = "grid" | "list";
+type LoadingType = "luxury" | "bubbles" | "minimal" | "skeleton";
 
 const CategoryProducts = ({ categories, slug }: Props) => {
   const [currentSlug, setCurrentSlug] = useState(slug);
@@ -43,19 +52,31 @@ const CategoryProducts = ({ categories, slug }: Props) => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loadingType] = useState<LoadingType>("skeleton");
+  const [isPending, startTransition] = useTransition();
   const itemsPerPage = 12;
 
   const router = useRouter();
 
-  const handleCategoryChange = (newSlug: string) => {
-    if (newSlug === currentSlug) return;
-    setCurrentSlug(newSlug);
-    setCurrentPage(1);
-    setSearchTerm("");
-    router.push(`/category/${newSlug}`, { scroll: false });
-  };
+  // Optimized category change handler - batches all state updates
+  const handleCategoryChange = useCallback(
+    (newSlug: string) => {
+      if (newSlug === currentSlug) return;
 
-  const fetchProducts = async (categorySlug: string) => {
+      // Batch all state updates in a single transition
+      startTransition(() => {
+        setCurrentSlug(newSlug);
+        setCurrentPage(1);
+        setSearchTerm("");
+      });
+
+      // Navigate without causing additional re-renders
+      router.push(`/category/${newSlug}`, { scroll: false });
+    },
+    [currentSlug, router]
+  );
+
+  const fetchProducts = useCallback(async (categorySlug: string) => {
     setLoading(true);
     try {
       const query = `
@@ -72,9 +93,9 @@ const CategoryProducts = ({ categories, slug }: Props) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  // Filter and sort products
+  // Filter and sort products - memoized to prevent unnecessary recalculations
   const filteredAndSortedProducts = useMemo(() => {
     const filtered = products.filter((product) => {
       const matchesSearch =
@@ -109,24 +130,58 @@ const CategoryProducts = ({ categories, slug }: Props) => {
     return filtered;
   }, [products, searchTerm, sortBy, priceRange]);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredAndSortedProducts.length / itemsPerPage);
-  const paginatedProducts = filteredAndSortedProducts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  // Pagination - memoized
+  const { totalPages, paginatedProducts } = useMemo(() => {
+    const total = Math.ceil(filteredAndSortedProducts.length / itemsPerPage);
+    const paginated = filteredAndSortedProducts.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+    return { totalPages: total, paginatedProducts: paginated };
+  }, [filteredAndSortedProducts, currentPage, itemsPerPage]);
+
+  const currentCategory = useMemo(
+    () => categories.find((cat) => cat.slug?.current === currentSlug),
+    [categories, currentSlug]
   );
 
-  const currentCategory = categories.find(
-    (cat) => cat.slug?.current === currentSlug
-  );
-
+  // Only fetch products when currentSlug changes
   useEffect(() => {
     fetchProducts(currentSlug);
-  }, [currentSlug]);
+  }, [currentSlug, fetchProducts]);
 
+  // Reset page only when filters change (not when category changes)
   useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, sortBy, priceRange]);
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    }
+  }, [searchTerm, sortBy, priceRange]); // Removed currentPage from dependency
+
+  // Optimized handlers
+  const handleSearchChange = useCallback((value: string) => {
+    startTransition(() => {
+      setSearchTerm(value);
+    });
+  }, []);
+
+  const handleSortChange = useCallback((value: SortOption) => {
+    startTransition(() => {
+      setSortBy(value);
+    });
+  }, []);
+
+  const handlePriceRangeChange = useCallback((index: 0 | 1, value: number) => {
+    startTransition(() => {
+      setPriceRange((prev) => {
+        const newRange: [number, number] = [...prev];
+        newRange[index] = value;
+        return newRange;
+      });
+    });
+  }, []);
+
+  // Stable key for AnimatePresence to prevent unnecessary animations
+  const animationKey = `${currentSlug}-${currentPage}`;
 
   return (
     <div className="space-y-6">
@@ -151,18 +206,21 @@ const CategoryProducts = ({ categories, slug }: Props) => {
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Desktop Sidebar */}
-        <SidebarFilters
-          categories={categories}
-          currentSlug={currentSlug}
-          onCategoryChange={handleCategoryChange}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          onSearchChange={setSearchTerm}
-          priceRange={priceRange}
-          onPriceChange={setPriceRange}
-          handleCategoryChange={handleCategoryChange}
-          setPriceRange={setPriceRange}
-        />
+        <div className="hidden md:block w-64 space-y-6">
+          {/* Categories */}
+          <SidebarFilters
+            categories={categories}
+            currentSlug={currentSlug}
+            onCategoryChange={handleCategoryChange}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            onSearchChange={setSearchTerm}
+            priceRange={priceRange}
+            onPriceChange={setPriceRange}
+            handleCategoryChange={handleCategoryChange}
+            setPriceRange={setPriceRange}
+          />
+        </div>
 
         {/* Main Content */}
         <div className="flex-1 space-y-4">
@@ -173,7 +231,7 @@ const CategoryProducts = ({ categories, slug }: Props) => {
                 {currentCategory?.title || "Productos"}
               </h2>
               <p className="text-sm text-gray-600">
-                {loading
+                {loading || isPending
                   ? "Cargando productos..."
                   : `${filteredAndSortedProducts.length} producto${filteredAndSortedProducts.length !== 1 ? "s" : ""} encontrado${filteredAndSortedProducts.length !== 1 ? "s" : ""}`}
               </p>
@@ -184,8 +242,9 @@ const CategoryProducts = ({ categories, slug }: Props) => {
               <Button
                 variant="outline"
                 size="sm"
-                className="md:hidden"
+                className="md:hidden bg-transparent"
                 onClick={() => setShowFilters(!showFilters)}
+                disabled={loading || isPending}
               >
                 <SlidersHorizontal className="w-4 h-4 mr-2" />
                 Filtros
@@ -194,7 +253,8 @@ const CategoryProducts = ({ categories, slug }: Props) => {
               {/* Sort */}
               <Select
                 value={sortBy}
-                onValueChange={(value: SortOption) => setSortBy(value)}
+                onValueChange={handleSortChange}
+                disabled={loading || isPending}
               >
                 <SelectTrigger className="w-40">
                   <SelectValue />
@@ -219,8 +279,9 @@ const CategoryProducts = ({ categories, slug }: Props) => {
                   <Input
                     placeholder="Buscar productos..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => handleSearchChange(e.target.value)}
                     className="pl-10"
+                    disabled={loading}
                   />
                 </div>
                 <div className="flex gap-2">
@@ -229,16 +290,18 @@ const CategoryProducts = ({ categories, slug }: Props) => {
                     placeholder="Precio min"
                     value={priceRange[0]}
                     onChange={(e) =>
-                      setPriceRange([Number(e.target.value), priceRange[1]])
+                      handlePriceRangeChange(0, Number(e.target.value))
                     }
+                    disabled={loading}
                   />
                   <Input
                     type="number"
                     placeholder="Precio max"
                     value={priceRange[1]}
                     onChange={(e) =>
-                      setPriceRange([priceRange[0], Number(e.target.value)])
+                      handlePriceRangeChange(1, Number(e.target.value))
                     }
+                    disabled={loading}
                   />
                 </div>
               </CardContent>
@@ -249,15 +312,97 @@ const CategoryProducts = ({ categories, slug }: Props) => {
 
           {/* Products Grid/List */}
           <div className="min-h-[400px]">
-            <ProductList
-              products={paginatedProducts}
-              currentSlug={currentSlug}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              setCurrentPage={setCurrentPage}
-              viewMode={viewMode}
-              loading={loading}
-            />
+            {loading ? (
+              <ProductsGridLoading type={loadingType} />
+            ) : paginatedProducts.length > 0 ? (
+              <>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={animationKey}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className={
+                      viewMode === "grid"
+                        ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
+                        : "space-y-4"
+                    }
+                  >
+                    {paginatedProducts.map((product, index) => (
+                      <motion.div
+                        key={product._id}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.2, delay: index * 0.05 }}
+                      >
+                        <ProductCard product={product} />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-8">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setCurrentPage(Math.max(1, currentPage - 1))
+                      }
+                      disabled={currentPage === 1 || loading || isPending}
+                    >
+                      Anterior
+                    </Button>
+
+                    <div className="flex items-center gap-1">
+                      {Array.from(
+                        { length: Math.min(5, totalPages) },
+                        (_, i) => {
+                          const pageNum = i + 1;
+                          return (
+                            <Button
+                              key={pageNum}
+                              variant={
+                                currentPage === pageNum ? "default" : "outline"
+                              }
+                              size="sm"
+                              onClick={() => setCurrentPage(pageNum)}
+                              className="w-8 h-8 p-0"
+                              disabled={loading || isPending}
+                            >
+                              {pageNum}
+                            </Button>
+                          );
+                        }
+                      )}
+                      {totalPages > 5 && (
+                        <span className="text-gray-500">...</span>
+                      )}
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setCurrentPage(Math.min(totalPages, currentPage + 1))
+                      }
+                      disabled={
+                        currentPage === totalPages || loading || isPending
+                      }
+                    >
+                      Siguiente
+                    </Button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <NoProductAvailable
+                selectedTab={currentSlug}
+                className="mt-0 w-full"
+              />
+            )}
           </div>
         </div>
       </div>
