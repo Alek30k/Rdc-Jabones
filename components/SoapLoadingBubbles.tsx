@@ -58,7 +58,7 @@ const SoapLoadingBubbles = () => {
         {/* Texto de carga */}
         <div className="space-y-4">
           <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent animate-pulse">
-            Preparando tu jabón perfecto
+            Preparando tu jabón...
           </h2>
           <p className="text-gray-600 text-lg animate-fade-in-out">
             Mezclando los mejores ingredientes naturales...
