@@ -408,10 +408,10 @@ const CheckoutPage = () => {
                   </Button>
                 </div>
 
-                <p className="text-xs text-gray-500 text-center">
+                {/* <p className="text-xs text-gray-500 text-center">
                   Al confirmar, recibirás un email con los detalles de tu
                   pedido. Procesaremos tu pago en 24-48 horas hábiles.
-                </p>
+                </p> */}
               </CardContent>
             </Card>
           </div>
