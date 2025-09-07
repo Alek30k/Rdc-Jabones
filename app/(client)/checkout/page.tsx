@@ -354,10 +354,10 @@ const CheckoutPage = () => {
                     Importante:
                   </h4>
                   <ul className="text-sm text-yellow-800 space-y-1">
-                    <li className="break-words">
+                    {/* <li className="break-words">
                       • Incluye el número de pedido:{" "}
                       <strong>{orderNumber}</strong>
-                    </li>
+                    </li> */}
                     <li>• Envía el comprobante por WhatsApp o email</li>
                   </ul>
                 </div>
