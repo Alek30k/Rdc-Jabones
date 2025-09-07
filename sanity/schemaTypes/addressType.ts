@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { Home, MapPin } from "lucide-react";
 
 export default defineType({
   name: "address",
@@ -84,14 +85,14 @@ export default defineType({
     select: {
       title: "name",
       subtitle: "address",
-      media: "default",
+      isDefault: "default",
     },
     prepare(selection) {
-      const { title, subtitle } = selection;
+      const { title, subtitle, isDefault } = selection;
       return {
         title,
         subtitle,
-        media: selection.media ? "🏠" : "📍",
+        media: isDefault ? Home : MapPin,
       };
     },
   },
