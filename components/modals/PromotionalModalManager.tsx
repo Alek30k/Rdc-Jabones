@@ -14,6 +14,8 @@ interface PromotionalModalManagerProps {
   oncePerSession?: boolean;
   // Si debe mostrar solo una vez por día
   oncePerDay?: boolean;
+  // Tamaño mínimo de pantalla para mostrar el modal (en px)
+  minScreenWidth?: number;
 }
 
 const PromotionalModalManager = ({
@@ -21,9 +23,27 @@ const PromotionalModalManager = ({
   delay = 2000,
   oncePerSession = true,
   oncePerDay = false,
+  minScreenWidth = 768, // Por defecto, solo mostrar en tablets y desktop (768px+)
 }: PromotionalModalManagerProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentModal, setCurrentModal] = useState<ModalType>(modalType);
+  const [isMobile, setIsMobile] = useState(false);
+  const [screenWidth, setScreenWidth] = useState(0);
+  const [shouldShowModal, setShouldShowModal] = useState(false); // Estado para controlar si se debe mostrar el modal
+
+  // Detectar tamaño de pantalla
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const width = window.innerWidth;
+      setScreenWidth(width);
+      setIsMobile(width < 640); // sm breakpoint
+      setShouldShowModal(width >= minScreenWidth); // Solo mostrar si la pantalla es suficientemente grande
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, [minScreenWidth]);
 
   useEffect(() => {
     // Verificar si ya se mostró en esta sesión
@@ -51,13 +71,17 @@ const PromotionalModalManager = ({
 
       return () => clearTimeout(timer);
     }
-  }, [delay, oncePerSession, oncePerDay]);
+  }, [delay, oncePerSession, oncePerDay, shouldShowModal]);
 
   const handleClose = () => {
     setIsOpen(false);
   };
 
   const renderModal = () => {
+    // No renderizar nada si la pantalla es muy pequeña
+    if (!shouldShowModal) {
+      return null;
+    }
     switch (currentModal) {
       case "showcase":
         return <ProductShowcaseModal isOpen={isOpen} onClose={handleClose} />;

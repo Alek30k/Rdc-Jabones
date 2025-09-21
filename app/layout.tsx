@@ -29,6 +29,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           delay={6000}
           oncePerSession={true}
           oncePerDay={false} // O una vez por día
+          minScreenWidth={768} // Solo mostrar en pantallas de 768px o más (tablets y desktop)
         />
       </body>
     </html>
