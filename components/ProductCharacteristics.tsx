@@ -140,7 +140,7 @@ const ProductCharacteristics = ({
     }
 
     // Si es un string normal
-    return <p className="font-semibold text-gray-800">{value}</p>;
+    return <p className="font-medium text-gray-800">{value}</p>;
   };
 
   return (
@@ -174,7 +174,7 @@ const ProductCharacteristics = ({
                         {char.description}
                       </p>
                       <div className="text-right max-w-xs">
-                        {renderCharacteristicValue(char.value, char.type)}
+                        {renderCharacteristicValue(char.value)}
                       </div>{" "}
                     </div>
                   </div>

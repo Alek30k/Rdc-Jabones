@@ -154,16 +154,16 @@ const CategoryDropdown = () => {
                 onClick={() => setIsOpen(false)}
                 className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors duration-200 group"
               >
-                <div className="flex-shrink-0 p-2 bg-gray-100 rounded-lg group-hover:bg-gray-200 transition-colors duration-200">
+                <div className="flex-shrink-0 p-2 bg-gray-100 rounded-lg group-hover:bg-gray-200 group-hover:text-orange-400 transition-colors duration-200">
                   {category.icon}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors duration-200">
+                    <h4 className="text-sm font-medium text-gray-900 group-hover:text-green-600 transition-colors duration-200">
                       {category.name}
                     </h4>
                     {category.productCount && (
-                      <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                      <span className="text-xs text-gray-500 bg-gray-100 group-hover:text-orange-400 px-2 py-1 rounded-full">
                         {category.productCount}
                       </span>
                     )}
