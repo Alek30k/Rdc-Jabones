@@ -6,9 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import Logo from "./Logo";
 import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
+import Image from "next/image";
+import Link from "next/link";
 
 const NoAccess = ({
   details = "Inicia sesión para ver los artículos de tu carrito y finalizar la compra. ¡No te pierdas tus productos favoritos!",
@@ -19,7 +20,17 @@ const NoAccess = ({
     <div className="flex items-center justify-center py-12 md:py-32 bg-gray-100 p-4">
       <Card className="w-full max-w-md p-5">
         <CardHeader className="flex items-center flex-col">
-          <Logo />
+          <Link href={"/"}>
+            <div className="hidden md:inline-block relative group">
+              <Image
+                src="/logo.png"
+                alt="logo"
+                width={80}
+                height={40}
+                className="hover:scale-110 transition-transform duration-300"
+              />
+            </div>
+          </Link>
           <CardTitle className="text-2xl font-bold text-center">
             ¡Bienvenido de nuevo!
           </CardTitle>

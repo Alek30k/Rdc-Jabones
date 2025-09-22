@@ -173,7 +173,7 @@ const ProductCharacteristics = ({
                       <p className="text-xs text-gray-500">
                         {char.description}
                       </p>
-                      <div className="text-right max-w-xs">
+                      <div className="max-w-xs">
                         {renderCharacteristicValue(char.value)}
                       </div>{" "}
                     </div>
