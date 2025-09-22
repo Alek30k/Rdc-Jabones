@@ -143,7 +143,7 @@ const HomeBannerCarouselAdvanced = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToPrevious, goToNext, togglePlayPause]);
 
-  const currentBanner = bannerSlides[currentSlide];
+  // const currentBanner = bannerSlides[currentSlide];
 
   return (
     <div

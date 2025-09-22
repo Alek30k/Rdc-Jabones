@@ -13,7 +13,7 @@ interface BannerSlide {
   subtitle?: string;
   buttonText: string;
   buttonLink: string;
-  image: any;
+  image: unknown;
   backgroundColor: string;
   textColor?: string;
   buttonColor?: string;
