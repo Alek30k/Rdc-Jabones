@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect, useRef, Children } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   ChevronDown,
