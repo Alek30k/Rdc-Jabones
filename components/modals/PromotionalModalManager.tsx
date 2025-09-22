@@ -31,6 +31,8 @@ const PromotionalModalManager = ({
   const [screenWidth, setScreenWidth] = useState(0);
   const [shouldShowModal, setShouldShowModal] = useState(false); // Estado para controlar si se debe mostrar el modal
 
+  console.log(isMobile, screenWidth);
+
   // Detectar tamaño de pantalla
   useEffect(() => {
     const checkScreenSize = () => {
