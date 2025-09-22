@@ -16,18 +16,7 @@ import {
   Truck,
   Sparkles,
 } from "lucide-react";
-import {
-  banner_1,
-  banner_10,
-  banner_2,
-  banner_3,
-  banner_4,
-  banner_5,
-  banner_6,
-  banner_7,
-  banner_8,
-  banner_9,
-} from "@/images";
+import { banner_10, banner_2, banner_9 } from "@/images";
 
 interface BannerSlide {
   id: number;

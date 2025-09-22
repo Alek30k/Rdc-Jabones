@@ -96,7 +96,7 @@ const HomeBannerCarousel = () => {
     setIsPlaying(!isPlaying);
   };
 
-  const currentBanner = bannerSlides[currentSlide];
+  // const currentBanner = bannerSlides[currentSlide];
 
   return (
     <div

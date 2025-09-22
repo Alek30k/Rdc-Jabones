@@ -1,5 +1,4 @@
 import Container from "@/components/Container";
-import HomeBannerCarousel from "@/components/HomeBanner";
 import HomeBannerCarouselAdvanced from "@/components/HomeBannerCarouselAdvanced";
 import HomeCategories from "@/components/HomeCategories";
 import ProductGrid from "@/components/ProductGrid";
