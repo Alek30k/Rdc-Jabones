@@ -50,7 +50,7 @@ const bannerSlides: BannerSlide[] = [
     title: "Nueva colección de jabones",
     subtitle: "artesanales disponible",
     buttonText: "Ver colección",
-    buttonLink: "/product/jabon-nutritivo-de-miel",
+    buttonLink: "/shop",
     image: banner_9,
     backgroundColor: "bg-gradient-to-br from-indigo-50 to-green-100",
     buttonColor: "bg-green-500/90 hover:bg-green-600",
