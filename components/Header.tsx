@@ -11,6 +11,7 @@ import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import { logo } from "@/images";
 import Link from "next/link";
+import CategoryDropdown from "./CategoryDropdown";
 
 const Header = async () => {
   const clerkUser = await currentUser();
@@ -32,7 +33,11 @@ const Header = async () => {
           <MobileMenu user={serializedUser} />
           <Logo />
         </div>
-        <HeaderMenu />
+        {/* Desktop Menu with Category Dropdown */}
+        <div className="hidden md:flex items-center gap-6">
+          <CategoryDropdown />
+          <HeaderMenu />
+        </div>
         <Link href={"/"}>
           <div className="md:hidden ">
             <Image src={logo} alt="logo" className="w-12" />
