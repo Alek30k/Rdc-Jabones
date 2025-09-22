@@ -18,6 +18,7 @@ import {
   Shield,
   Info,
   LeafIcon,
+  CheckCircle,
 } from "lucide-react";
 
 const ProductCharacteristics = ({
@@ -74,7 +75,7 @@ const ProductCharacteristics = ({
     {
       type: "weight",
       label: "Peso",
-      value: product.weight ? `${product.weight}g` : "100g",
+      value: product.weight ? `${product.weight} g` : "100 g",
       description: "Peso neto del jabón",
     },
     {
@@ -118,6 +119,30 @@ const ProductCharacteristics = ({
     "Hidróxido de Sodio: Agente saponificador",
   ];
 
+  // Función para renderizar valores que pueden ser arrays o strings
+  const renderCharacteristicValue = (value: any, type: string) => {
+    if (!value) return "N/A";
+
+    // Si es un array (como benefits)
+    if (Array.isArray(value)) {
+      if (value.length === 0) return "N/A";
+
+      return (
+        <div className="space-y-1">
+          {value.map((item, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <CheckCircle className="w-3 h-3 text-green-600 flex-shrink-0" />
+              <span className="text-sm font-medium text-gray-800">{item}</span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // Si es un string normal
+    return <p className="font-semibold text-gray-800">{value}</p>;
+  };
+
   return (
     <div className="space-y-4 ">
       <Accordion type="single" collapsible className="w-full ">
@@ -139,7 +164,7 @@ const ProductCharacteristics = ({
               {characteristics.map((char, index) => (
                 <div
                   key={index}
-                  className="flex  items-center p-3 bg-orange-200 rounded-lg hover:bg-green-200 transition-colors gap-5 "
+                  className="flex  items-center p-3 bg-green-50 rounded-lg border border-green-200 transition-colors gap-5 "
                 >
                   {getCharacteristicIcon(char.type)}
                   <div className="flex items-center justify-center ">
@@ -148,9 +173,9 @@ const ProductCharacteristics = ({
                       <p className="text-xs text-gray-500">
                         {char.description}
                       </p>
-                      <p className="font-semibold text-gray-800">
-                        {char.value}
-                      </p>
+                      <div className="text-right max-w-xs">
+                        {renderCharacteristicValue(char.value, char.type)}
+                      </div>{" "}
                     </div>
                   </div>
                 </div>
