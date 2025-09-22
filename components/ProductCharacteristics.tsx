@@ -120,7 +120,7 @@ const ProductCharacteristics = ({
   ];
 
   // Función para renderizar valores que pueden ser arrays o strings
-  const renderCharacteristicValue = (value: unknown, type: string) => {
+  const renderCharacteristicValue = (value: unknown) => {
     if (!value) return "N/A";
 
     // Si es un array (como benefits)
