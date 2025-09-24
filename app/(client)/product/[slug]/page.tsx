@@ -31,6 +31,7 @@ import {
 } from "@/constants/data";
 import DescriptionPerfect from "@/components/DescriptionPerfect";
 import SoapLoadingBubbles from "@/components/SoapLoadingBubbles";
+import ProductDescription from "@/components/ProductDescription";
 
 const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   const [product, setProduct] = useState<Product | null>(null);
@@ -228,9 +229,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                                   <span className="font-medium">
                                     {soap.name}
                                   </span>
-                                  <span className="text-xs text-gray-500">
-                                    {soap.description}
-                                  </span>
+                                  <ProductDescription product={product} />
                                 </Label>
                               </div>
                             ))}
