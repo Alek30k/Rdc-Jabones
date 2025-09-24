@@ -11,47 +11,49 @@ const ProductDescription = ({ product }: ProductDescriptionProps) => {
   // Componentes personalizados para el PortableText
   const portableTextComponents = {
     block: {
-      normal: ({ children }: any) => (
+      normal: ({ children }: unknown) => (
         <p className="mb-4 text-gray-700 leading-relaxed">{children}</p>
       ),
-      h1: ({ children }: any) => (
+      h1: ({ children }: unknown) => (
         <h1 className="text-2xl font-bold mb-4 text-gray-900">{children}</h1>
       ),
-      h2: ({ children }: any) => (
+      h2: ({ children }: unknown) => (
         <h2 className="text-xl font-semibold mb-3 text-gray-900">{children}</h2>
       ),
-      h3: ({ children }: any) => (
+      h3: ({ children }: unknown) => (
         <h3 className="text-lg font-medium mb-2 text-gray-900">{children}</h3>
       ),
-      blockquote: ({ children }: any) => (
+      blockquote: ({ children }: unknown) => (
         <blockquote className="border-l-4 border-green-500 pl-4 italic text-gray-600 my-4">
           {children}
         </blockquote>
       ),
     },
     list: {
-      bullet: ({ children }: any) => (
+      bullet: ({ children }: unknown) => (
         <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>
       ),
-      number: ({ children }: any) => (
+      number: ({ children }: unknown) => (
         <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>
       ),
     },
     listItem: {
-      bullet: ({ children }: any) => (
+      bullet: ({ children }: unknown) => (
         <li className="text-gray-700">{children}</li>
       ),
-      number: ({ children }: any) => (
+      number: ({ children }: unknown) => (
         <li className="text-gray-700">{children}</li>
       ),
     },
     marks: {
-      strong: ({ children }: any) => (
+      strong: ({ children }: unknown) => (
         <strong className="font-semibold text-gray-900">{children}</strong>
       ),
-      em: ({ children }: any) => <em className="italic">{children}</em>,
-      underline: ({ children }: any) => <u className="underline">{children}</u>,
-      link: ({ children, value }: any) => (
+      em: ({ children }: unknown) => <em className="italic">{children}</em>,
+      underline: ({ children }: unknown) => (
+        <u className="underline">{children}</u>
+      ),
+      link: ({ children, value }: unknown) => (
         <a
           href={value.href}
           className="text-green-600 hover:text-green-800 underline"
