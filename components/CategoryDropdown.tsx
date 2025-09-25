@@ -28,8 +28,6 @@ interface Category {
 
 const categorias = await getCategories();
 
-console.log(categorias);
-
 // Datos de ejemplo - reemplaza con tus categorías reales
 const categories: Category[] = [
   {

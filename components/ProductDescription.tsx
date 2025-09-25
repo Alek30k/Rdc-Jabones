@@ -1,97 +1,127 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
 import { PortableText } from "@portabletext/react";
+import { ChevronDown } from "lucide-react";
 import type { Product } from "@/sanity.types";
 
 interface ProductDescriptionProps {
   product: Product | null | undefined;
+  maxLines?: number;
+  className?: string;
 }
 
-const ProductDescription = ({ product }: ProductDescriptionProps) => {
+const ProductDescription = ({
+  product,
+  maxLines = 6,
+  className = "",
+}: ProductDescriptionProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showReadMore, setShowReadMore] = useState(false);
+  const textRef = useRef<HTMLDivElement>(null);
+  const [measurements, setMeasurements] = useState({
+    lineHeight: 27,
+    collapsedHeight: 0,
+    fullHeight: 0,
+  });
+
   if (!product) return null;
 
-  // Componentes personalizados para el PortableText
+  // PortableText custom blocks
   const portableTextComponents = {
     block: {
-      normal: ({ children }: unknown) => (
+      normal: ({ children }: any) => (
         <p className="mb-4 text-gray-700 leading-relaxed">{children}</p>
-      ),
-      h1: ({ children }: unknown) => (
-        <h1 className="text-2xl font-bold mb-4 text-gray-900">{children}</h1>
-      ),
-      h2: ({ children }: unknown) => (
-        <h2 className="text-xl font-semibold mb-3 text-gray-900">{children}</h2>
-      ),
-      h3: ({ children }: unknown) => (
-        <h3 className="text-lg font-medium mb-2 text-gray-900">{children}</h3>
-      ),
-      blockquote: ({ children }: unknown) => (
-        <blockquote className="border-l-4 border-green-500 pl-4 italic text-gray-600 my-4">
-          {children}
-        </blockquote>
-      ),
-    },
-    list: {
-      bullet: ({ children }: unknown) => (
-        <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>
-      ),
-      number: ({ children }: unknown) => (
-        <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>
-      ),
-    },
-    listItem: {
-      bullet: ({ children }: unknown) => (
-        <li className="text-gray-700">{children}</li>
-      ),
-      number: ({ children }: unknown) => (
-        <li className="text-gray-700">{children}</li>
-      ),
-    },
-    marks: {
-      strong: ({ children }: unknown) => (
-        <strong className="font-semibold text-gray-900">{children}</strong>
-      ),
-      em: ({ children }: unknown) => <em className="italic">{children}</em>,
-      underline: ({ children }: unknown) => (
-        <u className="underline">{children}</u>
-      ),
-      link: ({ children, value }: unknown) => (
-        <a
-          href={value.href}
-          className="text-green-600 hover:text-green-800 underline"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {children}
-        </a>
       ),
     },
   };
 
+  useEffect(() => {
+    if (textRef.current) {
+      const computedStyle = getComputedStyle(textRef.current);
+      const lineHeight = Number.parseInt(computedStyle.lineHeight) || 27;
+      const collapsedHeight = lineHeight * maxLines;
+      const fullHeight = textRef.current.scrollHeight;
+
+      setMeasurements({ lineHeight, collapsedHeight, fullHeight });
+      setShowReadMore(fullHeight > collapsedHeight);
+    }
+  }, [product, maxLines]);
+
+  const toggleExpanded = () => setIsExpanded(!isExpanded);
+
+  const fadeHeight = measurements.lineHeight * 2.5;
+
+  // contenido principal (rich o simple)
+  const descriptionContent = product.richDescription ? (
+    <PortableText
+      value={product.richDescription}
+      components={portableTextComponents}
+    />
+  ) : product.description ? (
+    product.description
+  ) : (
+    <p className="text-gray-500 italic">No hay descripción disponible.</p>
+  );
+
   return (
-    <div className="space-y-4">
-      {/* Descripción Rica (Recomendado) */}
-      {product.richDescription && (
-        <div className="prose prose-green max-w-none">
-          <PortableText
-            value={product.richDescription}
-            components={portableTextComponents}
-          />
-        </div>
-      )}
+    <div
+      className={`bg-white p-6 rounded-lg shadow-sm mb-5 border border-gray-200 ${className}`}
+    >
+      <h3 className="text-xl font-semibold mb-4 text-gray-900 font-inter">
+        Descripción
+      </h3>
 
-      {/* Descripción Simple con saltos de línea */}
-      {product.description && !product.richDescription && (
-        <div className="space-y-2">
-          {product.description.split("\n").map((paragraph, index) => (
-            <p key={index} className="text-gray-700 leading-relaxed">
-              {paragraph}
-            </p>
-          ))}
+      <div className="relative">
+        {/* Contenedor principal */}
+        <div
+          ref={textRef}
+          className={`whitespace-pre-line font-inter text-xl font-normal leading-[27px] transition-all duration-500 ease-out prose max-w-none ${
+            isExpanded ? "max-h-none" : "overflow-hidden"
+          }`}
+          style={{
+            color: "rgba(0,0,0,.55)",
+            maxHeight: isExpanded
+              ? "none"
+              : `${measurements.collapsedHeight}px`,
+          }}
+        >
+          {descriptionContent}
         </div>
-      )}
 
-      {/* Fallback si no hay descripción */}
-      {!product.description && !product.richDescription && (
-        <p className="text-gray-500 italic">No hay descripción disponible.</p>
+        {/* Capa de blur + fade */}
+        {!isExpanded && showReadMore && (
+          <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+            <div
+              className="absolute bottom-0 left-0 right-0"
+              style={{
+                height: `${fadeHeight}px`,
+                background: `linear-gradient(180deg,
+                  hsla(0,0%,100%,0) 0%,
+                  hsla(0,0%,100%,1) 100%)`,
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Botón Ver más / Ver menos */}
+      {showReadMore && (
+        <div className="mt-4 flex justify-start">
+          <button
+            onClick={toggleExpanded}
+            className="group flex items-center gap-1.5 text-blue-500 hover:text-blue-700 text-sm font-medium transition-all duration-300 font-inter hover:bg-blue-50 px-3 py-1.5 rounded-md -ml-3 active:scale-95"
+          >
+            <span>{isExpanded ? "Ver menos" : "Ver más"}</span>
+            <div
+              className={`transition-all duration-500 ease-out ${
+                isExpanded ? "rotate-180" : "rotate-0"
+              } group-hover:scale-110 group-active:scale-90`}
+            >
+              <ChevronDown className="w-4 h-4" />
+            </div>
+          </button>
+        </div>
       )}
     </div>
   );

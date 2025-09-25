@@ -229,7 +229,9 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
                                   <span className="font-medium">
                                     {soap.name}
                                   </span>
-                                  <ProductDescription product={product} />
+                                  <span className="text-xs text-gray-500">
+                                    {soap.description}
+                                  </span>
                                 </Label>
                               </div>
                             ))}
@@ -419,11 +421,15 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
         </div>
       </Container>
 
-      {/* Sección de Descripción con efecto MercadoLibre */}
       <Container>
         {product?.description && (
-          <DescriptionPerfect
-            description={product.description}
+          // <DescriptionPerfect
+          //   description={product.description}
+          //   maxLines={6}
+          //   className="md:w-[60%]"
+          // />
+          <ProductDescription
+            product={product}
             maxLines={6}
             className="md:w-[60%]"
           />
