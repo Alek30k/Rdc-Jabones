@@ -25,12 +25,10 @@ const ProductDescription = ({
     fullHeight: 0,
   });
 
-  if (!product) return null;
-
   // PortableText custom blocks
   const portableTextComponents = {
     block: {
-      normal: ({ children }: any) => (
+      normal: ({ children }: unknown) => (
         <p className="mb-4 text-gray-700 leading-relaxed">{children}</p>
       ),
     },
@@ -49,10 +47,21 @@ const ProductDescription = ({
   }, [product, maxLines]);
 
   const toggleExpanded = () => setIsExpanded(!isExpanded);
-
   const fadeHeight = measurements.lineHeight * 2.5;
 
-  // contenido principal (rich o simple)
+  if (!product) {
+    return (
+      <div
+        className={`bg-white p-6 rounded-lg shadow-sm mb-5 border border-gray-200 ${className}`}
+      >
+        <h3 className="text-xl font-semibold mb-4 text-gray-900 font-inter">
+          Descripción
+        </h3>
+        <p className="text-gray-500 italic">No hay descripción disponible.</p>
+      </div>
+    );
+  }
+
   const descriptionContent = product.richDescription ? (
     <PortableText
       value={product.richDescription}
@@ -73,7 +82,6 @@ const ProductDescription = ({
       </h3>
 
       <div className="relative">
-        {/* Contenedor principal */}
         <div
           ref={textRef}
           className={`whitespace-pre-line font-inter text-xl font-normal leading-[27px] transition-all duration-500 ease-out prose max-w-none ${
@@ -89,7 +97,6 @@ const ProductDescription = ({
           {descriptionContent}
         </div>
 
-        {/* Capa de blur + fade */}
         {!isExpanded && showReadMore && (
           <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
             <div
@@ -105,7 +112,6 @@ const ProductDescription = ({
         )}
       </div>
 
-      {/* Botón Ver más / Ver menos */}
       {showReadMore && (
         <div className="mt-4 flex justify-start">
           <button
