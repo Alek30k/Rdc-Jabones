@@ -29,7 +29,6 @@ import {
   naturalSoapColors,
   soapTypes,
 } from "@/constants/data";
-import DescriptionPerfect from "@/components/DescriptionPerfect";
 import SoapLoadingBubbles from "@/components/SoapLoadingBubbles";
 import ProductDescription from "@/components/ProductDescription";
 
