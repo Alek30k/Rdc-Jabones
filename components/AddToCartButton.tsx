@@ -92,7 +92,7 @@ const AddToCartButton = ({ product, className }: Props) => {
             className
           )}
         >
-          <ShoppingBag /> {isOutOfStock ? "Agotado" : "AGREGAR AL CARRITO"}
+          <ShoppingBag /> {isOutOfStock ? "Agotado" : "AGREGAR "}
         </Button>
       )}
     </div>
