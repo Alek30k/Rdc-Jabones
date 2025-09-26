@@ -428,6 +428,9 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
         </div>
         {/* Columna para las características */}
         <div className="md:w-[40%]">
+          <h3 className="text-xl font-bold mb-4">
+            Lo que tenés que saber de este Jabón
+          </h3>
           <ProductCharacteristics product={product} />
         </div>
       </Container>
