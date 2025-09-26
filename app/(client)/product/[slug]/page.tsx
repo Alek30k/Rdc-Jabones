@@ -151,9 +151,9 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
         {/* Columna Derecha: Detalles del Producto, Precio, CTA, etc. */}
         <div className="w-full md:w-1/2 p-4 flex flex-col gap-5">
           <div className="space-y-1">
-            <h2 className="text-2xl font-bold">{product?.name}</h2>
+            <h2 className="text-3xl font-bold">{product?.name}</h2>
           </div>
-          <div className="space-y-2 border-t border-b border-gray-200 py-5">
+          <div className="space-y-2  py-5">
             <PriceView
               price={product?.price}
               discount={product?.discount}
@@ -170,7 +170,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
             </p>
 
             {/* Sección de Personalización de Jabón */}
-            <div className="mt-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <div className="mt-8 p-4 border border-gray-200 rounded-lg bg-gray-50">
               <div className="flex items-center justify-between mb-4">
                 <Label
                   htmlFor="personalizar-jabon"
@@ -412,22 +412,24 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
               )}
             </div>
           </div>
-          <div className="flex items-center gap-2.5 lg:gap-3">
+          <div className="flex items-center gap-2.5 lg:gap-3 mt-10">
             <AddToCartButton product={productWithCustomization} />
             <FavoriteButton showProduct={true} product={product} />
           </div>
-          <ProductCharacteristics product={product} />
         </div>
       </Container>
-
-      <Container>
-        {(product?.description || product?.richDescription) && (
-          <ProductDescription
-            product={product}
-            maxLines={6}
-            className="md:w-[60%]"
-          />
-        )}
+      {/* Contenedor para la descripción y las características, uno al lado del otro */}
+      <Container className="flex flex-col md:flex-row gap-10 p-4">
+        {/* Columna para la descripción */}
+        <div className="md:w-[60%]">
+          {(product?.description || product?.richDescription) && (
+            <ProductDescription product={product} maxLines={6} />
+          )}
+        </div>
+        {/* Columna para las características */}
+        <div className="md:w-[40%]">
+          <ProductCharacteristics product={product} />
+        </div>
       </Container>
 
       <Container className="p-4">
