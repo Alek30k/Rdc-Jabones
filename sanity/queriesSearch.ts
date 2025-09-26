@@ -37,6 +37,7 @@ export const searchProductsExtended = async (query: string, limit = 50) => {
       categories,
       images,
       description,
+      richDescription,
       _score
     }
   `;
@@ -74,6 +75,7 @@ export async function searchProductsWithCategories(query: string) {
       "categories": categories[]->name,
       images,
       description
+      richDescription
     } | order(_score desc, name asc) [0...20]
   `;
 
@@ -102,6 +104,7 @@ export async function searchProductsSimple(query: string) {
       categories,
       images,
       description
+      richDescription
     } [0...20]
   `;
 
@@ -133,7 +136,9 @@ export async function getProductsByCategory(category: string) {
       status,
       categories,
       images,
-      description
+      description,
+      richDescription
+      
     }
   `;
 

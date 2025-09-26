@@ -421,12 +421,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
       </Container>
 
       <Container>
-        {product?.description && (
-          // <DescriptionPerfect
-          //   description={product.description}
-          //   maxLines={6}
-          //   className="md:w-[60%]"
-          // />
+        {(product?.description || product?.richDescription) && (
           <ProductDescription
             product={product}
             maxLines={6}

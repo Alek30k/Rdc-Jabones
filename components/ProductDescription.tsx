@@ -62,17 +62,25 @@ const ProductDescription = ({
     );
   }
 
-  const descriptionContent =
-    product.richDescription && product.richDescription.length > 0 ? (
-      <PortableText
-        value={product.richDescription}
-        components={portableTextComponents}
-      />
-    ) : product.description ? (
-      product.description
-    ) : (
+  const descriptionContent = (() => {
+    if (
+      Array.isArray(product.richDescription) &&
+      product.richDescription.length > 0
+    ) {
+      return (
+        <PortableText
+          value={product.richDescription}
+          components={portableTextComponents}
+        />
+      );
+    }
+    if (product.description) {
+      return <p>{product.description}</p>;
+    }
+    return (
       <p className="text-gray-500 italic">No hay descripción disponible.</p>
     );
+  })();
 
   return (
     <div

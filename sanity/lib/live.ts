@@ -33,7 +33,7 @@ export const { sanityFetch, SanityLive } = token
         params = {},
       }: {
         query: string;
-        params?: any;
+        params?: unknown;
       }) => {
         const data = await client.fetch(query, params);
         return { data };
