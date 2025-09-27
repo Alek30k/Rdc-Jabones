@@ -5,6 +5,7 @@ import Image from "next/image";
 
 const SoapCatalog = () => {
   const [darkMode, setDarkMode] = useState(false);
+  const [visibleProducts, setVisibleProducts] = useState(6); // 👈 mostramos 3 al inicio
 
   // Detecta modo del sistema al cargar
   useEffect(() => {
@@ -115,6 +116,156 @@ const SoapCatalog = () => {
       ],
       skinType: "Ideal para piel irritada",
     },
+    {
+      id: 7,
+      name: "Café Energizante",
+      subtitle: "Exfoliación natural",
+      icon: "☕",
+      image: "/images/jabon-cafe.jpg",
+      ingredients: "Café molido, manteca de cacao, aceite de almendras",
+      benefits: [
+        "Exfolia la piel eliminando células muertas",
+        "Estimula la circulación",
+        "Tonifica la piel",
+        "Aroma revitalizante",
+      ],
+      skinType: "Ideal para piel cansada y opaca",
+    },
+    {
+      id: 8,
+      name: "Manzanilla Suave",
+      subtitle: "Calma y protección",
+      icon: "🌼",
+      image: "/images/jabon-manzanilla.jpg",
+      ingredients: "Extracto de manzanilla, aceite de oliva, manteca de karité",
+      benefits: [
+        "Reduce enrojecimiento",
+        "Protege la barrera cutánea",
+        "Efecto calmante",
+        "Suaviza la piel",
+      ],
+      skinType: "Ideal para piel sensible",
+    },
+    {
+      id: 9,
+      name: "Eucalipto Refrescante",
+      subtitle: "Respira y renueva",
+      icon: "🌿",
+      image: "/images/jabon-eucalipto.jpg",
+      ingredients: "Aceite esencial de eucalipto, menta, aceite de coco",
+      benefits: [
+        "Refresca y revitaliza",
+        "Ayuda a despejar las vías respiratorias",
+        "Propiedades antisépticas",
+        "Estimula la piel",
+      ],
+      skinType: "Ideal para piel normal a grasa",
+    },
+    {
+      id: 10,
+      name: "Chocolate & Naranja",
+      subtitle: "Antioxidante y energizante",
+      icon: "🍫",
+      image: "/images/jabon-chocolate-naranja.jpg",
+      ingredients: "Cacao puro, aceite de naranja, manteca de cacao",
+      benefits: [
+        "Rico en antioxidantes",
+        "Estimula los sentidos",
+        "Nutre profundamente",
+        "Mejora la elasticidad",
+      ],
+      skinType: "Ideal para piel seca y madura",
+    },
+    {
+      id: 11,
+      name: "Menta Refrescante",
+      subtitle: "Frescura instantánea",
+      icon: "🌱",
+      image: "/images/jabon-menta.jpg",
+      ingredients: "Aceite esencial de menta, aloe vera, aceite de jojoba",
+      benefits: [
+        "Sensación refrescante inmediata",
+        "Calma irritaciones",
+        "Efecto energizante",
+        "Hidrata suavemente",
+      ],
+      skinType: "Ideal para piel grasa o mixta",
+    },
+    {
+      id: 12,
+      name: "Arcilla Verde",
+      subtitle: "Limpieza profunda",
+      icon: "🟩",
+      image: "/images/jabon-arcilla-verde.jpg",
+      ingredients: "Arcilla verde, aceite de árbol de té, romero",
+      benefits: [
+        "Desintoxica la piel",
+        "Absorbe el exceso de grasa",
+        "Reduce impurezas",
+        "Purifica los poros",
+      ],
+      skinType: "Ideal para piel grasa y con tendencia acneica",
+    },
+    {
+      id: 13,
+      name: "Calendula & Karité",
+      subtitle: "Protección y suavidad",
+      icon: "🌻",
+      image: "/images/jabon-calendula.jpg",
+      ingredients: "Flores de caléndula, manteca de karité, aceite de oliva",
+      benefits: [
+        "Regenera la piel",
+        "Protege contra irritaciones",
+        "Alivia la resequedad",
+        "Nutrición intensa",
+      ],
+      skinType: "Ideal para piel sensible y seca",
+    },
+    {
+      id: 14,
+      name: "Limón Vital",
+      subtitle: "Limpieza y frescura",
+      icon: "🍋",
+      image: "/images/jabon-limon.jpg",
+      ingredients: "Aceite esencial de limón, glicerina, aceite de oliva",
+      benefits: [
+        "Limpieza profunda",
+        "Aporta luminosidad",
+        "Refresca la piel",
+        "Propiedades astringentes",
+      ],
+      skinType: "Ideal para piel grasa",
+    },
+    {
+      id: 15,
+      name: "Pepino Hidratante",
+      subtitle: "Frescura y suavidad",
+      icon: "🥒",
+      image: "/images/jabon-pepino.jpg",
+      ingredients: "Extracto de pepino, aloe vera, aceite de almendras",
+      benefits: [
+        "Refresca y tonifica",
+        "Hidrata intensamente",
+        "Calma la piel irritada",
+        "Deja sensación ligera",
+      ],
+      skinType: "Ideal para piel seca y sensible",
+    },
+    {
+      id: 16,
+      name: "Té Verde Detox",
+      subtitle: "Energía antioxidante",
+      icon: "🍵",
+      image: "/images/jabon-te-verde.jpg",
+      ingredients: "Extracto de té verde, aceite de coco, manteca de cacao",
+      benefits: [
+        "Antioxidante natural",
+        "Reduce el envejecimiento prematuro",
+        "Purifica la piel",
+        "Energiza y revitaliza",
+      ],
+      skinType: "Ideal para todo tipo de piel",
+    },
   ];
 
   const tips = [
@@ -194,7 +345,7 @@ const SoapCatalog = () => {
             <div className="absolute bottom-8 right-8 w-3 h-3 bg-white dark:bg-gray-200 rounded-full"></div>
           </div>
 
-          <div className="relative z-10 mb-6">
+          <div className="relative z-10  gap-5 flex flex-col items-center">
             <Image
               src="/logo.png"
               alt="logo"
@@ -205,7 +356,7 @@ const SoapCatalog = () => {
             <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-shadow-lg">
               Regalos del Corazón
             </h1>
-            <p className="text-xl sm:text-2xl font-semibold mb-4">
+            <p className="text-xl sm:text-2xl font-semibold mb-2">
               Jabones Artesanales
             </p>
           </div>
@@ -237,7 +388,7 @@ const SoapCatalog = () => {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
+            {products.slice(0, visibleProducts).map((product) => (
               <div
                 key={product.id}
                 className="bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 shadow-lg dark:shadow-gray-900 hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border border-green-200 dark:border-gray-600 flex flex-col"
@@ -298,6 +449,18 @@ const SoapCatalog = () => {
               </div>
             ))}
           </div>
+
+          {/* BOTÓN VER MÁS */}
+          {visibleProducts < products.length && (
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={() => setVisibleProducts((prev) => prev + 6)} // 👈 carga de a 3
+                className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-md transition-colors"
+              >
+                Ver más
+              </button>
+            </div>
+          )}
         </section>
 
         {/* CONSEJOS */}
