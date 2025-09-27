@@ -169,14 +169,17 @@ const SoapCatalog = () => {
             <div className="absolute bottom-16 left-16 w-2 h-2 bg-white rounded-full"></div>
             <div className="absolute bottom-8 right-8 w-3 h-3 bg-white rounded-full"></div>
           </div>
-          <h1 className="text-5xl font-bold mb-4 text-shadow-lg relative z-10">
-            Jabones Artesanales
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-shadow-lg">
+            Regalos del Corazón
           </h1>
+          <p className="text-5xl font-bold mb-4 text-shadow-lg relative z-10">
+            Jabones Artesanales
+          </p>
           <div className="text-xl italic mb-6 opacity-90 relative z-10">
-            Cuidado Natural para tu Piel
+            {`Cuidado Natural para tu Piel`}
           </div>
           <div className="inline-block bg-white bg-opacity-20 px-6 py-3 rounded-full text-lg relative z-10">
-            ✨ Hechos con amor y ingredientes naturales ✨
+            {`✨ Hechos con amor y ingredientes naturales ✨`}
           </div>
         </div>
 
@@ -186,9 +189,9 @@ const SoapCatalog = () => {
             Bienvenido a Nuestro Mundo Natural
           </h2>
           <div className="text-center text-lg text-gray-600 italic">
-            "Cada jabón es una obra de arte creada con ingredientes naturales
+            {`"Cada jabón es una obra de arte creada con ingredientes naturales
             seleccionados cuidadosamente para nutrir y proteger tu piel de
-            manera suave y efectiva."
+            manera suave y efectiva."`}
           </div>
         </div>
 
