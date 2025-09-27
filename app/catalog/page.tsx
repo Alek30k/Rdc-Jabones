@@ -28,7 +28,7 @@ const SoapCatalog = () => {
       name: "Avena & Miel",
       subtitle: "Suavidad y nutrición",
       icon: "🍯",
-      image: "/images/jabon-avena-miel.jpg",
+      image: "/images/jabon-avena-miel.jpg", // Ruta para tu imagen
       ingredients:
         "Avena coloidal, miel pura, aceite de coco, manteca de karité",
       benefits: [
@@ -121,38 +121,32 @@ const SoapCatalog = () => {
     {
       icon: "🧼",
       title: "Conservación",
-      description:
-        "Mantén tus jabones en un lugar seco y ventilado. Usa una jabonera con drenaje para prolongar su duración.",
+      description: `Mantén tus jabones en un lugar seco y ventilado. Usa una jabonera con drenaje para prolongar su duración.`,
     },
     {
       icon: "💧",
       title: "Aplicación",
-      description:
-        "Humedece la piel, aplica el jabón en movimientos circulares suaves y enjuaga con agua tibia.",
+      description: `Humedece la piel, aplica el jabón en movimientos circulares suaves y enjuaga con agua tibia.`,
     },
     {
       icon: "⏰",
       title: "Frecuencia",
-      description:
-        "Usa 1-2 veces al día. Para pieles sensibles, comienza con uso alterno hasta que se adapte.",
+      description: `Usa 1-2 veces al día. Para pieles sensibles, comienza con uso alterno hasta que se adapte.`,
     },
     {
       icon: "🌱",
       title: "Beneficio Eco",
-      description:
-        "Nuestros jabones son biodegradables y libres de químicos agresivos, cuidando tu piel y el planeta.",
+      description: `Nuestros jabones son biodegradables y libres de químicos agresivos, cuidando tu piel y el planeta.`,
     },
     {
       icon: "📅",
       title: "Duración",
-      description:
-        "Cada jabón dura aproximadamente 4-6 semanas con uso regular. Vida útil de 12 meses desde su fabricación.",
+      description: `Cada jabón dura aproximadamente 4-6 semanas con uso regular. Vida útil de 12 meses desde su fabricación.`,
     },
     {
       icon: "⚠️",
       title: "Precauciones",
-      description:
-        "Si experimentas irritación, suspende el uso. Evita el contacto con los ojos. Solo para uso externo.",
+      description: `Si experimentas irritación, suspende el uso. Evita el contacto con los ojos. Solo para uso externo.`,
     },
   ];
 
@@ -160,26 +154,22 @@ const SoapCatalog = () => {
     {
       icon: "🌿",
       title: "100% Natural",
-      description:
-        "Sin sulfatos, parabenos ni químicos agresivos. Solo ingredientes puros y naturales seleccionados cuidadosamente.",
+      description: `Sin sulfatos, parabenos ni químicos agresivos. Solo ingredientes puros y naturales seleccionados cuidadosamente.`,
     },
     {
       icon: "💝",
       title: "Hecho a Mano",
-      description:
-        "Cada jabón es único, elaborado en pequeños lotes con técnicas tradicionales que preservan las propiedades de los ingredientes.",
+      description: `Cada jabón es único, elaborado en pequeños lotes con técnicas tradicionales que preservan las propiedades de los ingredientes.`,
     },
     {
       icon: "🌍",
       title: "Eco-Friendly",
-      description:
-        "Empaque mínimo y biodegradable. Proceso de producción sostenible que respeta el medio ambiente.",
+      description: `Empaque mínimo y biodegradable. Proceso de producción sostenible que respeta el medio ambiente.`,
     },
     {
       icon: "✨",
       title: "Glicerina Natural",
-      description:
-        "A diferencia de los jabones comerciales, conservamos la glicerina natural que se produce durante la saponificación.",
+      description: `A diferencia de los jabones comerciales, conservamos la glicerina natural que se produce durante la saponificación.`,
     },
   ];
 
@@ -234,9 +224,9 @@ const SoapCatalog = () => {
             Bienvenido a Nuestro Mundo Natural
           </h2>
           <p className="text-center text-base sm:text-lg text-gray-600 dark:text-gray-300 italic max-w-3xl mx-auto">
-            "Cada jabón es una obra de arte creada con ingredientes naturales
+            Cada jabón es una obra de arte creada con ingredientes naturales
             seleccionados cuidadosamente para nutrir y proteger tu piel de
-            manera suave y efectiva."
+            manera suave y efectiva.
           </p>
         </section>
 
@@ -397,8 +387,8 @@ const SoapCatalog = () => {
           </div>
 
           <p className="text-center mt-8 italic text-sm sm:text-base">
-            "Gracias por elegir el cuidado natural. Tu piel y el planeta te lo
-            agradecerán."
+            Gracias por elegir el cuidado natural. Tu piel y el planeta te lo
+            agradecerán.
           </p>
         </section>
       </div>
