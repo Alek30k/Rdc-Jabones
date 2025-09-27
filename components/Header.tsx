@@ -12,6 +12,7 @@ import Image from "next/image";
 import { logo } from "@/images";
 import Link from "next/link";
 import CategoryDropdown from "./CategoryDropdown";
+import DownloadButton from "./DownloadButton";
 
 const Header = async () => {
   const clerkUser = await currentUser();
