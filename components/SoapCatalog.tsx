@@ -101,8 +101,7 @@ const SoapCatalog = () => {
     {
       icon: "🧼",
       title: "Conservación",
-      description:
-        "Mantén tus jabones en un lugar seco y ventilado. Usa una jabonera con drenaje para prolongar su duración.",
+      description: `Mantén tus jabones en un lugar seco y ventilado. Usa una jabonera con drenaje para prolongar su duración.`,
     },
     {
       icon: "💧",
@@ -113,26 +112,22 @@ const SoapCatalog = () => {
     {
       icon: "⏰",
       title: "Frecuencia",
-      description:
-        "Usa 1-2 veces al día. Para pieles sensibles, comienza con uso alterno hasta que se adapte.",
+      description: `Usa 1-2 veces al día. Para pieles sensibles, comienza con uso alterno hasta que se adapte.`,
     },
     {
       icon: "🌱",
       title: "Beneficio Eco",
-      description:
-        "Nuestros jabones son biodegradables y libres de químicos agresivos, cuidando tu piel y el planeta.",
+      description: `Nuestros jabones son biodegradables y libres de químicos agresivos, cuidando tu piel y el planeta.`,
     },
     {
       icon: "📅",
       title: "Duración",
-      description:
-        "Cada jabón dura aproximadamente 4-6 semanas con uso regular. Vida útil de 12 meses desde su fabricación.",
+      description: `Cada jabón dura aproximadamente 4-6 semanas con uso regular. Vida útil de 12 meses desde su fabricación.`,
     },
     {
       icon: "⚠️",
       title: "Precauciones",
-      description:
-        "Si experimentas irritación, suspende el uso. Evita el contacto con los ojos. Solo para uso externo.",
+      description: `Si experimentas irritación, suspende el uso. Evita el contacto con los ojos. Solo para uso externo.`,
     },
   ];
 
