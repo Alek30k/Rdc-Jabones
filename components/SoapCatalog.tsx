@@ -184,9 +184,9 @@ const SoapCatalog = () => {
             Bienvenido a Nuestro Mundo Natural
           </h2>
           <div className="text-center text-lg text-gray-600 italic">
-            {`"Cada jabón es una obra de arte creada con ingredientes naturales
+            {`Cada jabón es una obra de arte creada con ingredientes naturales
             seleccionados cuidadosamente para nutrir y proteger tu piel de
-            manera suave y efectiva."`}
+            manera suave y efectiva.`}
           </div>
         </div>
 
