@@ -106,8 +106,7 @@ const SoapCatalog = () => {
     {
       icon: "💧",
       title: "Aplicación",
-      description:
-        "Humedece la piel, aplica el jabón en movimientos circulares suaves y enjuaga con agua tibia.",
+      description: `Humedece la piel, aplica el jabón en movimientos circulares suaves y enjuaga con agua tibia.`,
     },
     {
       icon: "⏰",
@@ -135,26 +134,22 @@ const SoapCatalog = () => {
     {
       icon: "🌿",
       title: "100% Natural",
-      description:
-        "Sin sulfatos, parabenos ni químicos agresivos. Solo ingredientes puros y naturales seleccionados cuidadosamente.",
+      description: `Sin sulfatos, parabenos ni químicos agresivos. Solo ingredientes puros y naturales seleccionados cuidadosamente.`,
     },
     {
       icon: "💝",
       title: "Hecho a Mano",
-      description:
-        "Cada jabón es único, elaborado en pequeños lotes con técnicas tradicionales que preservan las propiedades de los ingredientes.",
+      description: `Cada jabón es único, elaborado en pequeños lotes con técnicas tradicionales que preservan las propiedades de los ingredientes.`,
     },
     {
       icon: "🌍",
       title: "Eco-Friendly",
-      description:
-        "Empaque mínimo y biodegradable. Proceso de producción sostenible que respeta el medio ambiente.",
+      description: `Empaque mínimo y biodegradable. Proceso de producción sostenible que respeta el medio ambiente.`,
     },
     {
       icon: "✨",
       title: "Glicerina Natural",
-      description:
-        "A diferencia de los jabones comerciales, conservamos la glicerina natural que se produce durante la saponificación.",
+      description: `A diferencia de los jabones comerciales, conservamos la glicerina natural que se produce durante la saponificación.`,
     },
   ];
 
