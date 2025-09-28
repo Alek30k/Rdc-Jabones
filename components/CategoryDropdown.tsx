@@ -118,11 +118,11 @@ const CategoryDropdown = () => {
   }, []);
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative " ref={dropdownRef}>
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200"
+        className="   dark:text-gray-100 transition-colors duration-300 flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 "
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
@@ -135,7 +135,7 @@ const CategoryDropdown = () => {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
+        <div className=" absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
           {/* Header */}
           <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
             <h3 className="text-sm font-semibold text-gray-900">

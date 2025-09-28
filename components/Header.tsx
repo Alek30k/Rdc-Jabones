@@ -12,6 +12,7 @@ import Image from "next/image";
 import { logo } from "@/images";
 import Link from "next/link";
 import CategoryDropdown from "./CategoryDropdown";
+import { ThemeToggle } from "./ThemeToggle";
 
 const Header = async () => {
   const clerkUser = await currentUser();
@@ -27,26 +28,35 @@ const Header = async () => {
     : null;
 
   return (
-    <header className="sticky top-0  z-50 py-2 md:py-5 bg-white/70 backdrop-blur-md">
-      <Container className="flex items-center justify-between text-lightColor">
+    <header className="sticky top-0 z-50 py-2 md:py-5 bg-white/70 dark:bg-gray-900/70 backdrop-blur-md transition-colors duration-300">
+      <Container className="flex items-center justify-between text-gray-900 dark:text-gray-100">
+        {/* Left side */}
         <div className="w-auto md:w-1/3 flex items-center gap-2.5 justify-start md:gap-0">
           <MobileMenu user={serializedUser} />
           <Logo />
         </div>
-        {/* Desktop Menu with Category Dropdown */}
+
+        {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-1">
           <CategoryDropdown />
           <HeaderMenu />
         </div>
+
+        {/* Mobile logo */}
         <Link href={"/"}>
-          <div className="md:hidden ">
+          <div className="md:hidden">
             <Image src={logo} alt="logo" className="w-12" />
           </div>
         </Link>
+
+        {/* Right side */}
         <div className="w-auto md:w-1/3 flex items-center justify-end gap-5">
           <div className="hidden md:flex">
             <SearchBar />
           </div>
+
+          <ThemeToggle />
+
           <CartIcon />
           <FavoriteButton />
 
@@ -60,7 +70,9 @@ const Header = async () => {
           </ClerkLoaded>
         </div>
       </Container>
-      <div className="md:hidden px-2 ">
+
+      {/* Mobile search */}
+      <div className="md:hidden px-2">
         <SearchBar />
       </div>
     </header>

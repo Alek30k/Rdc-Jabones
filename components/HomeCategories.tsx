@@ -22,14 +22,14 @@ const HomeCategories = ({
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
   const CategorySkeleton = () => (
-    <Card className="group overflow-hidden border-0 shadow-lg">
+    <Card className="group overflow-hidden border-0 shadow-lg dark:bg-gray-800">
       <CardContent className="p-0">
         <div className="relative h-72 w-full">
           <Skeleton className="w-full h-full rounded-t-lg" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-4 left-4 right-4">
-            <Skeleton className="h-6 w-3/4 bg-white/20" />
-            <Skeleton className="h-4 w-1/2 bg-white/20 mt-2" />
+            <Skeleton className="h-6 w-3/4 bg-white/20 dark:bg-gray-600" />
+            <Skeleton className="h-4 w-1/2 bg-white/20 dark:bg-gray-600 mt-2" />
           </div>
         </div>
       </CardContent>
@@ -37,42 +37,41 @@ const HomeCategories = ({
   );
 
   return (
-    <section className="bg-white border border-shop_light_green/20 my-10 md:my-20 p-6 lg:p-8 rounded-xl shadow-sm">
-      <div className="text-center mb-8 ">
-        <Title className="border-b pb-4 mb-6  flex flex-col">
+    <section className="bg-white dark:bg-gray-900 border border-shop_light_green/20 my-10 md:my-20 p-6 lg:p-8 rounded-xl shadow-sm transition-colors duration-300">
+      <div className="text-center mb-8">
+        <Title className="border-b pb-4 mb-6 flex flex-col">
           <span className="bg-gradient-to-r from-shop_orange to-shop_dark_green bg-clip-text text-transparent">
             Nuestras Lineas de Productos
           </span>
-          {/* <p className="text-sm text-gray-400"> */}
-          <p className="hidden md:inline-flex  justify-center line-clamp-1 text-sm font-medium text-lightText">
+          <p className="hidden md:inline-flex justify-center line-clamp-1 text-sm font-medium text-lightText dark:text-gray-300">
             Explora nuestros productos destacados y las mejores ofertas
           </p>
         </Title>
       </div>
 
-      <div className="grid gap-6 sm:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
+      <div className="grid gap-6 sm:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {loading
           ? [...Array(6)].map((_, index: number) => (
               <CategorySkeleton key={index} />
             ))
-          : categories && Array.isArray(categories) && categories.length > 0
-            ? categories?.map((category: Category, index: number) => {
+          : categories && categories.length > 0
+            ? categories.map((category: Category, index: number) => {
                 const imageUrl = category?.image
                   ? urlFor(category.image).width(400).height(288).url()
                   : "";
 
                 return (
                   <Link
-                    key={category?._id}
+                    key={category._id}
                     href={`/category/${category?.slug?.current}`}
                     className="group block"
                     onMouseEnter={() =>
-                      setHoveredCategory(category?._id || null)
+                      setHoveredCategory(category._id || null)
                     }
                     onMouseLeave={() => setHoveredCategory(null)}
                   >
-                    <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
-                      <CardContent className="p-0 relative ">
+                    <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 dark:bg-gray-800">
+                      <CardContent className="p-0 relative">
                         <div className="relative h-72 w-full rounded-md overflow-hidden">
                           <Image
                             src={imageUrl}
@@ -89,12 +88,12 @@ const HomeCategories = ({
                           />
 
                           {/* Gradient overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent dark:from-black/70 dark:via-black/30 dark:to-transparent" />
 
                           {/* Hover overlay */}
                           <div
-                            className={`absolute inset-0 bg-shop_orange/20 transition-opacity duration-300 ${
-                              hoveredCategory === category?._id
+                            className={`absolute inset-0 bg-shop_orange/20 dark:bg-orange-600/20 transition-opacity duration-300 ${
+                              hoveredCategory === category._id
                                 ? "opacity-100"
                                 : "opacity-0"
                             }`}
@@ -106,18 +105,18 @@ const HomeCategories = ({
                               {category?.title}
                             </h3>
                             <div className="flex items-center justify-between">
-                              <span className="text-white/90 text-sm">
+                              <span className="text-white/90 dark:text-gray-300 text-sm">
                                 {category?.productCount || 0} productos
                                 disponibles
                               </span>
                               <div
-                                className={`flex items-center justify-center w-8 h-8 bg-white/20 rounded-full backdrop-blur-sm transition-all duration-300 ${
-                                  hoveredCategory === category?._id
-                                    ? "bg-shop_orange scale-110"
-                                    : "group-hover:bg-white/30"
+                                className={`flex items-center justify-center w-8 h-8 bg-white/20 dark:bg-gray-600/20 rounded-full backdrop-blur-sm transition-all duration-300 ${
+                                  hoveredCategory === category._id
+                                    ? "bg-shop_orange scale-110 dark:bg-orange-500"
+                                    : "group-hover:bg-white/30 dark:group-hover:bg-gray-500/30"
                                 }`}
                               >
-                                <ArrowRight className="w-4 h-4 text-white" />
+                                <ArrowRight className="w-4 h-4 text-white dark:text-gray-100" />
                               </div>
                             </div>
                           </div>
@@ -131,28 +130,25 @@ const HomeCategories = ({
       </div>
 
       {/* Empty state */}
-      {!loading &&
-        (!categories ||
-          !Array.isArray(categories) ||
-          categories.length === 0) && (
-          <div className="text-center py-12 min-h-[200px]">
-            <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-              <Heart className="w-12 h-12 text-gray-400" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No hay categorías disponibles
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Estamos trabajando para agregar nuevas categorías de productos.
-            </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center px-4 py-2 bg-shop_orange text-white rounded-lg hover:bg-shop_orange/90 transition-colors"
-            >
-              Contacta con nosotros
-            </Link>
+      {!loading && (!categories || categories.length === 0) && (
+        <div className="text-center py-12 min-h-[200px]">
+          <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+            <Heart className="w-12 h-12 text-gray-400 dark:text-gray-300" />
           </div>
-        )}
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            No hay categorías disponibles
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Estamos trabajando para agregar nuevas categorías de productos.
+          </p>
+          <Link
+            href="/contact"
+            className="inline-flex items-center px-4 py-2 bg-shop_orange text-white rounded-lg hover:bg-shop_orange/90 transition-colors"
+          >
+            Contacta con nosotros
+          </Link>
+        </div>
+      )}
     </section>
   );
 };

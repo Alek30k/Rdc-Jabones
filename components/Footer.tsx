@@ -19,30 +19,28 @@ const Footer = () => {
       title: "Visítanos",
       subtitle: "General Manuel Belgrano, FORMOSA",
       icon: (
-        <MapPin className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
+        <MapPin className="h-6 w-6 text-gray-600 dark:text-gray-300 group-hover:text-shop_light_green transition-colors" />
       ),
     },
     {
       title: "Llámanos",
       subtitle: "+54 3718 462342",
       icon: (
-        <Phone className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
+        <Phone className="h-6 w-6 text-gray-600 dark:text-gray-300 group-hover:text-shop_light_green transition-colors" />
       ),
     },
-
     {
       title: "Envíenos un email",
       subtitle: "rdcjabones@gmail.com",
       icon: (
-        <Mail className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
+        <Mail className="h-6 w-6 text-gray-600 dark:text-gray-300 group-hover:text-shop_light_green transition-colors" />
       ),
     },
   ];
 
   return (
-    <footer className="bg-shop_light_pink  border-t">
+    <footer className="bg-shop_light_pink dark:bg-gray-900 border-t transition-colors duration-300">
       <Container>
-        {/* <FooterTop /> */}
         <div className="p-12 px-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
             <Link href={"/"}>
@@ -56,7 +54,7 @@ const Footer = () => {
                 />
               </div>
             </Link>
-            <SubText>
+            <SubText className="text-gray-700 dark:text-gray-300">
               ¿Buscas un regalo especial o un detalle único para vos?
               Consultanos por{" "}
               <span className="font-semibold text-shop_light_green">
@@ -68,7 +66,9 @@ const Footer = () => {
             </SubText>
           </div>
           <div>
-            <SubTitle>Información</SubTitle>
+            <SubTitle className="text-gray-800 dark:text-gray-100">
+              Información
+            </SubTitle>
             <ul className="space-y-3 mt-4">
               {quickLinksData?.map((item) => (
                 <li key={item?.title}>
@@ -83,7 +83,9 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <SubTitle>Categorías</SubTitle>
+            <SubTitle className="text-gray-800 dark:text-gray-100">
+              Categorías
+            </SubTitle>
             <ul className="space-y-3 mt-4">
               {productType?.map((item) => (
                 <li key={item?.title}>
@@ -98,7 +100,9 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <SubTitle>Contáctanos</SubTitle>
+            <SubTitle className="text-gray-800 dark:text-gray-100">
+              Contáctanos
+            </SubTitle>
             <ul className="space-y-3 mt-4">
               {data?.map((item) => (
                 <li key={item?.title}>
@@ -111,13 +115,14 @@ const Footer = () => {
             </ul>
           </div>
         </div>
+
         <SocialMedia
-          className="text-darkColor/60 justify-center mb-5"
-          iconClassName="border-darkColor/60 hover:border-shop_light_green hover:text-shop_light_green"
-          tooltipClassName="bg-darkColor text-white"
+          className="text-gray-600 dark:text-gray-300 justify-center mb-5"
+          iconClassName="border-gray-600 dark:border-gray-300 hover:border-shop_light_green hover:text-shop_light_green"
+          tooltipClassName="bg-gray-800 text-white"
         />
 
-        <div className="py-6 border-t text-center text-sm text-gray-600">
+        <div className="py-6 border-t text-center text-sm text-gray-600 dark:text-gray-300 transition-colors duration-300">
           <div className="gap-2">
             © {new Date().getFullYear()}{" "}
             <Link href={"/"}>

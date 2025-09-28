@@ -7,7 +7,6 @@ import PriceFormatter from "@/components/PriceFormatter";
 import ProductSideMenu from "@/components/ProductSideMenu";
 import QuantityButtons from "@/components/QuantityButtons";
 import Title from "@/components/Title";
-// import AddAddressModal from "@/components/AddAddressModal"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -79,8 +78,6 @@ const CartPage = () => {
       const updated = prev ? [newAddress, ...prev] : [newAddress];
       return updated;
     });
-
-    // Si es la dirección predeterminada o la primera dirección, seleccionarla
     if (newAddress.default || !selectedAddress) {
       setSelectedAddress(newAddress);
     }
@@ -107,17 +104,14 @@ const CartPage = () => {
       toast.error("Tu carrito está vacío.");
       return;
     }
-
     if (needsDelivery && !selectedAddress) {
       toast.error("Por favor selecciona una dirección de entrega");
       return;
     }
-
     if (!user) {
       toast.error("Debes estar logueado para continuar");
       return;
     }
-
     setLoading(true);
     try {
       const checkoutData = {
@@ -137,7 +131,6 @@ const CartPage = () => {
         orderNumber: `ORD-${Date.now()}`,
         createdAt: new Date().toISOString(),
       };
-
       localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
       router.push("/checkout");
     } catch (error) {
@@ -161,39 +154,41 @@ const CartPage = () => {
 
   if (!isSignedIn) {
     return (
-      <div className="bg-gray-50 pb-52 md:pb-10">
+      <div className="bg-gray-50 dark:bg-gray-950 pb-52 md:pb-10">
         <NoAccess />
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-50 pb-52 md:pb-10">
+    <div className="bg-gray-50 dark:bg-gray-950 pb-52 md:pb-10">
       <Container>
         {groupedItems?.length ? (
           <>
             <div className="flex items-center gap-2 py-5">
-              <ShoppingBag className="text-darkColor" />
-              <Title>Carrito de Compras</Title>
+              <ShoppingBag className="text-darkColor dark:text-gray-100" />
+              <Title className="dark:text-gray-100">Carrito de Compras</Title>
             </div>
             <div className="grid lg:grid-cols-3 md:gap-8">
               {/* Cart Items */}
               <div className="lg:col-span-2 rounded-lg">
-                <div className="border bg-white rounded-md">
+                <div className="border bg-white dark:bg-gray-900 rounded-md dark:border-gray-700">
                   {groupedItems?.map((item) => {
                     const product = item.product;
                     const itemCount = item.quantity;
 
                     return (
                       <div
-                        key={`${product?._id}-${JSON.stringify(product.customization || {})}`}
-                        className="border-b p-2.5 last:border-b-0 flex items-center justify-between gap-5"
+                        key={`${product?._id}-${JSON.stringify(
+                          product.customization || {}
+                        )}`}
+                        className="border-b dark:border-gray-700 p-2.5 last:border-b-0 flex items-center justify-between gap-5"
                       >
                         <div className="flex flex-1 items-start gap-2 h-36 md:h-44">
                           {product?.images && (
                             <Link
                               href={`/product/${product?.slug?.current}`}
-                              className="border p-0.5 md:p-1 mr-2 rounded-md overflow-hidden group"
+                              className="border p-0.5 md:p-1 mr-2 rounded-md overflow-hidden group dark:border-gray-700"
                             >
                               <Image
                                 src={
@@ -211,25 +206,25 @@ const CartPage = () => {
 
                           <div className="h-full flex flex-1 flex-col justify-between py-1">
                             <div className="flex flex-col gap-0.5 md:gap-1.5">
-                              <h2 className="text-base font-semibold line-clamp-1">
+                              <h2 className="text-base font-semibold line-clamp-1 text-gray-900 dark:text-gray-100">
                                 {product?.name}
                               </h2>
                               {product.customization &&
                                 (product.customization.soapType ||
                                   product.customization.color) && (
-                                  <div className="text-sm text-gray-600 flex items-center gap-1">
+                                  <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
                                     <Info className="w-4 h-4 text-blue-500" />
                                     <span className="font-medium">
                                       Personalizado:
                                     </span>
                                     {product.customization.soapType && (
-                                      <span className="text-blue-700">
+                                      <span className="text-blue-700 dark:text-blue-400">
                                         Jabón de{" "}
                                         {product.customization.soapType}
                                       </span>
                                     )}
                                     {product.customization.color && (
-                                      <span className="text-purple-700 ml-1">
+                                      <span className="text-purple-700 dark:text-purple-400 ml-1">
                                         Color: {product.customization.color}
                                       </span>
                                     )}
@@ -237,7 +232,7 @@ const CartPage = () => {
                                       <TooltipProvider>
                                         <Tooltip>
                                           <TooltipTrigger asChild>
-                                            <span className="ml-1 text-gray-500 cursor-help">
+                                            <span className="ml-1 text-gray-500 dark:text-gray-400 cursor-help">
                                               (Notas)
                                             </span>
                                           </TooltipTrigger>
@@ -250,19 +245,19 @@ const CartPage = () => {
                                   </div>
                                 )}
 
-                              <p className="text-sm capitalize">
+                              <p className="text-sm capitalize text-gray-700 dark:text-gray-300">
                                 Variante:{" "}
-                                <span className="font-semibold">
+                                <span className="font-semibold text-gray-900 dark:text-gray-100">
                                   {product?.variant}
                                 </span>
                               </p>
-                              <p className="text-sm capitalize">
+                              <p className="text-sm capitalize text-gray-700 dark:text-gray-300">
                                 Estado:{" "}
                                 <span
                                   className={`font-semibold ${
                                     (product?.stock as number) > 0
-                                      ? "text-green-600"
-                                      : "text-red-600"
+                                      ? "text-green-600 dark:text-green-400"
+                                      : "text-red-600 dark:text-red-400"
                                   }`}
                                 >
                                   {(product?.stock as number) > 0
@@ -297,10 +292,10 @@ const CartPage = () => {
                                           "Producto eliminado exitosamente!"
                                         );
                                       }}
-                                      className="w-4 h-4 md:w-5 md:h-5 mr-1 text-gray-500 hover:text-red-600 hoverEffect cursor-pointer"
+                                      className="w-4 h-4 md:w-5 md:h-5 mr-1 text-gray-500 dark:text-gray-400 hover:text-red-600 hoverEffect cursor-pointer"
                                     />
                                   </TooltipTrigger>
-                                  <TooltipContent className="font-bold bg-red-600">
+                                  <TooltipContent className="font-bold bg-red-600 text-white">
                                     Eliminar producto
                                   </TooltipContent>
                                 </Tooltip>
@@ -312,7 +307,7 @@ const CartPage = () => {
                         <div className="flex flex-col items-start justify-between h-36 md:h-44 p-0.5 md:p-1">
                           <PriceFormatter
                             amount={(product?.price as number) * itemCount}
-                            className="font-bold text-lg"
+                            className="font-bold text-lg text-gray-900 dark:text-gray-100"
                           />
                           <QuantityButtons product={product} />
                         </div>
@@ -333,33 +328,33 @@ const CartPage = () => {
               <div>
                 <div className="lg:col-span-1">
                   {/* Desktop Order Summary */}
-                  <div className="hidden md:inline-block w-full bg-white p-6 rounded-lg border">
-                    <h2 className="text-xl font-semibold mb-4">
+                  <div className="hidden md:inline-block w-full bg-white dark:bg-gray-900 p-6 rounded-lg border dark:border-gray-700">
+                    <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
                       Resumen del Pedido
                     </h2>
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between text-gray-700 dark:text-gray-300">
                         <span>Subtotal</span>
                         <PriceFormatter amount={getSubTotalPrice()} />
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between text-gray-700 dark:text-gray-300">
                         <span>Descuento</span>
                         <PriceFormatter
                           amount={getSubTotalPrice() - getTotalPrice()}
                         />
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between text-gray-700 dark:text-gray-300">
                         <span>Envío</span>
-                        <span className="text-green-600 font-semibold">
+                        <span className="text-green-600 dark:text-green-400 font-semibold">
                           {needsDelivery ? "Gratis" : "No aplica"}
                         </span>
                       </div>
-                      <Separator />
-                      <div className="flex items-center justify-between font-semibold text-lg">
+                      <Separator className="dark:bg-gray-700" />
+                      <div className="flex items-center justify-between font-semibold text-lg text-gray-900 dark:text-gray-100">
                         <span>Total</span>
                         <PriceFormatter
                           amount={getTotalPrice()}
-                          className="text-lg font-bold text-black"
+                          className="text-lg font-bold"
                         />
                       </div>
                       <Button
@@ -389,10 +384,10 @@ const CartPage = () => {
                   </div>
 
                   {/* Delivery Options */}
-                  <div className="bg-white rounded-md mt-5">
+                  <div className="bg-white dark:bg-gray-900 rounded-md mt-5 border dark:border-gray-700">
                     <Card>
                       <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
                           <Package2 className="w-5 h-5" />
                           Opciones de Entrega
                         </CardTitle>
@@ -406,14 +401,14 @@ const CartPage = () => {
                           />
                           <Label
                             htmlFor="needsDelivery"
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-900 dark:text-gray-100"
                           >
                             Necesito envío a domicilio
                           </Label>
                         </div>
                         {!needsDelivery && (
-                          <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                            <p className="text-sm text-blue-800">
+                          <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-700">
+                            <p className="text-sm text-blue-800 dark:text-blue-300">
                               <strong>Retiro en tienda:</strong> Podrás retirar
                               tu pedido en nuestro local una vez confirmado el
                               pago.
@@ -424,24 +419,24 @@ const CartPage = () => {
                     </Card>
                   </div>
 
-                  {/* Delivery Address - Only show if delivery is needed */}
+                  {/* Delivery Address */}
                   {needsDelivery && (
                     <>
                       {addressLoading ? (
-                        <div className="bg-white rounded-md mt-5 p-6">
+                        <div className="bg-white dark:bg-gray-900 rounded-md mt-5 p-6">
                           <div className="animate-pulse space-y-4">
-                            <div className="h-6 bg-gray-200 rounded w-1/2"></div>
+                            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
                             <div className="space-y-3">
-                              <div className="h-4 bg-gray-200 rounded"></div>
-                              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
                             </div>
                           </div>
                         </div>
                       ) : addresses && addresses.length > 0 ? (
-                        <div className="bg-white rounded-md mt-5">
+                        <div className="bg-white dark:bg-gray-900 rounded-md mt-5 border dark:border-gray-700">
                           <Card>
                             <CardHeader>
-                              <CardTitle className="flex items-center gap-2">
+                              <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
                                 <MapPin className="w-5 h-5" />
                                 Dirección de Entrega
                               </CardTitle>
@@ -461,8 +456,8 @@ const CartPage = () => {
                                     key={address?._id}
                                     className={`flex items-center space-x-2 mb-4 cursor-pointer p-3 rounded-lg border transition-colors ${
                                       selectedAddress?._id === address?._id
-                                        ? "border-blue-500 bg-blue-50"
-                                        : "border-gray-200 hover:border-gray-300"
+                                        ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
+                                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
                                     }`}
                                     onClick={() => handleAddressSelect(address)}
                                   >
@@ -471,17 +466,17 @@ const CartPage = () => {
                                     />
                                     <Label
                                       htmlFor={`address-${address?._id}`}
-                                      className="grid gap-1.5 flex-1 cursor-pointer"
+                                      className="grid gap-1.5 flex-1 cursor-pointer text-gray-900 dark:text-gray-100"
                                     >
                                       <span className="font-semibold">
                                         {address?.name}
                                       </span>
-                                      <span className="text-sm text-black/60">
+                                      <span className="text-sm text-gray-600 dark:text-gray-400">
                                         {address.address}, {address.city},{" "}
                                         {address.state} {address.zip}
                                       </span>
                                       {address.default && (
-                                        <span className="text-xs text-blue-600 font-medium">
+                                        <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">
                                           Dirección predeterminada
                                         </span>
                                       )}
@@ -497,16 +492,16 @@ const CartPage = () => {
                           </Card>
                         </div>
                       ) : (
-                        <div className="bg-white rounded-md mt-5">
+                        <div className="bg-white dark:bg-gray-900 rounded-md mt-5 border dark:border-gray-700">
                           <Card>
                             <CardHeader>
-                              <CardTitle className="flex items-center gap-2">
+                              <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
                                 <MapPin className="w-5 h-5" />
                                 Dirección de Entrega
                               </CardTitle>
                             </CardHeader>
                             <CardContent className="text-center py-8">
-                              <p className="text-gray-600 mb-4">
+                              <p className="text-gray-600 dark:text-gray-400 mb-4">
                                 No tienes direcciones guardadas
                               </p>
                               <AddAddressModal
@@ -523,32 +518,34 @@ const CartPage = () => {
               </div>
 
               {/* Mobile Order Summary */}
-              <div className="md:hidden fixed bottom-0 left-0 w-full bg-white pt-2 border-t shadow-lg">
-                <div className="bg-white p-4 rounded-lg mx-4">
-                  <h2 className="font-semibold mb-3">Resumen del Pedido</h2>
+              <div className="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-gray-900 pt-2 border-t dark:border-gray-700 shadow-lg">
+                <div className="bg-white dark:bg-gray-900 p-4 rounded-lg mx-4 border dark:border-gray-700">
+                  <h2 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">
+                    Resumen del Pedido
+                  </h2>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
                       <span>Subtotal</span>
                       <PriceFormatter amount={getSubTotalPrice()} />
                     </div>
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
                       <span>Descuento</span>
                       <PriceFormatter
                         amount={getSubTotalPrice() - getTotalPrice()}
                       />
                     </div>
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
                       <span>Envío</span>
-                      <span className="text-green-600 font-semibold">
+                      <span className="text-green-600 dark:text-green-400 font-semibold">
                         {needsDelivery ? "Gratis" : "No aplica"}
                       </span>
                     </div>
-                    <Separator />
-                    <div className="flex items-center justify-between font-semibold">
+                    <Separator className="dark:bg-gray-700" />
+                    <div className="flex items-center justify-between font-semibold text-gray-900 dark:text-gray-100">
                       <span>Total</span>
                       <PriceFormatter
                         amount={getTotalPrice()}
-                        className="font-bold text-black"
+                        className="font-bold"
                       />
                     </div>
                     <Button

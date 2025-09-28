@@ -135,7 +135,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/30">
+    <div className="min-h-screen bg-gray-50/30   text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
       {/* Breadcrumb Section */}
       <BreadcrumbComponent product={product} />
 
@@ -153,7 +153,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
           <div className="space-y-1">
             <h2 className="text-3xl font-bold">{product?.name}</h2>
           </div>
-          <div className="space-y-2  py-5">
+          <div className="space-y-2   py-5">
             <PriceView
               price={product?.price}
               discount={product?.discount}
@@ -170,7 +170,7 @@ const SingleProductPage = ({ params }: { params: { slug: string } }) => {
             </p>
 
             {/* Sección de Personalización de Jabón */}
-            <div className="mt-8 p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <div className="mt-8 p-4 border   text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 border-gray-200 rounded-lg bg-gray-50">
               <div className="flex items-center justify-between mb-4">
                 <Label
                   htmlFor="personalizar-jabon"

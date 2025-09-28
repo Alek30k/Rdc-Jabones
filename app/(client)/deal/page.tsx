@@ -7,7 +7,7 @@ import React from "react";
 const DealPage = async () => {
   const products = await getDealProducts();
   return (
-    <div className="py-10 bg-deal-bg">
+    <div className="py-10 bg-deal-bg   text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
       <Container>
         <Title className="mb-5 underline underline-offset-4 decoration-[1px] text-base uppercase tracking-wide">
           Ofertas imperdibles de la semana

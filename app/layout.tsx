@@ -3,12 +3,17 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import PromotionalModalManager from "@/components/modals/PromotionalModalManager";
+import { ThemeProvider } from "next-themes";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="en">
-      <body className="font-poppins antialiased">
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className="font-poppins antialiased bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          {children}
+        </ThemeProvider>
+
+        {/* Notificaciones */}
         <Toaster
           position="bottom-right"
           toastOptions={{
@@ -18,18 +23,19 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             },
           }}
         />
+
+        {/* Extras */}
         <CookieConsentBanner />
         <WhatsAppButton
           phoneNumber="+543718462342"
           message="¡Hola! Estoy interesado en un producto de su tienda."
         />
-        {/* Modal promocional */}
         <PromotionalModalManager
           modalType="showcase"
           delay={6000}
           oncePerSession={true}
-          oncePerDay={false} // O una vez por día
-          minScreenWidth={768} // Solo mostrar en pantallas de 768px o más (tablets y desktop)
+          oncePerDay={false}
+          minScreenWidth={768}
         />
       </body>
     </html>

@@ -44,15 +44,15 @@ const WishListProducts = () => {
         <div className="flex min-h-[500px] flex-col items-center justify-center space-y-6 px-4 text-center">
           <div className="relative mb-4">
             <div className="absolute -top-1 -right-1 h-4 w-4 animate-ping rounded-full bg-red-500/30" />
-            <div className="rounded-full bg-red-50 p-6">
+            <div className="rounded-full bg-red-50 dark:bg-red-900/30 p-6">
               <Heart className="h-16 w-16 text-red-400" strokeWidth={1.5} />
             </div>
           </div>
           <div className="space-y-3">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
               Tu lista de favoritos está vacía
             </h2>
-            <p className="text-lg text-gray-600 max-w-md">
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-md">
               Descubre productos increíbles y guárdalos aquí para comprarlos más
               tarde
             </p>
@@ -72,10 +72,12 @@ const WishListProducts = () => {
     <Container>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-gray-200 dark:border-gray-700">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Mis Favoritos</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              Mis Favoritos
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
               {favoriteProduct.length} producto
               {favoriteProduct.length !== 1 ? "s" : ""} guardado
               {favoriteProduct.length !== 1 ? "s" : ""}
@@ -87,7 +89,7 @@ const WishListProducts = () => {
               onClick={handleResetWishlist}
               variant="outline"
               size="sm"
-              className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+              className="text-red-600 dark:text-red-400 border-red-200 dark:border-red-500/50 hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300"
             >
               <Trash2 className="w-4 h-4 mr-2" />
               Limpiar lista
@@ -97,34 +99,34 @@ const WishListProducts = () => {
 
         {/* Desktop Table View */}
         <div className="hidden lg:block">
-          <div className="overflow-hidden rounded-lg border border-gray-200">
+          <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                     Producto
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                     Categoría
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                     Estado
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                     Precio
                   </th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100">
                     Acciones
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
                 {favoriteProduct
                   .slice(0, visibleProducts)
                   .map((product: Product) => (
                     <tr
                       key={product?._id}
-                      className="hover:bg-gray-50 transition-colors"
+                      className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
@@ -147,12 +149,12 @@ const WishListProducts = () => {
                           <div className="min-w-0 flex-1">
                             <Link
                               href={`/product/${product?.slug?.current}`}
-                              className="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                              className="font-medium text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                             >
                               {product?.name}
                             </Link>
                             {product?.variant && (
-                              <p className="text-sm text-gray-500 mt-1 capitalize">
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 capitalize">
                                 {product.variant}
                               </p>
                             )}
@@ -202,7 +204,7 @@ const WishListProducts = () => {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleRemoveItem(product)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30"
                           >
                             <X className="w-4 h-4" />
                           </Button>
@@ -224,7 +226,7 @@ const WishListProducts = () => {
           {favoriteProduct.slice(0, visibleProducts).map((product: Product) => (
             <Card
               key={product?._id}
-              className="overflow-hidden hover:shadow-md transition-shadow"
+              className="overflow-hidden hover:shadow-md transition-shadow bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700"
             >
               <CardContent className="p-4">
                 <div className="flex gap-3">
@@ -248,7 +250,7 @@ const WishListProducts = () => {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleRemoveItem(product)}
-                      className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white shadow-md text-red-600 hover:text-red-700 hover:bg-red-50 p-0"
+                      className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white dark:bg-gray-800 shadow-md text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 p-0"
                     >
                       <X className="w-3 h-3" />
                     </Button>
@@ -258,7 +260,7 @@ const WishListProducts = () => {
                   <div className="flex-1 min-w-0">
                     <Link
                       href={`/product/${product?.slug?.current}`}
-                      className="font-medium text-gray-900 hover:text-blue-600 transition-colors line-clamp-2"
+                      className="font-medium text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2"
                     >
                       {product?.name}
                     </Link>
@@ -330,3 +332,4 @@ const WishListProducts = () => {
 };
 
 export default WishListProducts;
+s;

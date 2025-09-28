@@ -26,8 +26,8 @@ const Shop = ({ categories }: Props) => {
   const isMobile = useMobile();
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [initialLoading, setInitialLoading] = useState(true); // Loading inicial
-  const [filterLoading, setFilterLoading] = useState(false); // Loading de filtros
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [filterLoading, setFilterLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     categoryParams || null
   );
@@ -35,7 +35,7 @@ const Shop = ({ categories }: Props) => {
     brandParams || null
   );
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
-  const [isFirstLoad, setIsFirstLoad] = useState(true); // Para distinguir primera carga
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const hasActiveFilters =
     selectedCategory !== null ||
@@ -49,12 +49,8 @@ const Shop = ({ categories }: Props) => {
   };
 
   const fetchProducts = async (isInitial = false) => {
-    // Si es la primera carga, usar loading inicial, sino usar loading de filtros
-    if (isInitial) {
-      setInitialLoading(true);
-    } else {
-      setFilterLoading(true);
-    }
+    if (isInitial) setInitialLoading(true);
+    else setFilterLoading(true);
 
     try {
       let minPrice = 0;
@@ -96,31 +92,21 @@ const Shop = ({ categories }: Props) => {
     }
   };
 
-  // Efecto para la carga inicial
   useEffect(() => {
-    if (isFirstLoad) {
-      fetchProducts(true);
-    }
+    if (isFirstLoad) fetchProducts(true);
   }, []);
 
-  // Efecto para los filtros (solo después de la primera carga)
   useEffect(() => {
-    if (!isFirstLoad) {
-      fetchProducts(false);
-    }
+    if (!isFirstLoad) fetchProducts(false);
   }, [selectedCategory, selectedBrand, selectedPrice]);
 
-  // Mostrar loading completo solo en la carga inicial
-  if (initialLoading) {
-    return <ShopLoadingSkeleton />;
-  }
+  if (initialLoading) return <ShopLoadingSkeleton />;
 
   return (
-    <div className="border-t">
-      <Container className="">
-        <div className="sticky top-0 z-10 mb-5 bg-white/95 backdrop-blur-sm py-2">
+    <div className="border-t border-gray-200 dark:border-gray-700">
+      <Container>
+        <div className="sticky top-0 z-10 mb-5 bg-white/95 dark:bg-gray-900/90 backdrop-blur-sm py-2 transition-colors duration-300">
           <div className="flex items-center justify-between">
-            {/* Mobile Filter Button */}
             {isMobile ? (
               <FilterSheet
                 categories={categories}
@@ -135,7 +121,7 @@ const Shop = ({ categories }: Props) => {
               hasActiveFilters && (
                 <button
                   onClick={handleResetFilters}
-                  className="text-shop_dark_green underline text-sm mt-2 font-medium hover:text-darkRed hoverEffect"
+                  className="text-shop_dark_green underline text-sm mt-2 font-medium hover:text-darkRed hoverEffect dark:text-green-300 dark:hover:text-red-400"
                   disabled={filterLoading}
                 >
                   Restablecer filtros
@@ -143,8 +129,7 @@ const Shop = ({ categories }: Props) => {
               )
             )}
 
-            {/* Results count */}
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-600 dark:text-gray-300">
               {filterLoading
                 ? "Filtrando..."
                 : `${products.length} producto${products.length !== 1 ? "s" : ""} encontrado${
@@ -153,16 +138,15 @@ const Shop = ({ categories }: Props) => {
             </div>
           </div>
 
-          {/* Active filters indicator for mobile */}
           {isMobile && hasActiveFilters && (
             <div className="mt-2 flex flex-wrap gap-2">
               {selectedCategory && (
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-shop_dark_green/10 text-shop_dark_green">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-shop_dark_green/10 dark:bg-green-700/20 text-shop_dark_green dark:text-green-300">
                   Categoría: {selectedCategory}
                 </span>
               )}
               {selectedPrice && (
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-shop_dark_green/10 text-shop_dark_green">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-shop_dark_green/10 dark:bg-green-700/20 text-shop_dark_green dark:text-green-300">
                   Precio: ${selectedPrice.replace("-", " - $")}
                 </span>
               )}
@@ -170,33 +154,32 @@ const Shop = ({ categories }: Props) => {
           )}
         </div>
 
-        <div className="flex flex-col md:flex-row gap-5 border-t border-t-shop_dark_green/50">
-          {/* Desktop Sidebar */}
+        <div className="flex flex-col md:flex-row gap-5 border-t border-t-shop_dark_green/50 dark:border-t-gray-700">
           {!isMobile && (
-            <div className="md:sticky md:top-20 md:self-start md:h-[calc(100vh-160px)] md:overflow-y-auto md:min-w-64 pb-5 md:border-r border-r-shop_btn_dark_green/50 scrollbar-hide">
+            <div className="md:sticky md:top-20 md:self-start md:h-[calc(100vh-160px)] md:overflow-y-auto md:min-w-64 pb-5 md:border-r border-r-shop_btn_dark_green/50 dark:border-r-gray-700 scrollbar-hide">
               <CategoryList
                 categories={categories}
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
                 disabled={filterLoading}
+                darkMode
               />
 
               <PriceList
                 setSelectedPrice={setSelectedPrice}
                 selectedPrice={selectedPrice}
                 disabled={filterLoading}
+                darkMode
               />
             </div>
           )}
 
-          {/* Products Grid */}
           <div className="flex-1 pt-5">
             <div className="h-[calc(100vh-160px)] overflow-y-auto pr-2 scrollbar-hide relative">
-              {/* Overlay de loading para filtros */}
-              {filterLoading && <ProductCardsLoadingMinimal />}
+              {filterLoading && <ProductCardsLoadingMinimal darkMode />}
 
               {filterLoading ? (
-                <ProductCardsLoading count={12} />
+                <ProductCardsLoading count={12} darkMode />
               ) : products?.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
                   {products?.map((product) => (
@@ -204,7 +187,7 @@ const Shop = ({ categories }: Props) => {
                   ))}
                 </div>
               ) : (
-                <NoProductAvailable className="bg-white mt-0" />
+                <NoProductAvailable className="bg-white dark:bg-gray-900 mt-0" />
               )}
             </div>
           </div>

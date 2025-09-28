@@ -69,11 +69,13 @@ const AddToCartButton = ({ product, className }: Props) => {
   };
 
   return (
-    <div className="w-full h-12 flex items-center">
+    <div className="w-full h-12 flex items-center text-gray-900 dark:text-gray-100">
       {itemCount ? (
         <div className="text-sm w-full">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-darkColor/80">Cantidad</span>
+            <span className="text-xs  text-gray-900 dark:text-gray-100">
+              Cantidad
+            </span>
             <QuantityButtons product={product} />
           </div>
           <div className="flex items-center justify-between border-t pt-1">

@@ -1,11 +1,11 @@
-"use client"; // ¡Importante! Este componente debe ser un Client Component
+"use client";
 
 import { useState } from "react";
 import type { Product } from "@/sanity.types";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
-import { Flame, Eye } from "lucide-react"; // Importamos el icono Eye
+import { Flame, Eye } from "lucide-react";
 import ProductSideMenu from "./ProductSideMenu";
 import Title from "./Title";
 import PriceView from "./PriceView";
@@ -16,9 +16,9 @@ const ProductCard = ({ product }: { product: Product }) => {
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   return (
-    <div className="text-sm border border-darkBlue/20 rounded-md group bg-white overflow-hidden relative">
+    <div className="text-sm border border-darkBlue/20 dark:border-gray-700 rounded-md group bg-white dark:bg-gray-800 overflow-hidden relative transition-colors duration-300">
       {/* Contenedor de la imagen y efectos de hover */}
-      <div className="relative group overflow-hidden bg-shop_light_bg">
+      <div className="relative group overflow-hidden bg-shop_light_bg dark:bg-gray-700">
         {product?.images && (
           <Link href={`/product/${product?.slug?.current}`}>
             <Image
@@ -27,7 +27,7 @@ const ProductCard = ({ product }: { product: Product }) => {
               width={500}
               height={500}
               priority
-              className={`w-full h-48 sm:h-56 md:h-64 object-cover overflow-hidden transition-transform bg-shop_light_bg duration-500 
+              className={`w-full h-48 sm:h-56 md:h-64 object-cover overflow-hidden transition-transform duration-500 
               ${product?.stock !== 0 ? "group-hover:scale-105" : "opacity-50"}`}
             />
           </Link>
@@ -47,13 +47,13 @@ const ProductCard = ({ product }: { product: Product }) => {
         <ProductSideMenu product={product} />
 
         {product?.status === "sale" ? (
-          <p className="absolute top-2 left-2 z-10 text-xs border border-darkColor/50 px-2 py-1 rounded-full group-hover:border-lightGreen hover:text-shop_dark_green hoverEffect bg-white/90">
+          <p className="absolute top-2 left-2 z-10 text-xs border border-darkColor/50 dark:border-gray-500 px-2 py-1 rounded-full group-hover:border-lightGreen hover:text-shop_dark_green hoverEffect bg-white/90 dark:bg-gray-700/80">
             Sale!
           </p>
         ) : (
           <Link
             href={"/deal"}
-            className="absolute top-2 left-2 z-10 border border-shop_orange/50 p-1 rounded-full group-hover:border-shop_orange hover:text-shop_dark_green hoverEffect bg-white/90"
+            className="absolute top-2 left-2 z-10 border border-shop_orange/50 dark:border-orange-400 p-1 rounded-full group-hover:border-shop_orange hover:text-shop_dark_green hoverEffect bg-white/90 dark:bg-gray-700/80"
           >
             <Flame
               size={16}
@@ -64,16 +64,16 @@ const ProductCard = ({ product }: { product: Product }) => {
         )}
       </div>
 
-      {/* Contenido de la tarjeta (nombre, precio, botón añadir al carrito) */}
-      <div className="p-3 sm:p-4 flex flex-col gap-2 sm:gap-3 ">
-        <Title className="text-sm sm:text-base line-clamp-1 leading-tight ">
+      {/* Contenido de la tarjeta */}
+      <div className="p-3 sm:p-4 flex flex-col gap-2 sm:gap-3">
+        <Title className="text-sm sm:text-base line-clamp-1 leading-tight text-gray-900 dark:text-gray-100">
           {product?.name}
         </Title>
         <div className="flex flex-col gap-2 sm:gap-3">
           <PriceView
             price={product?.price}
             discount={product?.discount}
-            className="text-base sm:text-lg"
+            className="text-base sm:text-lg text-gray-900 dark:text-gray-100"
           />
           <AddToCartButton
             product={product}

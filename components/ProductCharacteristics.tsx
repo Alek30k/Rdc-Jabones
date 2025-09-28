@@ -217,9 +217,9 @@ const ProductCharacteristics = ({
               <span className="font-semibold">Ingredientes Principales</span>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="pt-4">
-            <div className="space-y-3">
-              <p className="text-sm text-gray-600 mb-3">
+          <AccordionContent className="pt-4 ">
+            <div className="space-y-3 ">
+              <p className="text-sm text-gray-600 mb-3 bg-white dark:bg-gray-900  dark:text-white transition-colors duration-300">
                 Nuestros jabones están elaborados con ingredientes naturales:
               </p>
               {product.ingredients ? (
@@ -227,7 +227,7 @@ const ProductCharacteristics = ({
                   {product.ingredients.map((ingrediente, index) => (
                     <div className="flex gap-4" key={index}>
                       <span>✨</span>
-                      <p className="text-gray-700 tracking-tight text-lg leading-relaxed whitespace-pre-line">
+                      <p className="text-gray-700 mb-3 bg-white dark:bg-gray-900  dark:text-white  tracking-tight text-lg leading-relaxed whitespace-pre-line">
                         {formatIngredientText(ingrediente)}
                       </p>{" "}
                     </div>

@@ -15,7 +15,7 @@ import { Product } from "@/sanity.types";
 
 const BreadcrumbComponent = ({ product }: { product: Product | null }) => {
   return (
-    <div className="bg-white border-b">
+    <div className=" bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 border-b">
       <Container className="">
         <div className="flex items-center justify-between">
           <Breadcrumb>
@@ -23,7 +23,7 @@ const BreadcrumbComponent = ({ product }: { product: Product | null }) => {
               <BreadcrumbItem>
                 <BreadcrumbLink
                   href="/"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600  bg-white  dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 hover:text-gray-900"
                 >
                   Inicio
                 </BreadcrumbLink>
@@ -32,14 +32,14 @@ const BreadcrumbComponent = ({ product }: { product: Product | null }) => {
               <BreadcrumbItem>
                 <BreadcrumbLink
                   href="/shop"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600  bg-white  dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 hover:text-gray-900"
                 >
                   Productos
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <span className="text-gray-900 font-medium line-clamp-1">
+                <span className="text-gray-900  bg-white  dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 font-medium line-clamp-1">
                   {product?.name}
                 </span>
               </BreadcrumbItem>

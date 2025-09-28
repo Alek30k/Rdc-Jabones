@@ -29,7 +29,9 @@ const ProductDescription = ({
   const portableTextComponents = {
     block: {
       normal: ({ children }: unknown) => (
-        <p className="mb-4 text-gray-700 leading-relaxed">{children}</p>
+        <p className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed">
+          {children}
+        </p>
       ),
     },
   };
@@ -49,20 +51,14 @@ const ProductDescription = ({
   const toggleExpanded = () => setIsExpanded(!isExpanded);
   const fadeHeight = measurements.lineHeight * 2.5;
 
-  if (!product) {
-    return (
-      <div
-        className={`bg-white p-6 rounded-lg shadow-sm mb-5 border border-gray-200 ${className}`}
-      >
-        <h3 className="text-xl font-semibold mb-4 text-gray-900 font-inter">
-          Descripción
-        </h3>
-        <p className="text-gray-500 italic">No hay descripción disponible.</p>
-      </div>
-    );
-  }
-
   const descriptionContent = (() => {
+    if (!product)
+      return (
+        <p className="text-gray-500 dark:text-gray-400 italic">
+          No hay descripción disponible.
+        </p>
+      );
+
     if (
       Array.isArray(product.richDescription) &&
       product.richDescription.length > 0
@@ -74,21 +70,27 @@ const ProductDescription = ({
         />
       );
     }
+
     if (product.description) {
-      return <p>{product.description}</p>;
+      return (
+        <p className="text-gray-700 dark:text-gray-300">
+          {product.description}
+        </p>
+      );
     }
+
     return (
-      <p className="text-gray-500 italic">No hay descripción disponible.</p>
+      <p className="text-gray-500 dark:text-gray-400 italic">
+        No hay descripción disponible.
+      </p>
     );
   })();
 
   return (
     <div
-      className={`bg-white p-6 rounded-lg shadow-sm mb-5 border border-gray-200 ${className}`}
+      className={`bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 p-6 rounded-lg shadow-sm mb-5 border border-gray-200 dark:border-gray-700 ${className}`}
     >
-      <h3 className="text-xl font-semibold mb-4 text-gray-900 font-inter">
-        Descripción
-      </h3>
+      <h3 className="text-xl font-semibold mb-4 font-inter">Descripción</h3>
 
       <div className="relative">
         <div
@@ -97,7 +99,6 @@ const ProductDescription = ({
             isExpanded ? "max-h-none" : "overflow-hidden"
           }`}
           style={{
-            color: "rgba(0,0,0,.55)",
             maxHeight: isExpanded
               ? "none"
               : `${measurements.collapsedHeight}px`,
@@ -107,14 +108,23 @@ const ProductDescription = ({
         </div>
 
         {!isExpanded && showReadMore && (
-          <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+          <div
+            className="absolute bottom-0 left-0 right-0 pointer-events-none"
+            style={{
+              height: `${fadeHeight}px`,
+              background: `linear-gradient(180deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,1) 100%)`,
+            }}
+          >
+            <div className="dark:hidden" />
             <div
-              className="absolute bottom-0 left-0 right-0"
+              className="hidden dark:block"
               style={{
-                height: `${fadeHeight}px`,
                 background: `linear-gradient(180deg,
-                  hsla(0,0%,100%,0) 0%,
-                  hsla(0,0%,100%,1) 100%)`,
+                  rgba(17,24,39,0) 0%,
+                  rgba(17,24,39,1) 100%)`,
+                height: `${fadeHeight}px`,
               }}
             />
           </div>
@@ -125,7 +135,7 @@ const ProductDescription = ({
         <div className="mt-4 flex justify-start">
           <button
             onClick={toggleExpanded}
-            className="group flex items-center gap-1.5 text-blue-500 hover:text-blue-700 text-sm font-medium transition-all duration-300 font-inter hover:bg-blue-50 px-3 py-1.5 rounded-md -ml-3 active:scale-95"
+            className="group flex items-center gap-1.5 text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-all duration-300 font-inter hover:bg-blue-50 dark:hover:bg-gray-800 px-3 py-1.5 rounded-md -ml-3 active:scale-95"
           >
             <span>{isExpanded ? "Ver menos" : "Ver más"}</span>
             <div
