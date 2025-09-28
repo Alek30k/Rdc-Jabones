@@ -31,7 +31,7 @@ const SoapCatalog = () => {
       name: "Avena & Miel",
       subtitle: "Suavidad y nutrición",
       icon: "🍯",
-      image: "/images/jabon-avena-miel.jpg", // Ruta para tu imagen
+      image: "/avenaymiel.png", // Ruta para tu imagen
       ingredients:
         "Avena coloidal, miel pura, aceite de coco, manteca de karité",
       benefits: [
@@ -47,7 +47,7 @@ const SoapCatalog = () => {
       name: "Lavanda Relajante",
       subtitle: "Calma y tranquilidad",
       icon: "💜",
-      image: "/images/jabon-lavanda.jpg",
+      image: "/lavanda.png",
       ingredients:
         "Aceite esencial de lavanda, flores secas, aceite de oliva, glicerina",
       benefits: [
@@ -60,10 +60,10 @@ const SoapCatalog = () => {
     },
     {
       id: 3,
-      name: "Carbón Detox",
+      name: "Carbón Activado",
       subtitle: "Purificación profunda",
       icon: "⚫",
-      image: "/images/jabon-carbon.jpg",
+      image: "/carbon.jpg",
       ingredients: "Carbón activado, arcilla bentonita, aceite de árbol de té",
       benefits: [
         "Elimina impurezas y toxinas",
@@ -78,7 +78,7 @@ const SoapCatalog = () => {
       name: "Rosa Mosqueta",
       subtitle: "Anti-edad y regeneración",
       icon: "🌹",
-      image: "/images/jabon-rosa-mosqueta.jpg",
+      image: "/masajeador.png",
       ingredients: "Aceite de rosa mosqueta, pétalos de rosa, vitamina E",
       benefits: [
         "Reduce líneas de expresión",
@@ -183,7 +183,7 @@ const SoapCatalog = () => {
       name: "Menta Refrescante",
       subtitle: "Frescura instantánea",
       icon: "🌱",
-      image: "/images/jabon-menta.jpg",
+      image: "/menta.png",
       ingredients: "Aceite esencial de menta, aloe vera, aceite de jojoba",
       benefits: [
         "Sensación refrescante inmediata",
