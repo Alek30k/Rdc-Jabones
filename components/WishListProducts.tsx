@@ -332,4 +332,3 @@ const WishListProducts = () => {
 };
 
 export default WishListProducts;
-s;
