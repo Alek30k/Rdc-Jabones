@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { Facebook, Instagram, Mail, MessageCircle } from "lucide-react";
+import Link from "next/link";
 
 const SoapCatalog = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -280,9 +282,9 @@ const SoapCatalog = () => {
       description: `Humedece la piel, aplica el jabón en movimientos circulares suaves y enjuaga con agua tibia.`,
     },
     {
-      icon: "⏰",
-      title: "Frecuencia",
-      description: `Usa 1-2 veces al día. Para pieles sensibles, comienza con uso alterno hasta que se adapte.`,
+      icon: "🌊",
+      title: "Espuma Ideal",
+      description: `Frota el jabón entre tus manos o en una esponja para crear espuma abundante y aplicar mejor el producto.`,
     },
     {
       icon: "🌱",
@@ -290,9 +292,9 @@ const SoapCatalog = () => {
       description: `Nuestros jabones son biodegradables y libres de químicos agresivos, cuidando tu piel y el planeta.`,
     },
     {
-      icon: "📅",
-      title: "Duración",
-      description: `Cada jabón dura aproximadamente 4-6 semanas con uso regular. Vida útil de 12 meses desde su fabricación.`,
+      icon: "🌊",
+      title: "Espuma Ideal",
+      description: `Frota el jabón entre tus manos o en una esponja para crear espuma abundante y aplicar mejor el producto.`,
     },
     {
       icon: "⚠️",
@@ -319,8 +321,8 @@ const SoapCatalog = () => {
     },
     {
       icon: "✨",
-      title: "Glicerina Natural",
-      description: `A diferencia de los jabones comerciales, conservamos la glicerina natural que se produce durante la saponificación.`,
+      title: "Base de Glicerina",
+      description: `Nuestros jabones están elaborados con base de glicerina vegetal, suave y delicada con la piel.`,
     },
   ];
 
@@ -375,9 +377,9 @@ const SoapCatalog = () => {
             Bienvenido a Nuestro Mundo Natural
           </h2>
           <p className="text-center text-base sm:text-lg text-gray-600 dark:text-gray-300 italic max-w-3xl mx-auto">
-            Cada jabón es una obra de arte creada con ingredientes naturales
+            {`"Cada jabón es una obra de arte creada con ingredientes naturales
             seleccionados cuidadosamente para nutrir y proteger tu piel de
-            manera suave y efectiva.
+            manera suave y efectiva."`}
           </p>
         </section>
 
@@ -494,8 +496,8 @@ const SoapCatalog = () => {
           </h2>
 
           <p className="text-center text-base sm:text-lg text-gray-600 dark:text-gray-300 italic mb-8 max-w-3xl mx-auto">
-            Los jabones artesanales ofrecen beneficios únicos que los productos
-            industriales no pueden igualar:
+            {`"Los jabones artesanales ofrecen beneficios únicos que los productos
+            industriales no pueden igualar:"`}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -526,32 +528,68 @@ const SoapCatalog = () => {
             piel
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white bg-opacity-10 dark:bg-gray-700 p-4 rounded-lg text-center">
-              <h4 className="font-semibold mb-2">📱 WhatsApp</h4>
-              <p className="text-sm">+54 11 XXXX-XXXX</p>
-              <p className="text-xs opacity-90">Consultas y pedidos</p>
-            </div>
-            <div className="bg-white bg-opacity-10 dark:bg-gray-700 p-4 rounded-lg text-center">
-              <h4 className="font-semibold mb-2">📧 Email</h4>
-              <p className="text-sm">info@jabonesartesanales.com</p>
-              <p className="text-xs opacity-90">Atención personalizada</p>
-            </div>
-            <div className="bg-white bg-opacity-10 dark:bg-gray-700 p-4 rounded-lg text-center">
-              <h4 className="font-semibold mb-2">📍 Instagram</h4>
-              <p className="text-sm">@jabonesartesanales</p>
-              <p className="text-xs opacity-90">Síguenos para tips y ofertas</p>
-            </div>
-            <div className="bg-white bg-opacity-10 dark:bg-gray-700 p-4 rounded-lg text-center">
-              <h4 className="font-semibold mb-2">🚚 Envíos</h4>
-              <p className="text-sm">CABA y GBA</p>
-              <p className="text-xs opacity-90">Envío gratis +$5000</p>
-            </div>
+          <div className="grid text-green-900  dark:text-white grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Link
+              href={`https://wa.me/${+543718462342}?text=${"¡Hola! Estoy interesado en un producto de su tienda."}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="bg-white bg-opacity-10 dark:bg-gray-700 p-4 rounded-lg text-center">
+                <h4 className=" flex items-center justify-center gap-3 font-semibold mb-2">
+                  <MessageCircle className="w-5 h-5" /> WhatsApp
+                </h4>
+                <p className="text-sm">+54 3718 462342</p>
+                <p className="text-xs opacity-90">Consultas y pedidos</p>
+              </div>
+            </Link>
+            <Link
+              href={`mailto:rdcjabones@gmail.com`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="bg-white bg-opacity-10 dark:bg-gray-700 p-4 rounded-lg text-center">
+                <h4 className="flex items-center justify-center gap-3  font-semibold mb-2">
+                  {" "}
+                  <Mail className="w-5 h-5" /> Email
+                </h4>
+                <p className="text-sm">rdcjabones@gmail.com</p>
+                <p className="text-xs opacity-90">Atención personalizada</p>
+              </div>
+            </Link>
+            <Link
+              href={"https://www.instagram.com"}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="bg-white bg-opacity-10 dark:bg-gray-700 p-4 rounded-lg text-center">
+                <h4 className="flex items-center justify-center gap-3  font-semibold mb-2">
+                  <Instagram className="w-5 h-5" /> Instagram
+                </h4>
+                <p className="text-sm">@jabonesartesanales</p>
+                <p className="text-xs opacity-90">
+                  Síguenos para tips y ofertas
+                </p>
+              </div>
+            </Link>
+            <Link
+              href={"https://www.facebook.com/profile.php?id=61581624413159"}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="bg-white bg-opacity-10 dark:bg-gray-700 p-4 rounded-lg text-center">
+                <p className="text-sm"></p>
+                <h4 className="flex items-center justify-center gap-3 font-semibold mb-2">
+                  <Facebook className="w-5 h-5" /> Facebook
+                </h4>
+                <p className="text-sm">RDC Jabones Artesanales </p>
+                <p className="text-xs opacity-90">Síguenos en Facebook</p>
+              </div>
+            </Link>
           </div>
 
           <p className="text-center mt-8 italic text-sm sm:text-base">
-            Gracias por elegir el cuidado natural. Tu piel y el planeta te lo
-            agradecerán.
+            {`"Gracias por elegir el cuidado natural. Tu piel y el planeta te lo
+            agradecerán."`}
           </p>
         </section>
       </div>
