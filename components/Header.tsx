@@ -34,7 +34,7 @@ const Header = async () => {
           <Logo />
         </div>
         {/* Desktop Menu with Category Dropdown */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-1">
           <CategoryDropdown />
           <HeaderMenu />
         </div>
