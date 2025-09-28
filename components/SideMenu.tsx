@@ -9,6 +9,7 @@ import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
 import SignIn from "./SignIn";
 import { User } from "@clerk/nextjs/server";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -88,6 +89,9 @@ const SideMenu: FC<SidebarProps> = ({
               {item?.title}
             </Link>
           ))}
+          <div className="flex md:hidden">
+            <ThemeToggle />
+          </div>
         </div>
 
         <SocialMedia />

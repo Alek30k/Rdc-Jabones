@@ -54,8 +54,9 @@ const Header = async () => {
           <div className="hidden md:flex">
             <SearchBar />
           </div>
-
-          <ThemeToggle />
+          <div className="hidden md:flex">
+            <ThemeToggle />
+          </div>
 
           <CartIcon />
           <FavoriteButton />
