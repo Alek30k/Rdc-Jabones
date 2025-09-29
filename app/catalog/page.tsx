@@ -93,7 +93,7 @@ const SoapCatalog = () => {
       name: "Coco & Cúrcuma",
       subtitle: "Brillo natural",
       icon: "🥥",
-      image: "/images/jabon-coco-curcuma.jpg",
+      image: "/curcuma.jpg",
       ingredients: "Aceite de coco virgen, cúrcuma en polvo, leche de coco",
       benefits: [
         "Ilumina el tono de la piel",
@@ -108,7 +108,7 @@ const SoapCatalog = () => {
       name: "Aloe Vera Puro",
       subtitle: "Sanación y frescura",
       icon: "🌿",
-      image: "/images/jabon-aloe-vera.jpg",
+      image: "/aloe.jpg",
       ingredients: "Gel de aloe vera puro, aceite de jojoba, menta fresca",
       benefits: [
         "Cicatriza heridas menores",
@@ -123,7 +123,7 @@ const SoapCatalog = () => {
       name: "Café Energizante",
       subtitle: "Exfoliación natural",
       icon: "☕",
-      image: "/images/jabon-cafe.jpg",
+      image: "/cafe.png",
       ingredients: "Café molido, manteca de cacao, aceite de almendras",
       benefits: [
         "Exfolia la piel eliminando células muertas",
@@ -138,7 +138,7 @@ const SoapCatalog = () => {
       name: "Manzanilla Suave",
       subtitle: "Calma y protección",
       icon: "🌼",
-      image: "/images/jabon-manzanilla.jpg",
+      image: "/manzanilla.jpg",
       ingredients: "Extracto de manzanilla, aceite de oliva, manteca de karité",
       benefits: [
         "Reduce enrojecimiento",
@@ -153,7 +153,7 @@ const SoapCatalog = () => {
       name: "Eucalipto Refrescante",
       subtitle: "Respira y renueva",
       icon: "🌿",
-      image: "/images/jabon-eucalipto.jpg",
+      image: "/eucalipto.png",
       ingredients: "Aceite esencial de eucalipto, menta, aceite de coco",
       benefits: [
         "Refresca y revitaliza",
