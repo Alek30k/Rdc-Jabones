@@ -64,7 +64,7 @@ const SoapCatalog = () => {
       subtitle: "Purificación profunda",
       icon: "⚫",
       image: "/carbon.jpg",
-      ingredients: "Carbón activado, arcilla bentonita, aceite de árbol de té",
+      ingredients: "Carbón activado, manteca de karité, aceite de árbol de té",
       benefits: [
         "Elimina impurezas y toxinas",
         "Controla la grasa excess",
@@ -287,10 +287,26 @@ const SoapCatalog = () => {
     },
     {
       id: 18,
+      name: "Jazmín",
+      subtitle: "Relajación y sensualidad",
+      icon: "🌸",
+      image: "/jazmin.jpg",
+      ingredients:
+        "Aceite esencial de jazmín, manteca de karité, aceite de oliva",
+      benefits: [
+        "Relaja los sentidos y reduce el estrés",
+        "Hidrata y suaviza la piel",
+        "Aporta un aroma floral delicado y duradero",
+        "Estimula la sensación de bienestar",
+      ],
+      skinType: "Ideal para piel seca y normal",
+    },
+    {
+      id: 19,
       name: "Espirulina",
       subtitle: "Nutrición intensa",
       icon: "🟦",
-      image: "/espirulina.png",
+      image: "/espirulina.jpg",
       ingredients:
         "Espirulina en polvo, aceite de oliva, aceite de coco, manteca de cacao",
       benefits: [
@@ -300,6 +316,85 @@ const SoapCatalog = () => {
         "Promueve una piel luminosa y saludable",
       ],
       skinType: "Ideal para piel seca, opaca o con signos de fatiga",
+    },
+    {
+      id: 20,
+      name: "Coco",
+      subtitle: "Hidratación tropical",
+      icon: "🥥",
+      image: "/coco.jpg",
+      ingredients: "Aceite de coco, leche de coco, manteca de cacao",
+      benefits: [
+        "Hidrata intensamente la piel",
+        "Restaura la suavidad natural",
+        "Protege contra la resequedad",
+        "Aroma tropical refrescante",
+      ],
+      skinType: "Ideal para piel seca y deshidratada",
+    },
+    {
+      id: 21,
+      name: "Mandarina",
+      subtitle: "Vitalidad y frescura",
+      icon: "🍊",
+      image: "/mandarina.jpg",
+      ingredients:
+        "Aceite esencial de mandarina, ralladura de cáscara de mandarina, aceite de oliva",
+      benefits: [
+        "Revitaliza y energiza la piel",
+        "Aporta frescura y suavidad",
+        "Estimula el buen ánimo",
+        "Aroma cítrico dulce y delicado",
+      ],
+      skinType: "Ideal para piel normal y mixta",
+    },
+    {
+      id: 22,
+      name: "Zanahoria",
+      subtitle: "Nutrición y luminosidad",
+      icon: "🥕",
+      image: "/zanahoria.png",
+      ingredients:
+        "Jugo fresco de zanahoria, aceite de oliva, manteca de karité, vitamina E",
+      benefits: [
+        "Rico en betacarotenos que regeneran la piel",
+        "Aporta un tono saludable y luminoso",
+        "Nutre y suaviza profundamente",
+        "Protege contra el envejecimiento prematuro",
+      ],
+      skinType: "Ideal para piel seca, madura o apagada",
+    },
+    {
+      id: 23,
+      name: "Tutti Frutti",
+      subtitle: "Diversión y frescura",
+      icon: "🍭",
+      image: "/tutti.png",
+      ingredients:
+        "Aceites vegetales, glicerina, fragancia tutti frutti, colorantes naturales",
+      benefits: [
+        "Aroma alegre y juvenil",
+        "Suaviza e hidrata la piel",
+        "Diseño colorido y llamativo",
+        "Convierte tu rutina en un momento divertido",
+      ],
+      skinType: "Ideal para todo tipo de piel",
+    },
+    {
+      id: 24,
+      name: "Manzana Verde",
+      subtitle: "Energía y frescura",
+      icon: "🍏",
+      image: "/manzana.jpg",
+      ingredients:
+        "Aceite de oliva, aceite de coco, fragancia de manzana verde, manteca de karité",
+      benefits: [
+        "Refresca y revitaliza la piel",
+        "Aroma frutal y energizante",
+        "Hidratación ligera",
+        "Deja una sensación de limpieza fresca",
+      ],
+      skinType: "Ideal para piel normal y mixta",
     },
   ];
 
