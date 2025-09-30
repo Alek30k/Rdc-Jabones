@@ -420,9 +420,9 @@ const SoapCatalog = () => {
       description: `Nuestros jabones son biodegradables y libres de químicos agresivos, cuidando tu piel y el planeta.`,
     },
     {
-      icon: "🌊",
-      title: "Espuma Ideal",
-      description: `Frota el jabón entre tus manos o en una esponja para crear espuma abundante y aplicar mejor el producto.`,
+      icon: "📦",
+      title: "Almacenamiento",
+      description: `Guarda los jabones que no uses en un lugar fresco, seco y oscuro para mantener su aroma y propiedades.`,
     },
     {
       icon: "⚠️",
