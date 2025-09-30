@@ -33,7 +33,7 @@ const SoapCatalog = () => {
       icon: "🍯",
       image: "/avenaymiel.png", // Ruta para tu imagen
       ingredients:
-        "Avena coloidal, miel pura, aceite de coco, manteca de karité",
+        "Avena coloidal, miel pura, aceite de coco, manteca de karité, vitamina E",
       benefits: [
         "Exfolia suavemente la piel",
         "Hidrata profundamente",
@@ -49,7 +49,7 @@ const SoapCatalog = () => {
       icon: "💜",
       image: "/lavanda.png",
       ingredients:
-        "Aceite esencial de lavanda, flores secas, aceite de oliva, glicerina",
+        "Aceite esencial de lavanda, flores secas, aceite de oliva, glicerina, vitamina E",
       benefits: [
         "Aromaterápia relajante",
         "Propiedades calmantes",
@@ -64,7 +64,8 @@ const SoapCatalog = () => {
       subtitle: "Purificación profunda",
       icon: "⚫",
       image: "/carbon.jpg",
-      ingredients: "Carbón activado, manteca de karité, aceite de árbol de té",
+      ingredients:
+        "Carbón activado, manteca de karité, aceite de árbol de té, vitamina E",
       benefits: [
         "Elimina impurezas y toxinas",
         "Controla la grasa excess",
@@ -94,7 +95,8 @@ const SoapCatalog = () => {
       subtitle: "Brillo natural",
       icon: "🥥",
       image: "/curcuma.jpg",
-      ingredients: "Aceite de coco virgen, cúrcuma en polvo, leche de coco",
+      ingredients:
+        "Aceite de coco virgen, cúrcuma en polvo, leche de coco, vitamina E",
       benefits: [
         "Ilumina el tono de la piel",
         "Propiedades antiinflamatorias",
@@ -109,7 +111,8 @@ const SoapCatalog = () => {
       subtitle: "Sanación y frescura",
       icon: "🌿",
       image: "/aloe.jpg",
-      ingredients: "Gel de aloe vera puro, aceite de jojoba, menta fresca",
+      ingredients:
+        "Gel de aloe vera puro, aceite de jojoba, menta fresca, vitamina E",
       benefits: [
         "Cicatriza heridas menores",
         "Refresca y calma",
@@ -124,7 +127,8 @@ const SoapCatalog = () => {
       subtitle: "Exfoliación natural",
       icon: "☕",
       image: "/cafe.png",
-      ingredients: "Café molido, manteca de cacao, aceite de almendras",
+      ingredients:
+        "Café molido, manteca de cacao, aceite de almendras, vitamina E",
       benefits: [
         "Exfolia la piel eliminando células muertas",
         "Estimula la circulación",
@@ -139,7 +143,8 @@ const SoapCatalog = () => {
       subtitle: "Calma y protección",
       icon: "🌼",
       image: "/manzanilla.jpg",
-      ingredients: "Extracto de manzanilla, aceite de oliva, manteca de karité",
+      ingredients:
+        "Extracto de manzanilla, aceite de oliva, manteca de karité, vitamina E",
       benefits: [
         "Reduce enrojecimiento",
         "Protege la barrera cutánea",
@@ -154,7 +159,8 @@ const SoapCatalog = () => {
       subtitle: "Respira y renueva",
       icon: "🌿",
       image: "/eucalipto.png",
-      ingredients: "Aceite esencial de eucalipto, menta, aceite de coco",
+      ingredients:
+        "Aceite esencial de eucalipto, menta, aceite de coco, vitamina E",
       benefits: [
         "Refresca y revitaliza",
         "Ayuda a despejar las vías respiratorias",
@@ -169,7 +175,8 @@ const SoapCatalog = () => {
       subtitle: "Antioxidante y energizante",
       icon: "🍫",
       image: "/chocolate.png",
-      ingredients: "Cacao puro, aceite de naranja, manteca de cacao",
+      ingredients:
+        "Cacao puro, aceite de naranja, manteca de cacao, vitamina E",
       benefits: [
         "Rico en antioxidantes",
         "Estimula los sentidos",
@@ -184,7 +191,8 @@ const SoapCatalog = () => {
       subtitle: "Frescura instantánea",
       icon: "🌱",
       image: "/menta.png",
-      ingredients: "Aceite esencial de menta, aloe vera, aceite de jojoba",
+      ingredients:
+        "Aceite esencial de menta, aloe vera, aceite de jojoba, vitamina E",
       benefits: [
         "Sensación refrescante inmediata",
         "Calma irritaciones",
@@ -200,7 +208,7 @@ const SoapCatalog = () => {
       icon: "🌿",
       image: "/romero.png",
       ingredients:
-        "Aceite esencial de romero, aceite de oliva, coco y manteca de karité",
+        "Aceite esencial de romero, aceite de oliva, coco y manteca de karité, vitamina E",
       benefits: [
         "Estimula la circulación sanguínea",
         "Aporta frescura y vitalidad",
@@ -215,7 +223,8 @@ const SoapCatalog = () => {
       subtitle: "Protección y suavidad",
       icon: "🌻",
       image: "/calendula.png",
-      ingredients: "Flores de caléndula, manteca de karité, aceite de oliva",
+      ingredients:
+        "Flores de caléndula, manteca de karité, aceite de oliva, vitamina E",
       benefits: [
         "Regenera la piel",
         "Protege contra irritaciones",
@@ -230,7 +239,8 @@ const SoapCatalog = () => {
       subtitle: "Limpieza y frescura",
       icon: "🍋",
       image: "/limon.png",
-      ingredients: "Aceite esencial de limón, glicerina, aceite de oliva",
+      ingredients:
+        "Aceite esencial de limón, glicerina, aceite de oliva, vitamina E",
       benefits: [
         "Limpieza profunda",
         "Aporta luminosidad",
@@ -245,7 +255,8 @@ const SoapCatalog = () => {
       subtitle: "Hidratación natural",
       icon: "🟨",
       image: "/miel.png",
-      ingredients: "Miel pura, aceite de almendras dulces, glicerina vegetal",
+      ingredients:
+        "Miel pura, aceite de almendras dulces, glicerina vegetal, vitamina E",
       benefits: [
         "Hidrata profundamente la piel",
         "Propiedades antibacterianas y calmantes",
@@ -261,7 +272,7 @@ const SoapCatalog = () => {
       icon: "🟧",
       image: "/naranja.png",
       ingredients:
-        "Aceite esencial de naranja, ralladura de cáscara de naranja, aceite de coco",
+        "Aceite esencial de naranja, ralladura de cáscara de naranja, aceite de coco, vitamina E",
       benefits: [
         "Revitaliza y aporta energía",
         "Aporta luminosidad a la piel",
@@ -276,7 +287,8 @@ const SoapCatalog = () => {
       subtitle: "Suavidad y luminosidad",
       icon: "🤍",
       image: "/arroz.png",
-      ingredients: "Harina de arroz, leche de arroz, aceite de almendras",
+      ingredients:
+        "Harina de arroz, leche de arroz, aceite de almendras, vitamina E",
       benefits: [
         "Suaviza y unifica el tono de la piel",
         "Aporta luminosidad natural",
@@ -292,7 +304,7 @@ const SoapCatalog = () => {
       icon: "🌸",
       image: "/jazmin.jpg",
       ingredients:
-        "Aceite esencial de jazmín, manteca de karité, aceite de oliva",
+        "Aceite esencial de jazmín, manteca de karité, aceite de oliva, vitamina E",
       benefits: [
         "Relaja los sentidos y reduce el estrés",
         "Hidrata y suaviza la piel",
@@ -308,7 +320,7 @@ const SoapCatalog = () => {
       icon: "🟦",
       image: "/espirulina.jpg",
       ingredients:
-        "Espirulina en polvo, aceite de oliva, aceite de coco, manteca de cacao",
+        "Espirulina en polvo, aceite de oliva, aceite de coco, manteca de cacao, vitamina E",
       benefits: [
         "Rica en vitaminas y minerales que nutren la piel",
         "Antioxidante natural que protege contra el envejecimiento",
@@ -323,7 +335,8 @@ const SoapCatalog = () => {
       subtitle: "Hidratación tropical",
       icon: "🥥",
       image: "/coco.jpg",
-      ingredients: "Aceite de coco, leche de coco, manteca de cacao",
+      ingredients:
+        "Aceite de coco, leche de coco, manteca de cacao, vitamina E",
       benefits: [
         "Hidrata intensamente la piel",
         "Restaura la suavidad natural",
@@ -339,7 +352,7 @@ const SoapCatalog = () => {
       icon: "🍊",
       image: "/mandarina.jpg",
       ingredients:
-        "Aceite esencial de mandarina, ralladura de cáscara de mandarina, aceite de oliva",
+        "Aceite esencial de mandarina, ralladura de cáscara de mandarina, aceite de oliva, vitamina E",
       benefits: [
         "Revitaliza y energiza la piel",
         "Aporta frescura y suavidad",
@@ -371,7 +384,7 @@ const SoapCatalog = () => {
       icon: "🍭",
       image: "/tutti.png",
       ingredients:
-        "Aceites vegetales, glicerina, fragancia tutti frutti, colorantes naturales",
+        "Aceites vegetales, glicerina, fragancia tutti frutti, colorantes naturales, vitamina E",
       benefits: [
         "Aroma alegre y juvenil",
         "Suaviza e hidrata la piel",
@@ -387,7 +400,7 @@ const SoapCatalog = () => {
       icon: "🍏",
       image: "/manzana.jpg",
       ingredients:
-        "Aceite de oliva, aceite de coco, fragancia de manzana verde, manteca de karité",
+        "Aceite de oliva, aceite de coco, fragancia de manzana verde, manteca de karité, vitamina E",
       benefits: [
         "Refresca y revitaliza la piel",
         "Aroma frutal y energizante",
