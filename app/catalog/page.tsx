@@ -171,7 +171,7 @@ const SoapCatalog = () => {
     },
     {
       id: 10,
-      name: "Chocolate & Naranja",
+      name: "Cacao & Naranja",
       subtitle: "Antioxidante y energizante",
       icon: "🍫",
       image: "/chocolate.png",
@@ -706,7 +706,7 @@ const SoapCatalog = () => {
                 <h4 className="flex items-center justify-center gap-3  font-semibold mb-2">
                   <Instagram className="w-5 h-5" /> Instagram
                 </h4>
-                <p className="text-sm">@jabonesartesanales</p>
+                <p className="text-sm">@rdcjabones</p>
                 <p className="text-xs opacity-90">
                   Síguenos para tips y ofertas
                 </p>
