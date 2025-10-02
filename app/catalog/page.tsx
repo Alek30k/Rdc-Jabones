@@ -698,7 +698,7 @@ const SoapCatalog = () => {
               </div>
             </Link>
             <Link
-              href={"https://www.instagram.com"}
+              href={"https://www.instagram.com/rdcjabones/"}
               target="_blank"
               rel="noopener noreferrer"
             >
