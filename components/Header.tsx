@@ -13,25 +13,7 @@ import { logo } from "@/images";
 import Link from "next/link";
 import CategoryDropdown from "./CategoryDropdown";
 import { ThemeToggle } from "./ThemeToggle";
-import { client } from "@/sanity/lib/client";
 import ProductsDropdownByName from "./ProductsDropdownByName";
-
-// Función para obtener nombres únicos de productos
-async function getProductNames() {
-  const query = `*[_type == "product"] | order(name asc) {
-    name
-  }`;
-
-  try {
-    const products = await client.fetch(query);
-    // Extraer solo los nombres y eliminar duplicados
-    const names = products.map((p: { name: string }) => p.name);
-    return [...new Set(names)]; // Eliminar duplicados
-  } catch (error) {
-    console.error("Error fetching product names:", error);
-    return [];
-  }
-}
 
 const Header = async () => {
   const clerkUser = await currentUser();
