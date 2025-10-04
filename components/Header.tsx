@@ -13,6 +13,25 @@ import { logo } from "@/images";
 import Link from "next/link";
 import CategoryDropdown from "./CategoryDropdown";
 import { ThemeToggle } from "./ThemeToggle";
+import { client } from "@/sanity/lib/client";
+import ProductsDropdownByName from "./ProductsDropdownByName";
+
+// Función para obtener nombres únicos de productos
+async function getProductNames() {
+  const query = `*[_type == "product"] | order(name asc) {
+    name
+  }`;
+
+  try {
+    const products = await client.fetch(query);
+    // Extraer solo los nombres y eliminar duplicados
+    const names = products.map((p: { name: string }) => p.name);
+    return [...new Set(names)]; // Eliminar duplicados
+  } catch (error) {
+    console.error("Error fetching product names:", error);
+    return [];
+  }
+}
 
 const Header = async () => {
   const clerkUser = await currentUser();
@@ -28,10 +47,10 @@ const Header = async () => {
     : null;
 
   return (
-    <header className="sticky top-0 z-50 py-2 md:py-5 bg-white/70 dark:bg-gray-900/70 backdrop-blur-md transition-colors duration-300">
+    <header className="sticky top-0 z-50  bg-white/70 dark:bg-gray-900/70 backdrop-blur-md transition-colors duration-300">
       <Container className="flex items-center justify-between text-gray-900 dark:text-gray-100">
         {/* Left side */}
-        <div className="w-auto md:w-1/3 flex items-center gap-2.5 justify-start md:gap-0">
+        <div className="w-auto md:w-1/4 flex items-center gap-2.5 justify-start md:gap-0">
           <MobileMenu user={serializedUser} />
           <Logo />
         </div>
@@ -39,6 +58,8 @@ const Header = async () => {
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-1">
           <CategoryDropdown />
+          <ProductsDropdownByName />
+
           <HeaderMenu />
         </div>
 
@@ -50,7 +71,7 @@ const Header = async () => {
         </Link>
 
         {/* Right side */}
-        <div className="w-auto md:w-1/3 flex items-center justify-end gap-5">
+        <div className="w-auto md:w-1/2 flex items-center justify-end gap-5">
           <div className="hidden md:flex">
             <SearchBar />
           </div>
