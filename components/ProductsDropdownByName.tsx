@@ -9,7 +9,7 @@ const PRODUCT_NAMES = [
   "Arroz",
   "Avena",
   "Calendula",
-  "Carbon Activado",
+  "Carbón Activado",
   "Coco",
   "Cúrcuma",
   "Espirulina",
