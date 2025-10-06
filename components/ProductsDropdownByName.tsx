@@ -67,7 +67,7 @@ const ProductsDropdownByName = () => {
     <div className="relative hidden lg:block" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 dark:text-gray-100  px-4 py-2 text-gray-700 hover:text-green-600 transition-colors duration-200 rounded-lg hover:bg-green-50"
+        className="flex items-center gap-2 dark:text-gray-100  px-4 py-2 text-gray-700 hover:text-green-600 transition-colors duration-200 rounded-lg "
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
