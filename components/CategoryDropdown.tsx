@@ -41,12 +41,12 @@ const categories: Category[] = [
   },
   {
     id: "2",
-    name: "Jabones Premium",
-    slug: "jabones-premium",
-    href: `/category/premium`,
+    name: "Jabones Combos",
+    slug: "jabones-combos",
+    href: `/category/${categorias[1].slug?.current}`,
     icon: <Sparkles className="w-4 h-4" />,
     description: "Fórmulas exclusivas y aceites esenciales",
-    productCount: 0,
+    productCount: categorias[1].productCount || 0,
   },
   {
     id: "3",
