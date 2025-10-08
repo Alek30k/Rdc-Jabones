@@ -14,6 +14,8 @@ import { useMobile } from "@/hooks/use-mobile";
 import ProductCardsLoading from "./shop/ProductCardsLoading";
 import ShopLoadingSkeleton from "./shop/ShopLoadingSkeleton";
 import ProductCardsLoadingMinimal from "./shop/ProductCardsLoadingMinimal";
+import { normalizeText } from "@/lib/utils/normalize-text";
+import { X } from "lucide-react";
 
 interface Props {
   categories: Category[];
@@ -23,9 +25,11 @@ const Shop = ({ categories }: Props) => {
   const searchParams = useSearchParams();
   const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
+  const searchQuery = searchParams?.get("search");
   const isMobile = useMobile();
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [initialLoading, setInitialLoading] = useState(true);
   const [filterLoading, setFilterLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
@@ -40,12 +44,26 @@ const Shop = ({ categories }: Props) => {
   const hasActiveFilters =
     selectedCategory !== null ||
     selectedBrand !== null ||
-    selectedPrice !== null;
+    selectedPrice !== null ||
+    searchQuery !== null;
 
   const handleResetFilters = () => {
     setSelectedCategory(null);
     setSelectedBrand(null);
     setSelectedPrice(null);
+
+    // Limpiar search query de la URL
+    if (searchQuery) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("search");
+      window.history.pushState({}, "", url.toString());
+    }
+  };
+
+  const handleRemoveSearch = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("search");
+    window.history.pushState({}, "", url.toString());
   };
 
   const fetchProducts = async (isInitial = false) => {
@@ -79,7 +97,19 @@ const Shop = ({ categories }: Props) => {
         { next: { revalidate: 0 } }
       );
 
-      setProducts(data);
+      setAllProducts(data);
+
+      // Aplicar filtro de búsqueda por nombre si existe
+      if (searchQuery) {
+        const normalizedSearch = normalizeText(searchQuery);
+        const filteredData = data.filter((product: Product) => {
+          const normalizedProductName = normalizeText(product.name || "");
+          return normalizedProductName.includes(normalizedSearch);
+        });
+        setProducts(filteredData);
+      } else {
+        setProducts(data);
+      }
     } catch (error) {
       console.log("Shop product fetching Error", error);
     } finally {
@@ -98,7 +128,7 @@ const Shop = ({ categories }: Props) => {
 
   useEffect(() => {
     if (!isFirstLoad) fetchProducts(false);
-  }, [selectedCategory, selectedBrand, selectedPrice]);
+  }, [selectedCategory, selectedBrand, selectedPrice, searchQuery]);
 
   if (initialLoading) return <ShopLoadingSkeleton />;
 
@@ -137,6 +167,24 @@ const Shop = ({ categories }: Props) => {
                   }`}
             </div>
           </div>
+
+          {/* Mostrar búsqueda activa */}
+          {searchQuery && (
+            <div className="mt-3 mb-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <span className="text-sm font-medium text-green-800 dark:text-green-300">
+                  Buscando: <span className="font-bold">{searchQuery}</span>
+                </span>
+                <button
+                  onClick={handleRemoveSearch}
+                  className="p-0.5 hover:bg-green-100 dark:hover:bg-green-800/30 rounded transition-colors"
+                  title="Quitar búsqueda"
+                >
+                  <X className="w-4 h-4 text-green-700 dark:text-green-400" />
+                </button>
+              </div>
+            </div>
+          )}
 
           {isMobile && hasActiveFilters && (
             <div className="mt-2 flex flex-wrap gap-2">
