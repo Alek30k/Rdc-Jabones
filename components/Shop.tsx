@@ -29,7 +29,6 @@ const Shop = ({ categories }: Props) => {
   const isMobile = useMobile();
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [initialLoading, setInitialLoading] = useState(true);
   const [filterLoading, setFilterLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
@@ -96,8 +95,6 @@ const Shop = ({ categories }: Props) => {
         { selectedCategory, selectedBrand, minPrice, maxPrice },
         { next: { revalidate: 0 } }
       );
-
-      setAllProducts(data);
 
       // Aplicar filtro de búsqueda por nombre si existe
       if (searchQuery) {
