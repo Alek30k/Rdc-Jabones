@@ -409,6 +409,54 @@ const SoapCatalog = () => {
       ],
       skinType: "Ideal para piel normal y mixta",
     },
+    {
+      id: 25,
+      name: "Maicena",
+      subtitle: "Suavidad y pureza natural",
+      icon: "🌾",
+      image: "/maicena.png",
+      ingredients:
+        "Maicena natural pura, aceite de almendras dulces, manteca de karité, vitamina E",
+      benefits: [
+        "Calma y suaviza la piel irritada",
+        "Absorbe el exceso de grasa sin resecar",
+        "Deja una textura aterciopelada y seca al tacto",
+        "Ideal para piel sensible o con tendencia a irritarse",
+      ],
+      skinType: "Ideal para piel sensible y delicada",
+    },
+    {
+      id: 26,
+      name: "Arroz & Maicena",
+      subtitle: "Luminosidad y suavidad extrema",
+      icon: "🤍🌾",
+      image: "/arrozmaicena.png",
+      ingredients:
+        "Harina de arroz, maicena natural, aceite de coco, leche vegetal, vitamina E",
+      benefits: [
+        "Unifica el tono de la piel y mejora su textura",
+        "Aporta una suavidad aterciopelada y limpia",
+        "Absorbe impurezas sin resecar",
+        "Deja la piel luminosa y fresca al instante",
+      ],
+      skinType: "Ideal para piel sensible, mixta o seca",
+    },
+    {
+      id: 27,
+      name: "Uva",
+      subtitle: "Antioxidante y revitalizante",
+      icon: "🍇",
+      image: "/uva.png",
+      ingredients:
+        "Extracto de uva, aceite de semilla de uva, manteca de karité, vitamina E",
+      benefits: [
+        "Rico en antioxidantes que combaten el envejecimiento prematuro",
+        "Hidrata y revitaliza la piel apagada",
+        "Aporta firmeza y elasticidad",
+        "Deja un aroma frutal suave y natural",
+      ],
+      skinType: "Ideal para piel madura o con signos de fatiga",
+    },
   ];
 
   const tips = [
