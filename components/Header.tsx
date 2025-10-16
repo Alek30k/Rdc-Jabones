@@ -53,7 +53,7 @@ const Header = async () => {
         </Link>
 
         {/* Right side */}
-        <div className="w-auto md:w-1/2 flex items-center justify-end gap-5">
+        <div className="w-auto ml-4 md:w-1/2 flex items-center justify-end gap-5">
           <div className="hidden md:flex">
             <SearchBar />
           </div>
