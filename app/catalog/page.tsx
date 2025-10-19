@@ -1831,7 +1831,7 @@ const SoapCatalogComparison = () => {
                 </div>
 
                 {/* Resumen */}
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-3">
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-4 p-6 space-y-3">
                   <div className="flex justify-between text-lg">
                     <span className="font-semibold text-gray-700 dark:text-gray-300">
                       Subtotal:
