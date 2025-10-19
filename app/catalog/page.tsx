@@ -1731,7 +1731,7 @@ const SoapCatalogComparison = () => {
               <div className="flex items-center gap-3">
                 <ShoppingCart className="w-6 h-6" />
                 <h2 className="text-2xl font-bold">Mi Carrito</h2>
-                <span className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">
+                <span className="bg-white bg-opacity-20 text-green-800 px-3 py-1 rounded-full ">
                   {getTotalItems()} items
                 </span>
               </div>
@@ -1864,7 +1864,7 @@ const SoapCatalogComparison = () => {
                   <div className="flex gap-3">
                     <button
                       onClick={clearCart}
-                      className="flex-1 bg-red-100 dark:bg-red-900 dark:bg-opacity-20 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl font-semibold hover:bg-red-200 dark:hover:bg-red-900 dark:hover:bg-opacity-30 transition-colors"
+                      className="flex-1 bg-red-100 dark:bg-red-900 dark:bg-opacity-20 text-red-600 dark:text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-200 dark:hover:bg-red-500 dark:hover:bg-opacity-30 transition-colors"
                     >
                       Vaciar carrito
                     </button>
