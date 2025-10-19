@@ -17,7 +17,6 @@ import {
   ShoppingCart,
   ArrowLeft,
   Trash2,
-  ZoomIn,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -982,13 +981,6 @@ const SoapCatalogComparison = () => {
   const openProductDetail = (product: Product) => {
     setSelectedProduct(product);
     setShowProductDetail(true);
-  };
-
-  type QuizAnswer = {
-    skinType?: string;
-    concerns?: string[];
-    goals?: string[];
-    preferences?: string[];
   };
 
   return (
