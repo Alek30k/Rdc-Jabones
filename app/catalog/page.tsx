@@ -1169,11 +1169,13 @@ const SoapCatalogComparison = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-auto">
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-7xl w-full max-h-[90vh] overflow-auto">
             {/* Header del Modal */}
-            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-700 dark:to-blue-600 text-white px-6 py-4 flex justify-between items-center rounded-t-2xl z-10">
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-700 dark:to-blue-600 text-white px-2 py-4 md:px-6 md:py-4 flex justify-between items-center rounded-t-2xl z-10">
               <div className="flex items-center gap-3">
                 <GitCompare className="w-6 h-6" />
-                <h2 className="text-2xl font-bold">Comparar Jabones</h2>
-                <span className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">
+                <h2 className="text-lg md:text-2xl font-bold">
+                  Comparar Jabones
+                </h2>
+                <span className="bg-white bg-opacity-20 text-green-800 px-2 py-1  rounded-full ">
                   {compareProducts.length} de 3
                 </span>
               </div>
@@ -1359,7 +1361,7 @@ const SoapCatalogComparison = () => {
                     >
                       <button
                         onClick={() => toggleCompare(product)}
-                        className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-colors"
+                        className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-colors z-10"
                       >
                         <X className="w-4 h-4" />
                       </button>
