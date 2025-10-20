@@ -1766,7 +1766,7 @@ const SoapCatalogComparison = () => {
                   {cart.map((item) => (
                     <div
                       key={item.product.id}
-                      className="flex gap-4 bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700"
+                      className="flex gap-4 bg-gray-50 dark:bg-gray-800 p-3 md:p-6 rounded-lg border border-gray-200 dark:border-gray-700"
                     >
                       {/* Imagen */}
                       <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
