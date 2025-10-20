@@ -1792,7 +1792,7 @@ const SoapCatalogComparison = () => {
                       </div>
 
                       {/* Controles de cantidad */}
-                      <div className="flex flex-col items-end gap-2">
+                      <div className="flex flex-col items-end gap-2 p-1">
                         <button
                           onClick={() => removeFromCart(item.product.id)}
                           className="text-red-500 hover:text-red-600 p-1"
@@ -1800,7 +1800,7 @@ const SoapCatalogComparison = () => {
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
-                        <div className="flex items-center gap-2 bg-white dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600">
+                        <div className="flex items-center gap-0 md:gap-2 bg-white dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600">
                           <button
                             onClick={() =>
                               updateQuantity(item.product.id, item.quantity - 1)
