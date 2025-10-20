@@ -1732,7 +1732,7 @@ const SoapCatalogComparison = () => {
             <div className="sticky top-0 bg-gradient-to-r from-green-600 to-green-500 text-white px-6 py-4 flex justify-between items-center rounded-t-2xl z-10">
               <div className="flex items-center gap-3">
                 <ShoppingCart className="w-6 h-6" />
-                <h2 className="text-2xl font-bold">Mi Carrito</h2>
+                <h2 className="text-lg md:text-2xl font-bold">Mi Carrito</h2>
                 <span className="bg-white bg-opacity-20 text-green-800 px-3 py-1 rounded-full ">
                   {getTotalItems()} items
                 </span>
@@ -1766,7 +1766,7 @@ const SoapCatalogComparison = () => {
                   {cart.map((item) => (
                     <div
                       key={item.product.id}
-                      className="flex gap-4 bg-gray-50 dark:bg-gray-800 p-3 md:p-6 rounded-lg border border-gray-200 dark:border-gray-700"
+                      className="flex gap-4 bg-gray-50 dark:bg-gray-800 py-4 px-0 md:p-6 rounded-lg border border-gray-200 dark:border-gray-700"
                     >
                       {/* Imagen */}
                       <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
@@ -1821,7 +1821,7 @@ const SoapCatalogComparison = () => {
                             <Plus className="w-4 h-4" />
                           </button>
                         </div>
-                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 p-2 mt-2 bg-green-50 dark:bg-gray-800 rounded-lg">
                           $
                           {(
                             item.product.price * item.quantity
