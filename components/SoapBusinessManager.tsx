@@ -115,9 +115,7 @@ export default function SoapBusinessManager() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
   const [alerts, setAlerts] = useState<BusinessAlert[]>([]);
-  const [selectedPeriod, setSelectedPeriod] = useState<
-    "week" | "month" | "year"
-  >("month");
+
   // 2. Remove this line:
   // const { toast } = useToast()
 
