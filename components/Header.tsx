@@ -13,7 +13,6 @@ import { logo } from "@/images";
 import Link from "next/link";
 import CategoryDropdown from "./CategoryDropdown";
 import { ThemeToggle } from "./ThemeToggle";
-import ProductsDropdownByName from "./ProductsDropdownByName";
 
 const Header = async () => {
   const clerkUser = await currentUser();
@@ -40,7 +39,6 @@ const Header = async () => {
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-1">
           <CategoryDropdown />
-          <ProductsDropdownByName />
 
           <HeaderMenu />
         </div>

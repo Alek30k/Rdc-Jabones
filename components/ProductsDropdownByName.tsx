@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import { ChevronDown, ArrowRight, Search } from "lucide-react";
 import { normalizeText } from "@/lib/utils/normalize-text";
 
@@ -25,6 +25,9 @@ const ProductsDropdownByName = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   // Filtrar nombres por búsqueda (sin tildes)
   const filteredNames = PRODUCT_NAMES.filter((name) => {
     const normalizedName = normalizeText(name);
@@ -43,7 +46,6 @@ const ProductsDropdownByName = () => {
         setSearchTerm("");
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -56,12 +58,24 @@ const ProductsDropdownByName = () => {
         setSearchTerm("");
       }
     };
-
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
 
-  const handleNameClick = () => {
+  // Manejo de click en un producto
+  const handleNameClick = (name: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("search", name);
+    router.push(url.toString(), { scroll: false });
+    setIsOpen(false);
+    setSearchTerm("");
+  };
+
+  // Ir a todos los productos
+  const handleAllProductsClick = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("search");
+    router.push(url.toString(), { scroll: false });
     setIsOpen(false);
     setSearchTerm("");
   };
@@ -112,18 +126,25 @@ const ProductsDropdownByName = () => {
               {filteredNames.length > 0 ? (
                 <div className="grid grid-cols-2 gap-1 px-2">
                   {filteredNames.map((name) => (
-                    <Link
+                    <button
                       key={name}
-                      href={`/shop?search=${encodeURIComponent(name)}`}
-                      onClick={handleNameClick}
-                      className="flex items-center gap-2 px-3 py-2.5 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all duration-150 group"
+                      onClick={() => handleNameClick(name)}
+                      className="flex items-center gap-2 px-3 py-2.5 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all duration-150 group w-full text-left"
                     >
                       <div className="flex-shrink-0 w-2 h-2 rounded-full bg-green-600 group-hover:scale-125 transition-transform" />
                       <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-green-700 dark:group-hover:text-green-400 font-medium truncate">
                         {name}
                       </span>
-                    </Link>
+                    </button>
                   ))}
+                  {/* Botón para todos los productos */}
+                  <button
+                    key="all"
+                    onClick={handleAllProductsClick}
+                    className="flex items-center gap-2 px-3 py-2.5 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all duration-150 group w-full text-left font-semibold"
+                  >
+                    Todos los productos
+                  </button>
                 </div>
               ) : (
                 <div className="px-4 py-8 text-center">
@@ -136,14 +157,13 @@ const ProductsDropdownByName = () => {
 
             {/* Footer */}
             <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700">
-              <Link
-                href="/shop"
-                onClick={handleNameClick}
-                className="flex items-center justify-center gap-2 text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors"
+              <button
+                onClick={handleAllProductsClick}
+                className="flex items-center justify-center gap-2 text-sm font-medium text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors w-full"
               >
                 Ver todos los productos
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
             </div>
           </div>
         </>
