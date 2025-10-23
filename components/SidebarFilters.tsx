@@ -9,13 +9,10 @@ import { Card, CardContent } from "./ui/card";
 interface SidebarProps {
   categories: Category[];
   currentSlug: string;
-  onCategoryChange: (slug: string) => void;
-  searchTerm: string;
-  onSearchChange: (term: string) => void;
-  priceRange: [number, number];
-  onPriceChange: (range: [number, number]) => void;
   handleCategoryChange: (newSlug: string) => void;
+  searchTerm: string;
   setSearchTerm: (term: string) => void;
+  priceRange: [number, number];
   setPriceRange: (range: [number, number]) => void;
 }
 
@@ -38,6 +35,16 @@ const SidebarFilters = ({
             Categorías
           </h3>
           <div className="space-y-1">
+            {/* Opción "Todos los productos" */}
+            <Button
+              key="all"
+              variant={currentSlug === "" ? "destructive" : "ghost"}
+              className="w-full justify-start text-left h-auto py-2 px-3"
+              onClick={() => handleCategoryChange("")} // importante: "" representa "Todos los productos"
+            >
+              Todos los productos
+            </Button>
+
             {categories.map((category) => (
               <Button
                 key={category._id}
@@ -58,6 +65,7 @@ const SidebarFilters = ({
         </CardContent>
       </Card>
 
+      {/* Filtros */}
       <Card>
         <CardContent className="p-4">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -114,5 +122,4 @@ const SidebarFilters = ({
   );
 };
 
-// ✅ Evita renders innecesarios
 export default SidebarFilters;

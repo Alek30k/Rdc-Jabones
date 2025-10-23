@@ -61,39 +61,38 @@ const CategoryProducts = ({ categories, slug }: Props) => {
   // Optimized category change handler - batches all state updates
   const handleCategoryChange = useCallback(
     (newSlug: string) => {
-      if (newSlug === currentSlug) return;
-
-      // Batch all state updates in a single transition
       startTransition(() => {
         setCurrentSlug(newSlug);
         setCurrentPage(1);
         setSearchTerm("");
       });
 
-      // Navigate without causing additional re-renders
-      router.push(`/category/${newSlug}`, { scroll: false });
+      // Navegar solo si no es "Todos los productos"
+      if (newSlug) {
+        router.push(`/category/${newSlug}`, { scroll: false });
+      } else {
+        router.push(`/shop`, { scroll: false }); // o la ruta principal de Shop
+      }
     },
-    [currentSlug, router]
+    [router]
   );
 
-  const fetchProducts = useCallback(async (categorySlug: string) => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const query = `
-        *[_type == 'product' && references(*[_type == "category" && slug.current == $categorySlug]._id)] | order(name asc){
-          ...,
-          "categories": categories[]->title
-        }
-      `;
-      const data = await client.fetch(query, { categorySlug });
+      const query = currentSlug
+        ? `*[_type == 'product' && references(*[_type == "category" && slug.current == $currentSlug]._id)] | order(name asc){ ..., "categories": categories[]->title }`
+        : `*[_type == "product"] | order(name asc){ ..., "categories": categories[]->title }`;
+
+      const data = await client.fetch(query, { currentSlug });
       setProducts(data || []);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error(error);
       setProducts([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [currentSlug]);
 
   // Filter and sort products - memoized to prevent unnecessary recalculations
   const filteredAndSortedProducts = useMemo(() => {
