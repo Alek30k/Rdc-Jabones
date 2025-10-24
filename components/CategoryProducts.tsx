@@ -11,7 +11,6 @@ import {
 } from "react";
 import { client } from "@/sanity/lib/client";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Separator } from "./ui/separator";
