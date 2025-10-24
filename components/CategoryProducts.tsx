@@ -179,9 +179,6 @@ const CategoryProducts = ({ categories, slug }: Props) => {
     });
   }, []);
 
-  // Stable key for AnimatePresence to prevent unnecessary animations
-  // const animationKey = `${currentSlug}-${currentPage}`;
-
   return (
     <div className="space-y-6">
       {/* Mobile Category Selector */}
@@ -270,10 +267,69 @@ const CategoryProducts = ({ categories, slug }: Props) => {
           </div>
 
           {/* Mobile Filters */}
+          {/* Mobile Filters Drawer */}
           {showFilters && (
-            <Card className="md:hidden">
-              <CardContent className="p-4 space-y-4">
-                <div className="relative">
+            <div className="fixed inset-0 z-50 flex">
+              {/* Fondo oscuro */}
+              <div
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                onClick={() => setShowFilters(false)}
+              />
+
+              {/* Panel lateral */}
+              <div className="relative bg-white w-72 max-w-[85%] h-full shadow-xl animate-slideInLeft overflow-y-auto p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <SlidersHorizontal className="w-4 h-4" />
+                    Filtros
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowFilters(false)}
+                    className="text-gray-600 hover:text-red-500"
+                  >
+                    ✕
+                  </Button>
+                </div>
+
+                {/* Categorías */}
+                <div className="space-y-1 mb-6">
+                  <Button
+                    key="all"
+                    variant={currentSlug === "" ? "destructive" : "ghost"}
+                    className="w-full justify-start text-left h-auto py-2 px-3"
+                    onClick={() => {
+                      handleCategoryChange("");
+                      setShowFilters(false);
+                    }}
+                  >
+                    Todos los productos
+                  </Button>
+
+                  {categories.map((category) => (
+                    <Button
+                      key={category._id}
+                      variant={
+                        currentSlug === category.slug?.current
+                          ? "destructive"
+                          : "ghost"
+                      }
+                      className="w-full justify-start text-left h-auto py-2 px-3"
+                      onClick={() => {
+                        handleCategoryChange(category.slug?.current || "");
+                        setShowFilters(false);
+                      }}
+                    >
+                      {category.title}
+                    </Button>
+                  ))}
+                </div>
+
+                <Separator className="mb-4" />
+
+                {/* Buscar */}
+                <div className="relative mb-4">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <Input
                     placeholder="Buscar productos..."
@@ -283,28 +339,35 @@ const CategoryProducts = ({ categories, slug }: Props) => {
                     disabled={loading}
                   />
                 </div>
-                <div className="flex gap-2">
-                  <Input
-                    type="number"
-                    placeholder="Precio min"
-                    value={priceRange[0]}
-                    onChange={(e) =>
-                      handlePriceRangeChange(0, Number(e.target.value))
-                    }
-                    disabled={loading}
-                  />
-                  <Input
-                    type="number"
-                    placeholder="Precio max"
-                    value={priceRange[1]}
-                    onChange={(e) =>
-                      handlePriceRangeChange(1, Number(e.target.value))
-                    }
-                    disabled={loading}
-                  />
+
+                {/* Precio */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Rango de precio
+                  </label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="number"
+                      placeholder="Min"
+                      value={priceRange[0]}
+                      onChange={(e) =>
+                        handlePriceRangeChange(0, Number(e.target.value))
+                      }
+                      disabled={loading}
+                    />
+                    <Input
+                      type="number"
+                      placeholder="Max"
+                      value={priceRange[1]}
+                      onChange={(e) =>
+                        handlePriceRangeChange(1, Number(e.target.value))
+                      }
+                      disabled={loading}
+                    />
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
 
           <Separator />
