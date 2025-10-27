@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import PromotionalModalManager from "@/components/modals/PromotionalModalManager";
 
 export const metadata: Metadata = {
   title: {
@@ -28,6 +29,13 @@ export default function RootLayout({
 
         <main className="flex-1">{children}</main>
         <Footer />
+        <PromotionalModalManager
+          modalType="showcase"
+          delay={6000}
+          oncePerSession={true}
+          oncePerDay={false}
+          minScreenWidth={768}
+        />
       </div>
     </ClerkProvider>
   );
