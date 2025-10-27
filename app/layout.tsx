@@ -1,7 +1,6 @@
 import CookieConsentBanner from "@/components/cookie-consent-banner";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
-import PromotionalModalManager from "@/components/modals/PromotionalModalManager";
 import { ThemeProvider } from "next-themes";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
@@ -25,14 +24,6 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 
         {/* Extras */}
         <CookieConsentBanner />
-
-        <PromotionalModalManager
-          modalType="showcase"
-          delay={6000}
-          oncePerSession={true}
-          oncePerDay={false}
-          minScreenWidth={768}
-        />
       </body>
     </html>
   );
