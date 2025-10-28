@@ -16,13 +16,6 @@ interface ContactItemData {
 const Footer = () => {
   const data: ContactItemData[] = [
     {
-      title: "Visítanos",
-      subtitle: "General Manuel Belgrano, FORMOSA",
-      icon: (
-        <MapPin className="h-6 w-6 text-gray-600 dark:text-gray-300 group-hover:text-shop_light_green transition-colors" />
-      ),
-    },
-    {
       title: "Llámanos",
       subtitle: "+54 3718 462342",
       icon: (
