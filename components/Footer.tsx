@@ -4,7 +4,7 @@ import SocialMedia from "./SocialMedia";
 import { productType, quickLinksData } from "@/constants/data";
 import Link from "next/link";
 import { SubText, SubTitle } from "./ui/Text";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import Image from "next/image";
 
 interface ContactItemData {
