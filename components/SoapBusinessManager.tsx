@@ -156,7 +156,7 @@ export default function SoapBusinessManager() {
     const testConnection = async () => {
       console.log("[v0] Testing Supabase connection...");
       try {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from("products")
           .select("count", { count: "exact", head: true });
 
