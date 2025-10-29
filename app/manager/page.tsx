@@ -7,11 +7,13 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
 
-  const correctPassword = "rdc123"; // 🔒 Cambiá esto por tu clave
+  // const adminPassword = process.env.NEXT_PRIVATE_ADMIN_PASSWORD;
+
+  const adminPassword = "rdc123";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === correctPassword) {
+    if (password === adminPassword) {
       setAuthenticated(true);
       localStorage.setItem("authenticatedOwner", "true"); // Guarda la sesión local
     } else {

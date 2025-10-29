@@ -20,7 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-// 1. Replace the useToast import at the top with:
 import toast from "react-hot-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
@@ -42,23 +41,10 @@ import {
   Info,
   X,
   Settings,
+  Edit,
 } from "lucide-react";
 // Import chart components
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  Line,
-  LineChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
+import { Area, AreaChart, XAxis, YAxis } from "recharts";
 import {
   ChartContainer,
   ChartTooltip,
@@ -109,92 +95,354 @@ interface AlertThresholds {
   expenseLimitPercentage: number;
 }
 
+import { createClient } from "@/lib/supabase/client";
+
+// State Initialization
+const defaultNewProduct = {
+  name: "",
+  costPerUnit: "",
+  pricePerUnit: "",
+  category: "facial",
+};
+const defaultNewExpense = {
+  description: "",
+  amount: "",
+  category: "materias-primas",
+  date: new Date().toISOString().split("T")[0],
+};
+const defaultNewSale = {
+  productId: "",
+  quantity: "",
+  date: new Date().toISOString().split("T")[0],
+};
+const defaultThresholds = {
+  lowProfitMargin: 20,
+  highExpenseCategory: 500,
+  noSalesDays: 7,
+  monthlyRevenueGoal: 1000,
+  expenseLimitPercentage: 60,
+};
+
 export default function SoapBusinessManager() {
+  const supabase = createClient();
+
   // State
   const [products, setProducts] = useState<Product[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
   const [alerts, setAlerts] = useState<BusinessAlert[]>([]);
+  const [thresholds, setThresholds] =
+    useState<AlertThresholds>(defaultThresholds);
 
-  // 2. Remove this line:
-  // const { toast } = useToast()
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [activeTab, setActiveTab] = useState("dashboard");
 
-  // Alert thresholds
-  const [thresholds, setThresholds] = useState<AlertThresholds>({
-    lowProfitMargin: 20, // Less than 20% profit margin
-    highExpenseCategory: 500, // More than $500 in a category
-    noSalesDays: 7, // No sales in 7 days
-    monthlyRevenueGoal: 1000, // Monthly goal of $1000
-    expenseLimitPercentage: 60, // Expenses shouldn't exceed 60% of revenue
-  });
+  const [newProduct, setNewProduct] = useState(defaultNewProduct);
+  const [newExpense, setNewExpense] = useState(defaultNewExpense);
+  const [newSale, setNewSale] = useState(defaultNewSale);
 
-  // Form states
-  const [newProduct, setNewProduct] = useState({
-    name: "",
-    costPerUnit: "",
-    pricePerUnit: "",
-    category: "facial",
-  });
+  const [mounted, setMounted] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<
+    "checking" | "connected" | "error"
+  >("checking");
 
-  const [newExpense, setNewExpense] = useState({
-    description: "",
-    amount: "",
-    category: "materias-primas",
-    date: new Date().toISOString().split("T")[0],
-  });
-
-  const [newSale, setNewSale] = useState({
-    productId: "",
-    quantity: "",
-    date: new Date().toISOString().split("T")[0],
-  });
-
-  // Load data from localStorage
   useEffect(() => {
-    const savedProducts = localStorage.getItem("soapProducts");
-    const savedExpenses = localStorage.getItem("soapExpenses");
-    const savedSales = localStorage.getItem("soapSales");
-    const savedAlerts = localStorage.getItem("soapAlerts");
-    const savedThresholds = localStorage.getItem("soapThresholds");
-
-    if (savedProducts) setProducts(JSON.parse(savedProducts));
-    if (savedExpenses) setExpenses(JSON.parse(savedExpenses));
-    if (savedSales) setSales(JSON.parse(savedSales));
-    if (savedAlerts) setAlerts(JSON.parse(savedAlerts));
-    if (savedThresholds) setThresholds(JSON.parse(savedThresholds));
+    setMounted(true);
   }, []);
 
-  // Save to localStorage
   useEffect(() => {
-    localStorage.setItem("soapProducts", JSON.stringify(products));
-  }, [products]);
+    if (!mounted) return;
+
+    const testConnection = async () => {
+      console.log("[v0] Testing Supabase connection...");
+      try {
+        const { data, error } = await supabase
+          .from("products")
+          .select("count", { count: "exact", head: true });
+
+        if (error) {
+          console.error("[v0] Connection test failed:", error);
+          console.error("[v0] Error details:", {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code,
+          });
+          setConnectionStatus("error");
+          toast.error(`Error de conexión: ${error.message}`);
+        } else {
+          console.log("[v0] Connection test successful!");
+          setConnectionStatus("connected");
+        }
+      } catch (error) {
+        console.error("[v0] Connection test exception:", error);
+        setConnectionStatus("error");
+        toast.error("Error al conectar con Supabase");
+      }
+    };
+
+    testConnection();
+  }, [mounted, supabase]);
 
   useEffect(() => {
-    localStorage.setItem("soapExpenses", JSON.stringify(expenses));
-  }, [expenses]);
+    if (!mounted || connectionStatus !== "connected") return;
+
+    console.log("[v0] Component mounted, loading data from Supabase...");
+
+    const loadData = async () => {
+      try {
+        const { data: productsData, error: productsError } = await supabase
+          .from("products")
+          .select("*");
+
+        if (productsError) {
+          console.error("[v0] Error loading products:", productsError);
+          console.error("[v0] Error details:", {
+            message: productsError.message,
+            details: productsError.details,
+            hint: productsError.hint,
+            code: productsError.code,
+          });
+          toast.error("Error al cargar productos");
+        } else if (productsData) {
+          const formattedProducts = productsData.map((p) => ({
+            id: p.id,
+            name: p.name,
+            costPerUnit: p.cost_per_unit,
+            pricePerUnit: p.price_per_unit,
+            unitsSold: p.units_sold,
+            category: p.category,
+          }));
+          console.log("[v0] Loaded products from Supabase:", formattedProducts);
+          setProducts(formattedProducts);
+        }
+
+        const { data: expensesData, error: expensesError } = await supabase
+          .from("expenses")
+          .select("*");
+
+        if (expensesError) {
+          console.error("[v0] Error loading expenses:", expensesError);
+          console.error("[v0] Error details:", {
+            message: expensesError.message,
+            details: expensesError.details,
+            hint: expensesError.hint,
+            code: expensesError.code,
+          });
+          toast.error("Error al cargar gastos");
+        } else if (expensesData) {
+          const formattedExpenses = expensesData.map((e) => ({
+            id: e.id,
+            description: e.description,
+            amount: e.amount,
+            category: e.category,
+            date: e.date,
+          }));
+          console.log(
+            "[v0] Loaded expenses from Supabase:",
+            formattedExpenses.length
+          );
+          setExpenses(formattedExpenses);
+        }
+
+        const { data: salesData, error: salesError } = await supabase
+          .from("sales")
+          .select("*");
+
+        if (salesError) {
+          console.error("[v0] Error loading sales:", salesError);
+          console.error("[v0] Error details:", {
+            message: salesError.message,
+            details: salesError.details,
+            hint: salesError.hint,
+            code: salesError.code,
+          });
+          toast.error("Error al cargar ventas");
+        } else if (salesData) {
+          const formattedSales = salesData.map((s) => ({
+            id: s.id,
+            productId: s.product_id,
+            quantity: s.quantity,
+            totalAmount: s.total_amount,
+            date: s.date,
+          }));
+          console.log(
+            "[v0] Loaded sales from Supabase:",
+            formattedSales.length
+          );
+          setSales(formattedSales);
+        }
+
+        const { data: alertsData, error: alertsError } = await supabase
+          .from("alerts")
+          .select("*");
+
+        if (alertsError) {
+          console.error("[v0] Error loading alerts:", alertsError);
+          console.error("[v0] Error details:", {
+            message: alertsError.message,
+            details: alertsError.details,
+            hint: alertsError.hint,
+            code: alertsError.code,
+          });
+          toast.error("Error al cargar alertas");
+        } else if (alertsData) {
+          const formattedAlerts = alertsData.map((a) => ({
+            id: a.id,
+            type: a.type as "warning" | "error" | "success" | "info",
+            title: a.title,
+            message: a.message,
+            action: a.action,
+            dismissed: a.dismissed,
+            createdAt: a.created_at,
+          }));
+          console.log(
+            "[v0] Loaded alerts from Supabase:",
+            formattedAlerts.length
+          );
+          setAlerts(formattedAlerts);
+        }
+
+        const { data: settingsData, error: settingsError } = await supabase
+          .from("settings")
+          .select("*")
+          .eq("id", "default")
+          .single();
+
+        if (settingsError) {
+          if (settingsError.code === "PGRST116") {
+            console.log("[v0] No settings found, creating default...");
+            const defaultSettings = {
+              id: "default",
+              low_profit_margin: 20,
+              high_expense_category: 500,
+              no_sales_days: 7,
+              monthly_revenue_goal: 1000,
+              expense_limit_percentage: 60,
+            };
+            const { error: insertError } = await supabase
+              .from("settings")
+              .insert(defaultSettings);
+            if (insertError) {
+              console.error(
+                "[v0] Error creating default settings:",
+                insertError
+              );
+            } else {
+              setThresholds({
+                lowProfitMargin: defaultSettings.low_profit_margin,
+                highExpenseCategory: defaultSettings.high_expense_category,
+                noSalesDays: defaultSettings.no_sales_days,
+                monthlyRevenueGoal: defaultSettings.monthly_revenue_goal,
+                expenseLimitPercentage:
+                  defaultSettings.expense_limit_percentage,
+              });
+            }
+          } else {
+            console.error("[v0] Error loading settings:", settingsError);
+            toast.error("Error al cargar configuración");
+          }
+        } else if (settingsData) {
+          setThresholds({
+            lowProfitMargin: settingsData.low_profit_margin,
+            highExpenseCategory: settingsData.high_expense_category,
+            noSalesDays: settingsData.no_sales_days,
+            monthlyRevenueGoal: settingsData.monthly_revenue_goal,
+            expenseLimitPercentage: settingsData.expense_limit_percentage,
+          });
+          console.log("[v0] Loaded settings from Supabase");
+        }
+
+        console.log("[v0] Data loading complete!");
+      } catch (error) {
+        console.error("[v0] Error loading from Supabase:", error);
+        toast.error("Error al cargar datos");
+      }
+    };
+
+    loadData();
+  }, [mounted, supabase, connectionStatus]);
 
   useEffect(() => {
-    localStorage.setItem("soapSales", JSON.stringify(sales));
-  }, [sales]);
+    if (!mounted) return;
+
+    const saveAlerts = async () => {
+      const newAlerts = alerts.filter((alert) => {
+        const createdTime = new Date(alert.createdAt).getTime();
+        const now = Date.now();
+        return now - createdTime < 2000;
+      });
+
+      if (newAlerts.length > 0) {
+        console.log("[v0] Saving new alerts to Supabase:", newAlerts.length);
+        const { error } = await supabase.from("alerts").insert(
+          newAlerts.map((a) => ({
+            id: a.id,
+            type: a.type,
+            title: a.title,
+            message: a.message,
+            action: a.action,
+            dismissed: a.dismissed,
+            created_at: a.createdAt,
+          }))
+        );
+
+        if (error) {
+          console.error("[v0] Error saving alerts:", error);
+        }
+      }
+
+      const dismissedAlerts = alerts.filter((alert) => alert.dismissed);
+      if (dismissedAlerts.length > 0) {
+        for (const alert of dismissedAlerts) {
+          const { error } = await supabase
+            .from("alerts")
+            .update({ dismissed: true })
+            .eq("id", alert.id);
+
+          if (error) {
+            console.error("[v0] Error updating alert:", error);
+          }
+        }
+      }
+    };
+
+    saveAlerts();
+  }, [alerts, mounted, supabase]);
 
   useEffect(() => {
-    localStorage.setItem("soapAlerts", JSON.stringify(alerts));
-  }, [alerts]);
+    if (!mounted) return;
+
+    const saveSettings = async () => {
+      console.log("[v0] Saving settings to Supabase");
+      const { error } = await supabase
+        .from("settings")
+        .update({
+          low_profit_margin: thresholds.lowProfitMargin,
+          high_expense_category: thresholds.highExpenseCategory,
+          no_sales_days: thresholds.noSalesDays,
+          monthly_revenue_goal: thresholds.monthlyRevenueGoal,
+          expense_limit_percentage: thresholds.expenseLimitPercentage,
+        })
+        .eq("id", "default");
+
+      if (error) {
+        console.error("[v0] Error saving settings:", error);
+      }
+    };
+
+    saveSettings();
+  }, [thresholds, mounted, supabase]);
 
   useEffect(() => {
-    localStorage.setItem("soapThresholds", JSON.stringify(thresholds));
-  }, [thresholds]);
+    if (!mounted) return;
 
-  // Check for alerts whenever data changes
-  useEffect(() => {
     checkForAlerts();
   }, [products, sales, expenses, thresholds]);
 
-  // Alert checking function
   const checkForAlerts = () => {
     const newAlerts: BusinessAlert[] = [];
 
-    // 1. Check for low profitability products
     products.forEach((product) => {
       if (product.unitsSold > 0) {
         const margin =
@@ -221,7 +469,6 @@ export default function SoapBusinessManager() {
       }
     });
 
-    // 2. Check for high expenses in categories
     const expensesByCategory = expenses.reduce(
       (acc, expense) => {
         acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
@@ -249,7 +496,6 @@ export default function SoapBusinessManager() {
       }
     });
 
-    // 3. Check for products with no recent sales
     const today = new Date();
     products.forEach((product) => {
       const lastSale = sales
@@ -282,7 +528,6 @@ export default function SoapBusinessManager() {
       }
     });
 
-    // 4. Check monthly revenue goal
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
     const monthlyRevenue = sales
@@ -309,24 +554,12 @@ export default function SoapBusinessManager() {
           createdAt: new Date().toISOString(),
         });
 
-        // Show toast notification
-        // 5. For the alert toast in checkForAlerts function, replace:
-        // toast({
-        //   title: alert.title,
-        //   description: alert.message,
-        //   variant: alert.type === "error" ? "destructive" : "default",
-        //   duration: 5000,
-        // })
-        // With:
-        if (alert.type === "error") {
-          toast.error(`${alert.title}: ${alert.message}`, { duration: 5000 });
-        } else if (alert.type === "success") {
-          toast.success(`${alert.title}: ${alert.message}`, { duration: 5000 });
+        if (newAlerts.find((a) => a.id === `goal-reached-${Date.now()}`)) {
+          toast.success("¡Meta mensual alcanzada!", { duration: 5000 });
         }
       }
     }
 
-    // 5. Check expense to revenue ratio
     const totalRevenue = sales.reduce((sum, sale) => sum + sale.totalAmount, 0);
     const totalExpenses = expenses.reduce(
       (sum, expense) => sum + expense.amount,
@@ -358,59 +591,54 @@ export default function SoapBusinessManager() {
       }
     }
 
-    // 6. Check for products reaching break-even
     products.forEach((product) => {
       if (product.unitsSold > 0) {
         const profitPerUnit = product.pricePerUnit - product.costPerUnit;
-        const productShare = totalExpenses / products.length;
-        const breakEvenUnits = Math.ceil(productShare / profitPerUnit);
+        if (profitPerUnit > 0) {
+          const productShare =
+            totalExpenses / (products.length > 0 ? products.length : 1);
+          const breakEvenUnits = Math.ceil(productShare / profitPerUnit);
 
-        if (
-          product.unitsSold >= breakEvenUnits &&
-          product.unitsSold < breakEvenUnits + 5
-        ) {
-          const existingAlert = alerts.find(
-            (a) =>
-              a.title === `¡${product.name} alcanzó punto de equilibrio!` &&
-              !a.dismissed
-          );
-          if (!existingAlert) {
-            newAlerts.push({
-              id: `break-even-${product.id}-${Date.now()}`,
-              type: "success",
-              title: `¡${product.name} alcanzó punto de equilibrio!`,
-              message: `Este producto ya cubrió sus costos con ${product.unitsSold} unidades vendidas. ¡Ahora es pura ganancia!`,
-              dismissed: false,
-              createdAt: new Date().toISOString(),
-            });
+          if (
+            product.unitsSold >= breakEvenUnits &&
+            product.unitsSold < breakEvenUnits + 5
+          ) {
+            const existingAlert = alerts.find(
+              (a) =>
+                a.title === `¡${product.name} alcanzó punto de equilibrio!` &&
+                !a.dismissed
+            );
+            if (!existingAlert) {
+              newAlerts.push({
+                id: `break-even-${product.id}-${Date.now()}`,
+                type: "success",
+                title: `¡${product.name} alcanzó punto de equilibrio!`,
+                message: `Este producto ya cubrió sus costos con ${product.unitsSold} unidades vendidas. ¡Ahora es pura ganancia!`,
+                dismissed: false,
+                createdAt: new Date().toISOString(),
+              });
+            }
           }
         }
       }
     });
 
-    // Add new alerts
     if (newAlerts.length > 0) {
       setAlerts([...alerts, ...newAlerts]);
-      // Show toast for critical alerts
       newAlerts.forEach((alert) => {
-        // 5. For the alert toast in checkForAlerts function, replace:
-        // toast({
-        //   title: alert.title,
-        //   description: alert.message,
-        //   variant: alert.type === "error" ? "destructive" : "default",
-        //   duration: 5000,
-        // })
-        // With:
         if (alert.type === "error") {
           toast.error(`${alert.title}: ${alert.message}`, { duration: 5000 });
         } else if (alert.type === "success") {
           toast.success(`${alert.title}: ${alert.message}`, { duration: 5000 });
+        } else if (alert.type === "warning") {
+          toast.warn(`${alert.title}: ${alert.message}`, { duration: 5000 });
+        } else if (alert.type === "info") {
+          toast.info(`${alert.title}: ${alert.message}`, { duration: 5000 });
         }
       });
     }
   };
 
-  // Dismiss alert
   const dismissAlert = (alertId: string) => {
     setAlerts(
       alerts.map((alert) =>
@@ -419,78 +647,194 @@ export default function SoapBusinessManager() {
     );
   };
 
-  // Clear all dismissed alerts
-  const clearDismissedAlerts = () => {
-    setAlerts(alerts.filter((alert) => !alert.dismissed));
+  const clearDismissedAlerts = async () => {
+    const dismissedCount = alerts.filter((a) => a.dismissed).length;
+    const dismissedIds = alerts.filter((a) => a.dismissed).map((a) => a.id);
+
+    if (dismissedIds.length > 0) {
+      const { error } = await supabase
+        .from("alerts")
+        .delete()
+        .in("id", dismissedIds);
+
+      if (error) {
+        console.error("[v0] Error deleting alerts:", error);
+        toast.error("Error al eliminar alertas");
+        return;
+      }
+    }
+
+    setAlerts(alerts.filter((a) => !a.dismissed));
+    toast.success(`${dismissedCount} alertas antiguas eliminadas`);
   };
 
-  // Add Product
-  const addProduct = () => {
-    if (!newProduct.name || !newProduct.costPerUnit || !newProduct.pricePerUnit)
+  const manualCheckAlerts = () => {
+    checkForAlerts();
+    toast.info("🔍 Revisión de alertas completada");
+  };
+
+  const handleAlertAction = (action: string) => {
+    if (action === "Analizar gastos" || action === "Ver gastos") {
+      setActiveTab("expenses");
+      toast.info("📊 Navegando a la sección de gastos");
+    } else if (action === "Revisar precios") {
+      setActiveTab("products");
+      toast.info("💰 Navegando a la sección de productos");
+    } else if (action === "Crear promoción") {
+      setActiveTab("products");
+      toast.info("🎁 Navegando a la sección de productos");
+    }
+  };
+
+  const addProduct = async () => {
+    if (
+      !newProduct.name ||
+      !newProduct.costPerUnit ||
+      !newProduct.pricePerUnit
+    ) {
+      toast.error("Por favor, completa todos los campos del producto.");
       return;
+    }
+
+    const costPerUnit = Number.parseFloat(newProduct.costPerUnit);
+    const pricePerUnit = Number.parseFloat(newProduct.pricePerUnit);
+
+    if (
+      isNaN(costPerUnit) ||
+      costPerUnit < 0 ||
+      isNaN(pricePerUnit) ||
+      pricePerUnit <= 0
+    ) {
+      toast.error(
+        "El costo y el precio deben ser números válidos (precio > 0)."
+      );
+      return;
+    }
+
+    console.log("[v0] Adding new product:", newProduct);
 
     const product: Product = {
       id: Date.now().toString(),
       name: newProduct.name,
-      costPerUnit: Number.parseFloat(newProduct.costPerUnit),
-      pricePerUnit: Number.parseFloat(newProduct.pricePerUnit),
+      costPerUnit: costPerUnit,
+      pricePerUnit: pricePerUnit,
       unitsSold: 0,
       category: newProduct.category,
     };
 
-    setProducts([...products, product]);
-    setNewProduct({
-      name: "",
-      costPerUnit: "",
-      pricePerUnit: "",
-      category: "facial",
-    });
+    try {
+      const { error } = await supabase.from("products").insert({
+        id: product.id,
+        name: product.name,
+        cost_per_unit: product.costPerUnit,
+        price_per_unit: product.pricePerUnit,
+        units_sold: product.unitsSold,
+        category: product.category,
+      });
 
-    // 3. Update all toast calls to use react-hot-toast syntax:
-    // Replace:
-    // toast({
-    //   title: "✅ Producto agregado",
-    //   description: `${product.name} ha sido agregado exitosamente`,
-    //   duration: 3000,
-    // })
-    // With:
-    toast.success(`✅ Producto agregado: ${product.name}`);
+      if (error) {
+        console.error("[v0] Error inserting product:", error);
+        toast.error("Error al guardar el producto");
+        return;
+      }
+
+      console.log("[v0] Product saved to Supabase:", product);
+      setProducts([...products, product]);
+      setNewProduct(defaultNewProduct);
+
+      toast.success(`Producto agregado: ${product.name}`);
+    } catch (error) {
+      console.error("[v0] Error adding product:", error);
+      toast.error("Error al agregar producto");
+    }
   };
 
-  // Add Expense
-  const addExpense = () => {
-    if (!newExpense.description || !newExpense.amount) return;
+  const startEditingProduct = (product: Product) => {
+    setEditingProduct(product);
+    setNewProduct({
+      name: product.name,
+      costPerUnit: product.costPerUnit.toString(),
+      pricePerUnit: product.pricePerUnit.toString(),
+      category: product.category,
+    });
+    setActiveTab("products");
+    setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100);
+  };
+
+  const cancelEditing = () => {
+    setEditingProduct(null);
+    setNewProduct(defaultNewProduct);
+  };
+
+  const addExpense = async () => {
+    if (!newExpense.description || !newExpense.amount) {
+      toast.error(
+        "Por favor, ingresa una descripción y un monto para el gasto."
+      );
+      return;
+    }
+
+    const amount = Number.parseFloat(newExpense.amount);
+    if (isNaN(amount) || amount <= 0) {
+      toast.error("El monto debe ser un número positivo.");
+      return;
+    }
 
     const expense: Expense = {
       id: Date.now().toString(),
       description: newExpense.description,
-      amount: Number.parseFloat(newExpense.amount),
+      amount: amount,
       category: newExpense.category,
       date: newExpense.date,
     };
 
-    setExpenses([...expenses, expense]);
-    setNewExpense({
-      description: "",
-      amount: "",
-      category: "materias-primas",
-      date: new Date().toISOString().split("T")[0],
-    });
+    try {
+      const { error } = await supabase.from("expenses").insert({
+        id: expense.id,
+        description: expense.description,
+        amount: expense.amount,
+        category: expense.category,
+        date: expense.date,
+      });
 
-    // 4. Similarly update all other toast calls:
-    toast.success(
-      `💸 Gasto registrado: $${expense.amount.toFixed(2)} en ${expense.category}`
-    );
+      if (error) {
+        console.error("[v0] Error inserting expense:", error);
+        toast.error("Error al guardar el gasto");
+        return;
+      }
+
+      setExpenses([...expenses, expense]);
+      setNewExpense(defaultNewExpense);
+
+      toast.success(
+        `Gasto registrado: $${expense.amount.toFixed(2)} en ${expense.category}`
+      );
+    } catch (error) {
+      console.error("[v0] Error adding expense:", error);
+      toast.error("Error al agregar gasto");
+    }
   };
 
-  // Add Sale
-  const addSale = () => {
-    if (!newSale.productId || !newSale.quantity) return;
+  const addSale = async () => {
+    if (!newSale.productId || !newSale.quantity) {
+      toast.error(
+        "Por favor, selecciona un producto y una cantidad para la venta."
+      );
+      return;
+    }
 
     const product = products.find((p) => p.id === newSale.productId);
-    if (!product) return;
+    if (!product) {
+      toast.error("Producto no encontrado.");
+      return;
+    }
 
     const quantity = Number.parseInt(newSale.quantity);
+    if (isNaN(quantity) || quantity <= 0) {
+      toast.error("La cantidad debe ser un número entero positivo.");
+      return;
+    }
+
     const sale: Sale = {
       id: Date.now().toString(),
       productId: newSale.productId,
@@ -499,30 +843,51 @@ export default function SoapBusinessManager() {
       date: newSale.date,
     };
 
-    setSales([...sales, sale]);
+    try {
+      const { error: saleError } = await supabase.from("sales").insert({
+        id: sale.id,
+        product_id: sale.productId,
+        quantity: sale.quantity,
+        total_amount: sale.totalAmount,
+        date: sale.date,
+      });
 
-    // Update product units sold
-    setProducts(
-      products.map((p) =>
-        p.id === newSale.productId
-          ? { ...p, unitsSold: p.unitsSold + quantity }
-          : p
-      )
-    );
+      if (saleError) {
+        console.error("[v0] Error inserting sale:", saleError);
+        toast.error("Error al guardar la venta");
+        return;
+      }
 
-    setNewSale({
-      productId: "",
-      quantity: "",
-      date: new Date().toISOString().split("T")[0],
-    });
+      const newUnitsSold = product.unitsSold + quantity;
+      const { error: productError } = await supabase
+        .from("products")
+        .update({ units_sold: newUnitsSold })
+        .eq("id", product.id);
 
-    // 4. Similarly update all other toast calls:
-    toast.success(
-      `🎉 Venta registrada: ${quantity}x ${product.name} - $${sale.totalAmount.toFixed(2)}`
-    );
+      if (productError) {
+        console.error("[v0] Error updating product units:", productError);
+        toast.error("Error al actualizar unidades vendidas");
+        return;
+      }
+
+      setSales([...sales, sale]);
+      setProducts(
+        products.map((p) =>
+          p.id === newSale.productId ? { ...p, unitsSold: newUnitsSold } : p
+        )
+      );
+
+      setNewSale(defaultNewSale);
+
+      toast.success(
+        `Venta registrada: ${quantity}x ${product.name} - $${sale.totalAmount.toFixed(2)}`
+      );
+    } catch (error) {
+      console.error("[v0] Error adding sale:", error);
+      toast.error("Error al agregar venta");
+    }
   };
 
-  // Calculations
   const totalRevenue = sales.reduce((sum, sale) => sum + sale.totalAmount, 0);
   const totalExpenses = expenses.reduce(
     (sum, expense) => sum + expense.amount,
@@ -536,15 +901,12 @@ export default function SoapBusinessManager() {
   const profitMargin =
     totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(2) : "0";
 
-  // Best selling products
   const bestSellers = [...products]
     .sort((a, b) => b.unitsSold - a.unitsSold)
     .slice(0, 5);
 
-  // Get active alerts
   const activeAlerts = alerts.filter((alert) => !alert.dismissed);
 
-  // Export data
   const exportData = () => {
     const data = {
       products,
@@ -571,13 +933,11 @@ export default function SoapBusinessManager() {
     a.download = `soap-business-${new Date().toISOString().split("T")[0]}.json`;
     a.click();
 
-    // 4. Similarly update all other toast calls:
     toast.success(
       "📥 Datos exportados: El archivo se ha descargado exitosamente"
     );
   };
 
-  // Get alert icon
   const getAlertIcon = (type: string) => {
     switch (type) {
       case "warning":
@@ -596,7 +956,6 @@ export default function SoapBusinessManager() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -623,7 +982,6 @@ export default function SoapBusinessManager() {
           </div>
         </div>
 
-        {/* Alert Banner - Show only critical alerts */}
         {activeAlerts.filter((a) => a.type === "error" || a.type === "warning")
           .length > 0 && (
           <Alert variant="destructive" className="border-2">
@@ -641,7 +999,6 @@ export default function SoapBusinessManager() {
           </Alert>
         )}
 
-        {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="bg-gradient-to-br from-green-500 to-emerald-600 text-white border-0">
             <CardHeader className="pb-2">
@@ -715,8 +1072,11 @@ export default function SoapBusinessManager() {
           </Card>
         </div>
 
-        {/* Main Tabs */}
-        <Tabs defaultValue="dashboard" className="space-y-4">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-4"
+        >
           <TabsList className="grid w-full grid-cols-3 md:grid-cols-7 gap-2">
             <TabsTrigger value="dashboard" className="gap-2">
               <BarChart3 className="w-4 h-4" />
@@ -756,200 +1116,189 @@ export default function SoapBusinessManager() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Alerts Tab */}
           <TabsContent value="alerts" className="space-y-4">
-            {/* Alert Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="w-5 h-5" />
-                  Configuración de Alertas
-                </CardTitle>
-                <CardDescription>
-                  Ajusta los umbrales para recibir notificaciones
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="low-profit">
-                      Margen de ganancia mínimo (%)
-                    </Label>
-                    <Input
-                      id="low-profit"
-                      type="number"
-                      value={thresholds.lowProfitMargin}
-                      onChange={(e) =>
-                        setThresholds({
-                          ...thresholds,
-                          lowProfitMargin: Number.parseFloat(e.target.value),
-                        })
-                      }
-                    />
+            <div className="grid gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Settings className="w-5 h-5" />
+                    Configuración de Alertas
+                  </CardTitle>
+                  <CardDescription>
+                    Personaliza los umbrales para recibir notificaciones
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="low-profit">
+                        Margen de ganancia mínimo (%)
+                      </Label>
+                      <Input
+                        id="low-profit"
+                        type="number"
+                        value={thresholds.lowProfitMargin}
+                        onChange={(e) =>
+                          setThresholds({
+                            ...thresholds,
+                            lowProfitMargin: Number.parseFloat(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="high-expense">
+                        Límite de gasto por categoría ($)
+                      </Label>
+                      <Input
+                        id="high-expense"
+                        type="number"
+                        value={thresholds.highExpenseCategory}
+                        onChange={(e) =>
+                          setThresholds({
+                            ...thresholds,
+                            highExpenseCategory: Number.parseFloat(
+                              e.target.value
+                            ),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="no-sales">Días sin ventas</Label>
+                      <Input
+                        id="no-sales"
+                        type="number"
+                        value={thresholds.noSalesDays}
+                        onChange={(e) =>
+                          setThresholds({
+                            ...thresholds,
+                            noSalesDays: Number.parseInt(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="revenue-goal">
+                        Meta mensual de ingresos ($)
+                      </Label>
+                      <Input
+                        id="revenue-goal"
+                        type="number"
+                        value={thresholds.monthlyRevenueGoal}
+                        onChange={(e) =>
+                          setThresholds({
+                            ...thresholds,
+                            monthlyRevenueGoal: Number.parseFloat(
+                              e.target.value
+                            ),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="expense-limit">
+                        Límite de gastos vs ingresos (%)
+                      </Label>
+                      <Input
+                        id="expense-limit"
+                        type="number"
+                        value={thresholds.expenseLimitPercentage}
+                        onChange={(e) =>
+                          setThresholds({
+                            ...thresholds,
+                            expenseLimitPercentage: Number.parseFloat(
+                              e.target.value
+                            ),
+                          })
+                        }
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="high-expense">
-                      Límite de gasto por categoría ($)
-                    </Label>
-                    <Input
-                      id="high-expense"
-                      type="number"
-                      value={thresholds.highExpenseCategory}
-                      onChange={(e) =>
-                        setThresholds({
-                          ...thresholds,
-                          highExpenseCategory: Number.parseFloat(
-                            e.target.value
-                          ),
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="no-sales">Días sin ventas</Label>
-                    <Input
-                      id="no-sales"
-                      type="number"
-                      value={thresholds.noSalesDays}
-                      onChange={(e) =>
-                        setThresholds({
-                          ...thresholds,
-                          noSalesDays: Number.parseInt(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="revenue-goal">
-                      Meta mensual de ingresos ($)
-                    </Label>
-                    <Input
-                      id="revenue-goal"
-                      type="number"
-                      value={thresholds.monthlyRevenueGoal}
-                      onChange={(e) =>
-                        setThresholds({
-                          ...thresholds,
-                          monthlyRevenueGoal: Number.parseFloat(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="expense-limit">
-                      Límite de gastos vs ingresos (%)
-                    </Label>
-                    <Input
-                      id="expense-limit"
-                      type="number"
-                      value={thresholds.expenseLimitPercentage}
-                      onChange={(e) =>
-                        setThresholds({
-                          ...thresholds,
-                          expenseLimitPercentage: Number.parseFloat(
-                            e.target.value
-                          ),
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end gap-2 mt-4">
-                  <Button onClick={clearDismissedAlerts} variant="outline">
-                    Limpiar alertas antiguas
-                  </Button>
-                  <Button onClick={checkForAlerts}>
-                    Revisar alertas ahora
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Active Alerts */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="w-5 h-5" />
-                  Alertas Activas ({activeAlerts.length})
-                </CardTitle>
-                <CardDescription>
-                  Notificaciones importantes sobre tu negocio
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2 pt-4 border-t">
+                    <Button
+                      onClick={clearDismissedAlerts}
+                      variant="outline"
+                      size="sm"
+                      className="gap-2 bg-transparent"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Limpiar alertas antiguas
+                    </Button>
+                    <Button
+                      onClick={manualCheckAlerts}
+                      variant="outline"
+                      size="sm"
+                      className="gap-2 bg-transparent"
+                    >
+                      <Bell className="w-4 h-4" />
+                      Revisar alertas ahora
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="w-5 h-5" />
+                    Alertas Activas ({activeAlerts.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
                   {activeAlerts.length === 0 ? (
-                    <div className="text-center py-12">
-                      <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                      <p className="text-lg font-medium">
-                        ¡Todo está en orden!
-                      </p>
-                      <p className="text-gray-500 text-sm mt-2">
-                        No tienes alertas pendientes en este momento.
-                      </p>
+                    <div className="text-center py-8 text-gray-500">
+                      <CheckCircle2 className="w-12 h-12 mx-auto mb-2 text-green-500" />
+                      <p>¡Todo en orden! No hay alertas activas.</p>
                     </div>
                   ) : (
-                    [...activeAlerts]
-                      .sort((a, b) => {
-                        const priority = {
-                          error: 0,
-                          warning: 1,
-                          info: 2,
-                          success: 3,
-                        };
-                        return priority[a.type] - priority[b.type];
-                      })
-                      .map((alert) => (
+                    <div className="space-y-3">
+                      {activeAlerts.map((alert) => (
                         <Alert
                           key={alert.id}
                           variant={
                             alert.type === "error" ? "destructive" : "default"
                           }
-                          className={`
-                          ${alert.type === "warning" ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-900/10" : ""}
-                          ${alert.type === "success" ? "border-green-500 bg-green-50 dark:bg-green-900/10" : ""}
-                          ${alert.type === "info" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/10" : ""}
-                        `}
+                          className="relative"
                         >
-                          <div className="flex items-start justify-between">
-                            <div className="flex gap-3 flex-1">
-                              {getAlertIcon(alert.type)}
-                              <div className="flex-1">
-                                <AlertTitle>{alert.title}</AlertTitle>
-                                <AlertDescription className="mt-2">
-                                  {alert.message}
-                                </AlertDescription>
-                                {alert.action && (
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="mt-3 bg-transparent"
-                                  >
-                                    {alert.action}
-                                  </Button>
-                                )}
-                                <p className="text-xs text-gray-500 mt-2">
-                                  {new Date(alert.createdAt).toLocaleString()}
-                                </p>
-                              </div>
+                          <div className="flex items-start gap-3">
+                            {getAlertIcon(alert.type)}
+                            <div className="flex-1">
+                              <AlertTitle>{alert.title}</AlertTitle>
+                              <AlertDescription>
+                                {alert.message}
+                              </AlertDescription>
+                              {alert.action && (
+                                <Button
+                                  onClick={() =>
+                                    handleAlertAction(alert.action!)
+                                  }
+                                  variant="outline"
+                                  size="sm"
+                                  className="mt-2"
+                                >
+                                  {alert.action}
+                                </Button>
+                              )}
                             </div>
                             <Button
-                              variant="ghost"
-                              size="icon"
-                              className="shrink-0"
                               onClick={() => dismissAlert(alert.id)}
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0"
                             >
                               <X className="w-4 h-4" />
                             </Button>
                           </div>
                         </Alert>
-                      ))
+                      ))}
+                    </div>
                   )}
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
 
-            {/* Alert Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Card>
                 <CardHeader className="pb-3">
@@ -1018,10 +1367,8 @@ export default function SoapBusinessManager() {
             </div>
           </TabsContent>
 
-          {/* Dashboard Tab */}
           <TabsContent value="dashboard" className="space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Best Sellers */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -1068,7 +1415,6 @@ export default function SoapBusinessManager() {
                 </CardContent>
               </Card>
 
-              {/* Expense Breakdown */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -1127,7 +1473,6 @@ export default function SoapBusinessManager() {
               </Card>
             </div>
 
-            {/* Profitability by Product */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1147,10 +1492,10 @@ export default function SoapBusinessManager() {
                   ) : (
                     products.map((product) => {
                       const profit = product.pricePerUnit - product.costPerUnit;
-                      const margin = (
-                        (profit / product.pricePerUnit) *
-                        100
-                      ).toFixed(1);
+                      const margin =
+                        product.pricePerUnit > 0
+                          ? ((profit / product.pricePerUnit) * 100).toFixed(1)
+                          : "N/A";
                       const totalProfit = profit * product.unitsSold;
 
                       return (
@@ -1183,16 +1528,21 @@ export default function SoapBusinessManager() {
             </Card>
           </TabsContent>
 
-          {/* Products Tab */}
           <TabsContent value="products" className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Plus className="w-5 h-5" />
-                  Agregar Producto
+                  {editingProduct ? (
+                    <Edit className="w-5 h-5" />
+                  ) : (
+                    <Plus className="w-5 h-5" />
+                  )}
+                  {editingProduct ? "Actualizar Producto" : "Agregar Producto"}
                 </CardTitle>
                 <CardDescription>
-                  Registra un nuevo jabón artesanal
+                  {editingProduct
+                    ? "Modifica los datos del producto"
+                    : "Registra un nuevo jabón artesanal"}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -1260,10 +1610,30 @@ export default function SoapBusinessManager() {
                     </Select>
                   </div>
                 </div>
-                <Button onClick={addProduct} className="mt-4 w-full md:w-auto">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Agregar Producto
-                </Button>
+                <div className="flex gap-2 mt-4">
+                  <Button onClick={addProduct} className="w-full md:w-auto">
+                    {editingProduct ? (
+                      <>
+                        <Edit className="w-4 h-4 mr-2" />
+                        Actualizar Producto
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Agregar Producto
+                      </>
+                    )}
+                  </Button>
+                  {editingProduct && (
+                    <Button
+                      onClick={cancelEditing}
+                      variant="outline"
+                      className="w-full md:w-auto bg-transparent"
+                    >
+                      Cancelar
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
@@ -1284,7 +1654,7 @@ export default function SoapBusinessManager() {
                     products.map((product) => (
                       <div
                         key={product.id}
-                        className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                        className="flex items-center justify-between p-4 border rounded-lg"
                       >
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
@@ -1297,17 +1667,49 @@ export default function SoapBusinessManager() {
                             {product.unitsSold}
                           </p>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() =>
-                            setProducts(
-                              products.filter((p) => p.id !== product.id)
-                            )
-                          }
-                        >
-                          <Trash2 className="w-4 h-4 text-red-500" />
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => startEditingProduct(product)}
+                            variant="ghost"
+                            size="sm"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            onClick={async () => {
+                              try {
+                                const { error } = await supabase
+                                  .from("products")
+                                  .delete()
+                                  .eq("id", product.id);
+
+                                if (error) {
+                                  console.error(
+                                    "[v0] Error deleting product:",
+                                    error
+                                  );
+                                  toast.error("Error al eliminar el producto");
+                                  return;
+                                }
+
+                                setProducts(
+                                  products.filter((p) => p.id !== product.id)
+                                );
+                                toast.success("Producto eliminado");
+                              } catch (error) {
+                                console.error(
+                                  "[v0] Error deleting product:",
+                                  error
+                                );
+                                toast.error("Error al eliminar producto");
+                              }
+                            }}
+                            variant="ghost"
+                            size="sm"
+                          >
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </Button>
+                        </div>
                       </div>
                     ))
                   )}
@@ -1316,7 +1718,6 @@ export default function SoapBusinessManager() {
             </Card>
           </TabsContent>
 
-          {/* Sales Tab */}
           <TabsContent value="sales" className="space-y-4">
             <Card>
               <CardHeader>
@@ -1428,22 +1829,58 @@ export default function SoapBusinessManager() {
                             variant="ghost"
                             size="icon"
                             className="ml-2"
-                            onClick={() => {
-                              setSales(sales.filter((s) => s.id !== sale.id));
-                              if (product) {
-                                setProducts(
-                                  products.map((p) =>
-                                    p.id === product.id
-                                      ? {
-                                          ...p,
-                                          unitsSold: Math.max(
-                                            0,
-                                            p.unitsSold - sale.quantity
-                                          ),
-                                        }
-                                      : p
-                                  )
+                            onClick={async () => {
+                              try {
+                                const { error: saleError } = await supabase
+                                  .from("sales")
+                                  .delete()
+                                  .eq("id", sale.id);
+
+                                if (saleError) {
+                                  console.error(
+                                    "[v0] Error deleting sale:",
+                                    saleError
+                                  );
+                                  toast.error("Error al eliminar la venta");
+                                  return;
+                                }
+
+                                if (product) {
+                                  const newUnitsSold = Math.max(
+                                    0,
+                                    product.unitsSold - sale.quantity
+                                  );
+                                  const { error: productError } = await supabase
+                                    .from("products")
+                                    .update({ units_sold: newUnitsSold })
+                                    .eq("id", product.id);
+
+                                  if (productError) {
+                                    console.error(
+                                      "[v0] Error updating product units:",
+                                      productError
+                                    );
+                                    toast.error("Error al actualizar unidades");
+                                    return;
+                                  }
+
+                                  setProducts(
+                                    products.map((p) =>
+                                      p.id === product.id
+                                        ? { ...p, unitsSold: newUnitsSold }
+                                        : p
+                                    )
+                                  );
+                                }
+
+                                setSales(sales.filter((s) => s.id !== sale.id));
+                                toast.success("Venta eliminada");
+                              } catch (error) {
+                                console.error(
+                                  "[v0] Error deleting sale:",
+                                  error
                                 );
+                                toast.error("Error al eliminar venta");
                               }
                             }}
                           >
@@ -1458,7 +1895,6 @@ export default function SoapBusinessManager() {
             </Card>
           </TabsContent>
 
-          {/* Expenses Tab */}
           <TabsContent value="expenses" className="space-y-4">
             <Card>
               <CardHeader>
@@ -1563,32 +1999,56 @@ export default function SoapBusinessManager() {
                         className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
                       >
                         <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <p className="font-medium">{expense.description}</p>
-                            <Badge variant="outline" className="capitalize">
-                              {expense.category.replace("-", " ")}
-                            </Badge>
-                          </div>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="font-medium capitalize">
+                            {expense.description}
+                          </p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {expense.category.replace("-", " ")}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-red-600">
+                            -${expense.amount.toFixed(2)}
+                          </p>
+                          <p className="text-xs text-gray-500">
                             {new Date(expense.date).toLocaleDateString()}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <p className="font-bold text-red-600">
-                            ${expense.amount.toFixed(2)}
-                          </p>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() =>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="ml-2"
+                          onClick={async () => {
+                            try {
+                              const { error } = await supabase
+                                .from("expenses")
+                                .delete()
+                                .eq("id", expense.id);
+
+                              if (error) {
+                                console.error(
+                                  "[v0] Error deleting expense:",
+                                  error
+                                );
+                                toast.error("Error al eliminar el gasto");
+                                return;
+                              }
+
                               setExpenses(
                                 expenses.filter((e) => e.id !== expense.id)
-                              )
+                              );
+                              toast.success("Gasto eliminado");
+                            } catch (error) {
+                              console.error(
+                                "[v0] Error deleting expense:",
+                                error
+                              );
+                              toast.error("Error al eliminar gasto");
                             }
-                          >
-                            <Trash2 className="w-4 h-4 text-red-500" />
-                          </Button>
-                        </div>
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </Button>
                       </div>
                     ))
                   )}
@@ -1597,687 +2057,285 @@ export default function SoapBusinessManager() {
             </Card>
           </TabsContent>
 
-          {/* Calculator Tab */}
           <TabsContent value="calculator" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calculator className="w-5 h-5 text-purple-600" />
-                    Calculadora de Precio
-                  </CardTitle>
-                  <CardDescription>
-                    Calcula el precio ideal para tu producto
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                      <h4 className="font-medium text-sm mb-3">Fórmula:</h4>
-                      <div className="space-y-2 text-sm">
-                        <p>
-                          • <strong>Precio Mínimo</strong> = Costo × 2
-                        </p>
-                        <p>
-                          • <strong>Precio Recomendado</strong> = Costo × 2.5
-                        </p>
-                        <p>
-                          • <strong>Precio Premium</strong> = Costo × 3
-                        </p>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Usa estos multiplicadores como guía según tu mercado
-                        objetivo y posicionamiento.
-                      </p>
-                      <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                        <p className="text-xs text-blue-900 dark:text-blue-100">
-                          💡 <strong>Tip:</strong> Considera gastos fijos
-                          (envío, embalaje, comisiones) al establecer tu precio
-                          final.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-green-600" />
-                    Análisis de Break-Even
-                  </CardTitle>
-                  <CardDescription>
-                    ¿Cuántas unidades necesitas vender?
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {products.length === 0 ? (
-                      <p className="text-gray-500 text-center py-4">
-                        Agrega productos para ver el análisis
-                      </p>
-                    ) : (
-                      <div className="space-y-3">
-                        {products.map((product) => {
-                          const profitPerUnit =
-                            product.pricePerUnit - product.costPerUnit;
-                          const breakEvenUnits =
-                            totalExpenses > 0
-                              ? Math.ceil(totalExpenses / profitPerUnit)
-                              : 0;
-                          const currentProfit =
-                            product.unitsSold * profitPerUnit -
-                            totalExpenses / products.length;
-
-                          return (
-                            <div
-                              key={product.id}
-                              className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
-                            >
-                              <p className="font-medium text-sm mb-2">
-                                {product.name}
-                              </p>
-                              <div className="space-y-1 text-xs text-gray-600 dark:text-gray-400">
-                                <p>
-                                  Ganancia por unidad:{" "}
-                                  <span className="font-bold text-green-600">
-                                    ${profitPerUnit.toFixed(2)}
-                                  </span>
-                                </p>
-                                <p>
-                                  Punto de equilibrio:{" "}
-                                  <span className="font-bold">
-                                    {breakEvenUnits} unidades
-                                  </span>
-                                </p>
-                                <p>
-                                  Vendidas:{" "}
-                                  <span className="font-bold">
-                                    {product.unitsSold} unidades
-                                  </span>
-                                </p>
-                                <p
-                                  className={
-                                    currentProfit >= 0
-                                      ? "text-green-600"
-                                      : "text-red-600"
-                                  }
-                                >
-                                  Estado:{" "}
-                                  <span className="font-bold">
-                                    {currentProfit >= 0
-                                      ? "En ganancia"
-                                      : "En pérdida"}{" "}
-                                    (${currentProfit.toFixed(2)})
-                                  </span>
-                                </p>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="w-5 h-5 text-blue-600" />
-                  Proyección de Ganancias
-                </CardTitle>
-                <CardDescription>Simula escenarios de ventas</CardDescription>
+                <CardTitle>Calculadora de Rentabilidad</CardTitle>
+                <CardDescription>
+                  Calcula el margen de ganancia de un producto
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                {products.length === 0 ? (
-                  <p className="text-gray-500 text-center py-8">
-                    Agrega productos para ver proyecciones
-                  </p>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead className="bg-gray-50 dark:bg-gray-800">
-                        <tr>
-                          <th className="p-3 text-left">Producto</th>
-                          <th className="p-3 text-right">10 unidades</th>
-                          <th className="p-3 text-right">50 unidades</th>
-                          <th className="p-3 text-right">100 unidades</th>
-                          <th className="p-3 text-right">200 unidades</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {products.map((product) => {
-                          const profitPerUnit =
-                            product.pricePerUnit - product.costPerUnit;
-                          return (
-                            <tr
-                              key={product.id}
-                              className="border-t dark:border-gray-700"
-                            >
-                              <td className="p-3 font-medium">
-                                {product.name}
-                              </td>
-                              <td className="p-3 text-right text-green-600">
-                                ${(profitPerUnit * 10).toFixed(2)}
-                              </td>
-                              <td className="p-3 text-right text-green-600">
-                                ${(profitPerUnit * 50).toFixed(2)}
-                              </td>
-                              <td className="p-3 text-right text-green-600">
-                                ${(profitPerUnit * 100).toFixed(2)}
-                              </td>
-                              <td className="p-3 text-right text-green-600">
-                                ${(profitPerUnit * 200).toFixed(2)}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="calc-cost">Costo por Unidad</Label>
+                    <Input id="calc-cost" type="number" placeholder="0.00" />
                   </div>
-                )}
+                  <div className="space-y-2">
+                    <Label htmlFor="calc-price">Precio de Venta</Label>
+                    <Input id="calc-price" type="number" placeholder="0.00" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="calc-quantity">Cantidad Vendida</Label>
+                    <Input id="calc-quantity" type="number" placeholder="1" />
+                  </div>
+                </div>
+                <div className="mt-4 space-y-2">
+                  <Button
+                    onClick={() => {
+                      const costInput = document.getElementById(
+                        "calc-cost"
+                      ) as HTMLInputElement;
+                      const priceInput = document.getElementById(
+                        "calc-price"
+                      ) as HTMLInputElement;
+                      const quantityInput = document.getElementById(
+                        "calc-quantity"
+                      ) as HTMLInputElement;
+
+                      const cost = Number.parseFloat(costInput.value);
+                      const price = Number.parseFloat(priceInput.value);
+                      const quantity = Number.parseInt(quantityInput.value);
+
+                      if (
+                        isNaN(cost) ||
+                        cost < 0 ||
+                        isNaN(price) ||
+                        price <= 0 ||
+                        isNaN(quantity) ||
+                        quantity <= 0
+                      ) {
+                        toast.error("Por favor, ingresa valores válidos.");
+                        return;
+                      }
+
+                      const profitPerUnit = price - cost;
+                      const margin = ((profitPerUnit / price) * 100).toFixed(2);
+                      const totalProfit = profitPerUnit * quantity;
+                      const totalRevenue = price * quantity;
+
+                      document.getElementById("calc-result-margin")!.innerText =
+                        `${margin}%`;
+                      document.getElementById("calc-result-profit")!.innerText =
+                        `$${totalProfit.toFixed(2)}`;
+                      document.getElementById(
+                        "calc-result-revenue"
+                      )!.innerText = `$${totalRevenue.toFixed(2)}`;
+                    }}
+                  >
+                    Calcular
+                  </Button>
+                  <div className="grid grid-cols-2 gap-2 text-sm pt-4 border-t">
+                    <p>Margen de Ganancia:</p>
+                    <p
+                      id="calc-result-margin"
+                      className="font-bold text-green-600"
+                    >
+                      0.00%
+                    </p>
+                    <p>Ganancia Neta Total:</p>
+                    <p
+                      id="calc-result-profit"
+                      className="font-bold text-green-600"
+                    >
+                      $0.00
+                    </p>
+                    <p>Ingresos Totales:</p>
+                    <p id="calc-result-revenue" className="font-bold">
+                      $0.00
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Analytics Tab */}
           <TabsContent value="analytics" className="space-y-4">
-            {/* Sales Over Time */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-blue-600" />
-                  Ventas en el Tiempo
-                </CardTitle>
-                <CardDescription>Evolución de tus ingresos</CardDescription>
+                <CardTitle>Análisis de Ventas y Gastos</CardTitle>
+                <CardDescription>
+                  Visualización de la tendencia financiera
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                {sales.length === 0 ? (
-                  <p className="text-gray-500 text-center py-8">
-                    No hay datos suficientes para mostrar
-                  </p>
-                ) : (
-                  <ChartContainer
-                    config={{
-                      revenue: {
-                        label: "Ingresos",
-                        color: "hsl(var(--chart-1))",
-                      },
-                      profit: {
-                        label: "Ganancia",
-                        color: "hsl(var(--chart-2))",
-                      },
-                    }}
-                    className="h-[300px]"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={(() => {
-                          const salesByDate = sales.reduce(
-                            (acc, sale) => {
-                              const date = new Date(
-                                sale.date
-                              ).toLocaleDateString();
-                              const product = products.find(
-                                (p) => p.id === sale.productId
-                              );
-                              const cost = product
-                                ? product.costPerUnit * sale.quantity
-                                : 0;
-
-                              if (!acc[date]) {
-                                acc[date] = {
-                                  date,
-                                  revenue: 0,
-                                  profit: 0,
-                                  cost: 0,
-                                };
-                              }
-                              acc[date].revenue += sale.totalAmount;
-                              acc[date].cost += cost;
-                              acc[date].profit += sale.totalAmount - cost;
-                              return acc;
-                            },
-                            {} as Record<
-                              string,
-                              {
-                                date: string;
-                                revenue: number;
-                                profit: number;
-                                cost: number;
-                              }
-                            >
-                          );
-
-                          return Object.values(salesByDate).sort(
-                            (a, b) =>
-                              new Date(a.date).getTime() -
-                              new Date(b.date).getTime()
-                          );
-                        })()}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <Card className="border-0 bg-transparent shadow-none">
+                    <CardHeader className="p-0 pb-2">
+                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-green-600" />
+                        Ingresos Mensuales
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <ChartContainer
+                        config={{
+                          Ingresos: {
+                            label: "Ingresos",
+                            color: "hsl(var(--primary))",
+                          },
+                        }}
+                        className="h-[200px] w-full"
                       >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Legend />
-                        <Area
-                          type="monotone"
-                          dataKey="revenue"
-                          stackId="1"
-                          stroke="var(--color-revenue)"
-                          fill="var(--color-revenue)"
-                          fillOpacity={0.6}
-                          name="Ingresos"
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="profit"
-                          stackId="2"
-                          stroke="var(--color-profit)"
-                          fill="var(--color-profit)"
-                          fillOpacity={0.6}
-                          name="Ganancia"
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                )}
-              </CardContent>
-            </Card>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Expenses by Category Chart */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <PieChart className="w-5 h-5 text-purple-600" />
-                    Distribución de Gastos
-                  </CardTitle>
-                  <CardDescription>Por categoría</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {expenses.length === 0 ? (
-                    <p className="text-gray-500 text-center py-8">
-                      No hay gastos registrados
-                    </p>
-                  ) : (
-                    <ChartContainer
-                      config={{
-                        materiasPrimas: {
-                          label: "Materias Primas",
-                          color: "hsl(var(--chart-1))",
-                        },
-                        embalaje: {
-                          label: "Embalaje",
-                          color: "hsl(var(--chart-2))",
-                        },
-                        marketing: {
-                          label: "Marketing",
-                          color: "hsl(var(--chart-3))",
-                        },
-                        envio: {
-                          label: "Envío",
-                          color: "hsl(var(--chart-4))",
-                        },
-                        equipamiento: {
-                          label: "Equipamiento",
-                          color: "hsl(var(--chart-5))",
-                        },
-                        otros: {
-                          label: "Otros",
-                          color: "hsl(220 70% 50%)",
-                        },
-                      }}
-                      className="h-[300px]"
-                    >
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={(() => {
-                              const expensesByCategory = expenses.reduce(
-                                (acc, expense) => {
-                                  const key = expense.category.replace("-", "");
-                                  acc[key] = (acc[key] || 0) + expense.amount;
-                                  return acc;
-                                },
-                                {} as Record<string, number>
-                              );
-
-                              const colors = [
-                                "hsl(var(--chart-1))",
-                                "hsl(var(--chart-2))",
-                                "hsl(var(--chart-3))",
-                                "hsl(var(--chart-4))",
-                                "hsl(var(--chart-5))",
-                                "hsl(220 70% 50%)",
-                              ];
-
-                              return Object.entries(expensesByCategory).map(
-                                ([name, value], index) => ({
-                                  name:
-                                    name.charAt(0).toUpperCase() +
-                                    name.slice(1),
-                                  value: Number(value.toFixed(2)),
-                                  fill: colors[index % colors.length],
-                                })
-                              );
-                            })()}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={({ name, percent }) =>
-                              `${name} ${(percent * 100).toFixed(0)}%`
-                            }
-                            outerRadius={80}
-                            dataKey="value"
-                          >
-                            {(() => {
-                              const colors = [
-                                "hsl(var(--chart-1))",
-                                "hsl(var(--chart-2))",
-                                "hsl(var(--chart-3))",
-                                "hsl(var(--chart-4))",
-                                "hsl(var(--chart-5))",
-                                "hsl(220 70% 50%)",
-                              ];
-                              return colors.map((color, index) => (
-                                <Cell key={`cell-${index}`} fill={color} />
-                              ));
-                            })()}
-                          </Pie>
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Products Performance */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5 text-green-600" />
-                    Rendimiento por Producto
-                  </CardTitle>
-                  <CardDescription>Unidades vendidas</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {products.length === 0 ? (
-                    <p className="text-gray-500 text-center py-8">
-                      No hay productos registrados
-                    </p>
-                  ) : (
-                    <ChartContainer
-                      config={{
-                        units: {
-                          label: "Unidades",
-                          color: "hsl(var(--chart-1))",
-                        },
-                      }}
-                      className="h-[300px]"
-                    >
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                          data={products.map((product) => ({
-                            name:
-                              product.name.length > 15
-                                ? product.name.substring(0, 15) + "..."
-                                : product.name,
-                            units: product.unitsSold,
-                            revenue: product.unitsSold * product.pricePerUnit,
-                          }))}
-                          margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
+                        <AreaChart
+                          accessibilityLayer
+                          data={[
+                            { month: "Ene", Ingresos: 186 },
+                            { month: "Feb", Ingresos: 200 },
+                            { month: "Mar", Ingresos: 220 },
+                            { month: "Abr", Ingresos: 190 },
+                            { month: "May", Ingresos: 240 },
+                            { month: "Jun", Ingresos: 260 },
+                            { month: "Jul", Ingresos: 280 },
+                            { month: "Ago", Ingresos: 300 },
+                            { month: "Sep", Ingresos: 320 },
+                            { month: "Oct", Ingresos: 340 },
+                            { month: "Nov", Ingresos: 360 },
+                            { month: "Dic", Ingresos: 400 },
+                          ]}
                         >
-                          <CartesianGrid strokeDasharray="3 3" />
+                          <defs>
+                            <linearGradient
+                              id="fillDesktop"
+                              x1="0"
+                              y1="0"
+                              x2="0"
+                              y2="1"
+                            >
+                              <stop
+                                offset="5%"
+                                stopColor="var(--color-Ingresos)"
+                                stopOpacity={0.8}
+                              />
+                              <stop
+                                offset="95%"
+                                stopColor="var(--color-Ingresos)"
+                                stopOpacity={0.1}
+                              />
+                            </linearGradient>
+                          </defs>
                           <XAxis
-                            dataKey="name"
-                            angle={-45}
-                            textAnchor="end"
-                            height={80}
+                            dataKey="month"
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            tickFormatter={(value) => value.slice(0, 3)}
                           />
-                          <YAxis />
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                          <Legend />
-                          <Bar
-                            dataKey="units"
-                            fill="var(--color-units)"
-                            name="Unidades"
-                            radius={[8, 8, 0, 0]}
+                          <YAxis
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={4}
                           />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Monthly Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <LineChartIcon className="w-5 h-5 text-indigo-600" />
-                  Resumen Mensual
-                </CardTitle>
-                <CardDescription>
-                  Comparación de ingresos vs gastos
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {sales.length === 0 && expenses.length === 0 ? (
-                  <p className="text-gray-500 text-center py-8">
-                    No hay datos suficientes para mostrar
-                  </p>
-                ) : (
-                  <ChartContainer
-                    config={{
-                      revenue: {
-                        label: "Ingresos",
-                        color: "hsl(var(--chart-1))",
-                      },
-                      expenses: {
-                        label: "Gastos",
-                        color: "hsl(var(--chart-2))",
-                      },
-                      profit: {
-                        label: "Ganancia",
-                        color: "hsl(var(--chart-3))",
-                      },
-                    }}
-                    className="h-[300px]"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={(() => {
-                          const monthlyData: Record<
-                            string,
-                            {
-                              month: string;
-                              revenue: number;
-                              expenses: number;
-                              profit: number;
+                          <ChartTooltip
+                            cursor={false}
+                            content={
+                              <ChartTooltipContent
+                                nameKey="Ingresos"
+                                formatter={(value) => ` $ ${value}`}
+                                indicator="dot"
+                              />
                             }
-                          > = {};
+                          />
+                          <Area
+                            dataKey="Ingresos"
+                            type="monotone"
+                            fill="url(#fillDesktop)"
+                            stroke="var(--color-Ingresos)"
+                            strokeWidth={2}
+                          />
+                        </AreaChart>
+                      </ChartContainer>
+                    </CardContent>
+                  </Card>
 
-                          // Process sales
-                          sales.forEach((sale) => {
-                            const date = new Date(sale.date);
-                            const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-                            const monthName = date.toLocaleDateString("es-ES", {
-                              year: "numeric",
-                              month: "short",
-                            });
-
-                            if (!monthlyData[monthKey]) {
-                              monthlyData[monthKey] = {
-                                month: monthName,
-                                revenue: 0,
-                                expenses: 0,
-                                profit: 0,
-                              };
-                            }
-
-                            const product = products.find(
-                              (p) => p.id === sale.productId
-                            );
-                            const cost = product
-                              ? product.costPerUnit * sale.quantity
-                              : 0;
-
-                            monthlyData[monthKey].revenue += sale.totalAmount;
-                            monthlyData[monthKey].expenses += cost;
-                          });
-
-                          // Process expenses
-                          expenses.forEach((expense) => {
-                            const date = new Date(expense.date);
-                            const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-                            const monthName = date.toLocaleDateString("es-ES", {
-                              year: "numeric",
-                              month: "short",
-                            });
-
-                            if (!monthlyData[monthKey]) {
-                              monthlyData[monthKey] = {
-                                month: monthName,
-                                revenue: 0,
-                                expenses: 0,
-                                profit: 0,
-                              };
-                            }
-
-                            monthlyData[monthKey].expenses += expense.amount;
-                          });
-
-                          // Calculate profit
-                          Object.keys(monthlyData).forEach((key) => {
-                            monthlyData[key].profit =
-                              monthlyData[key].revenue -
-                              monthlyData[key].expenses;
-                          });
-
-                          return Object.values(monthlyData).sort(
-                            (a, b) =>
-                              new Date(a.month).getTime() -
-                                new Date(b.month).getTime() ||
-                              a.month.localeCompare(b.month)
-                          );
-                        })()}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                  <Card className="border-0 bg-transparent shadow-none">
+                    <CardHeader className="p-0 pb-2">
+                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                        <TrendingDown className="w-4 h-4 text-red-600" />
+                        Gastos Mensuales
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <ChartContainer
+                        config={{
+                          Gastos: {
+                            label: "Gastos",
+                            color: "hsl(var(--destructive))",
+                          },
+                        }}
+                        className="h-[200px] w-full"
                       >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Legend />
-                        <Line
-                          type="monotone"
-                          dataKey="revenue"
-                          stroke="var(--color-revenue)"
-                          strokeWidth={2}
-                          name="Ingresos"
-                          dot={{ r: 4 }}
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="expenses"
-                          stroke="var(--color-expenses)"
-                          strokeWidth={2}
-                          name="Gastos"
-                          dot={{ r: 4 }}
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="profit"
-                          stroke="var(--color-profit)"
-                          strokeWidth={2}
-                          name="Ganancia"
-                          dot={{ r: 4 }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Revenue by Product Category */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Package className="w-5 h-5 text-orange-600" />
-                  Ingresos por Categoría de Producto
-                </CardTitle>
-                <CardDescription>
-                  Distribución de ventas por tipo de jabón
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {sales.length === 0 ? (
-                  <p className="text-gray-500 text-center py-8">
-                    No hay ventas registradas
-                  </p>
-                ) : (
-                  <ChartContainer
-                    config={{
-                      revenue: {
-                        label: "Ingresos",
-                        color: "hsl(var(--chart-1))",
-                      },
-                    }}
-                    className="h-[300px]"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={(() => {
-                          const revenueByCategory = sales.reduce(
-                            (acc, sale) => {
-                              const product = products.find(
-                                (p) => p.id === sale.productId
-                              );
-                              if (product) {
-                                acc[product.category] =
-                                  (acc[product.category] || 0) +
-                                  sale.totalAmount;
-                              }
-                              return acc;
-                            },
-                            {} as Record<string, number>
-                          );
-
-                          return Object.entries(revenueByCategory).map(
-                            ([category, revenue]) => ({
-                              category:
-                                category.charAt(0).toUpperCase() +
-                                category.slice(1),
-                              revenue: Number(revenue.toFixed(2)),
-                            })
-                          );
-                        })()}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="category" />
-                        <YAxis />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar
-                          dataKey="revenue"
-                          fill="var(--color-revenue)"
-                          name="Ingresos"
-                          radius={[8, 8, 0, 0]}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                )}
+                        <AreaChart
+                          accessibilityLayer
+                          data={[
+                            { month: "Ene", Gastos: 100 },
+                            { month: "Feb", Gastos: 120 },
+                            { month: "Mar", Gastos: 110 },
+                            { month: "Abr", Gastos: 130 },
+                            { month: "May", Gastos: 150 },
+                            { month: "Jun", Gastos: 140 },
+                            { month: "Jul", Gastos: 160 },
+                            { month: "Ago", Gastos: 180 },
+                            { month: "Sep", Gastos: 170 },
+                            { month: "Oct", Gastos: 190 },
+                            { month: "Nov", Gastos: 210 },
+                            { month: "Dic", Gastos: 230 },
+                          ]}
+                        >
+                          <defs>
+                            <linearGradient
+                              id="fillDesktopGastos"
+                              x1="0"
+                              y1="0"
+                              x2="0"
+                              y2="1"
+                            >
+                              <stop
+                                offset="5%"
+                                stopColor="var(--color-Gastos)"
+                                stopOpacity={0.8}
+                              />
+                              <stop
+                                offset="95%"
+                                stopColor="var(--color-Gastos)"
+                                stopOpacity={0.1}
+                              />
+                            </linearGradient>
+                          </defs>
+                          <XAxis
+                            dataKey="month"
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            tickFormatter={(value) => value.slice(0, 3)}
+                          />
+                          <YAxis
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={4}
+                          />
+                          <ChartTooltip
+                            cursor={false}
+                            content={
+                              <ChartTooltipContent
+                                nameKey="Gastos"
+                                formatter={(value) => ` $ ${value}`}
+                                indicator="dot"
+                              />
+                            }
+                          />
+                          <Area
+                            dataKey="Gastos"
+                            type="monotone"
+                            fill="url(#fillDesktopGastos)"
+                            stroke="var(--color-Gastos)"
+                            strokeWidth={2}
+                          />
+                        </AreaChart>
+                      </ChartContainer>
+                    </CardContent>
+                  </Card>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
