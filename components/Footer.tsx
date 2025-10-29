@@ -4,7 +4,7 @@ import SocialMedia from "./SocialMedia";
 import { productType, quickLinksData } from "@/constants/data";
 import Link from "next/link";
 import { SubText, SubTitle } from "./ui/Text";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import Image from "next/image";
 
 interface ContactItemData {
@@ -15,13 +15,6 @@ interface ContactItemData {
 
 const Footer = () => {
   const data: ContactItemData[] = [
-    {
-      title: "Visítanos",
-      subtitle: "General Manuel Belgrano, FORMOSA",
-      icon: (
-        <MapPin className="h-6 w-6 text-gray-600 dark:text-gray-300 group-hover:text-shop_light_green transition-colors" />
-      ),
-    },
     {
       title: "Llámanos",
       subtitle: "+54 3718 462342",
