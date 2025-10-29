@@ -45,7 +45,7 @@ export const productOperations = {
     return data;
   },
 
-  async update(id: string, updates: any) {
+  async update(id: string, updates: unknown) {
     const { data, error } = await supabase
       .from("products")
       .update(updates)
