@@ -119,7 +119,7 @@ const defaultThresholds = {
   lowProfitMargin: 20,
   highExpenseCategory: 500,
   noSalesDays: 7,
-  monthlyRevenueGoal: 1000,
+  monthlyRevenueGoal: 50000,
   expenseLimitPercentage: 60,
 };
 
@@ -631,9 +631,9 @@ export default function SoapBusinessManager() {
         } else if (alert.type === "success") {
           toast.success(`${alert.title}: ${alert.message}`, { duration: 5000 });
         } else if (alert.type === "warning") {
-          toast(`${'⚠️'} ${alert.title}: ${alert.message}`, { duration: 5000 });
+          toast(`${"⚠️"} ${alert.title}: ${alert.message}`, { duration: 5000 });
         } else if (alert.type === "info") {
-          toast(`${'ℹ️'} ${alert.title}: ${alert.message}`, { duration: 5000 });
+          toast(`${"ℹ️"} ${alert.title}: ${alert.message}`, { duration: 5000 });
         }
       });
     }
