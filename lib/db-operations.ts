@@ -45,7 +45,7 @@ export const productOperations = {
     return data;
   },
 
-  async update(id: string, updates: any) {
+  async update(id: string, updates: unknown) {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("products")
@@ -312,7 +312,7 @@ export const inventoryOperations = {
     return data;
   },
 
-  async update(id: string, updates: any) {
+  async update(id: string, updates: unknown) {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("inventory")
@@ -375,7 +375,7 @@ export const customerOperations = {
     return data;
   },
 
-  async update(id: string, updates: any) {
+  async update(id: string, updates: unknown) {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("customers")
@@ -493,7 +493,7 @@ export const orderOperations = {
     return orderData;
   },
 
-  async update(id: string, updates: any) {
+  async update(id: string, updates: unknown) {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("orders")
@@ -556,7 +556,7 @@ export const cashFlowOperations = {
     return data;
   },
 
-  async update(id: string, updates: any) {
+  async update(id: string, updates: unknown) {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("cash_flow")
@@ -634,7 +634,7 @@ export const goalsOperations = {
     return data;
   },
 
-  async update(id: string, updates: any) {
+  async update(id: string, updates: unknown) {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("goals")

@@ -8,7 +8,6 @@ import {
   DollarSign,
   BarChart3,
   Package,
-  Calendar,
   FileSpreadsheet,
 } from "lucide-react";
 import {
