@@ -96,6 +96,10 @@ interface AlertThresholds {
 }
 
 import { createClient } from "@/lib/supabase/client";
+import FinancialDashboard from "./FinancialDashboard";
+import ProductionCalendar from "./ProductionCalendar";
+import PriceSimulator from "./PriceSimulator";
+import DarkModeToggle from "./DarkModeToggle";
 
 // State Initialization
 const defaultNewProduct = {
@@ -961,6 +965,7 @@ export default function SoapBusinessManager() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               Gestión Financiera
             </h1>
+
             <p className="text-gray-600 dark:text-gray-400 mt-1">
               Control completo de tu emprendimiento de jabones artesanales
             </p>
@@ -979,6 +984,7 @@ export default function SoapBusinessManager() {
               <Download className="w-4 h-4" />
               Exportar Datos
             </Button>
+            <DarkModeToggle />
           </div>
         </div>
 
@@ -2148,6 +2154,8 @@ export default function SoapBusinessManager() {
                 </div>
               </CardContent>
             </Card>
+            <PriceSimulator />
+            <ProductionCalendar />
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-4">
@@ -2338,6 +2346,7 @@ export default function SoapBusinessManager() {
                 </div>
               </CardContent>
             </Card>
+            <FinancialDashboard />
           </TabsContent>
         </Tabs>
       </div>
