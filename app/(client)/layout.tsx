@@ -19,24 +19,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <WhatsAppButton
-        phoneNumber="+543718462342"
-        message="¡Hola! Estoy interesado en un producto de su tienda."
-      />
-      <div className="flex flex-col min-h-screen">
-        <Header />
-
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <PromotionalModalManager
-          modalType="showcase"
-          delay={6000}
-          oncePerSession={true}
-          oncePerDay={false}
-          minScreenWidth={768}
+    <div
+      className=" bg-gradient-to-br
+    dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900
+    transition-colors duration-500"
+    >
+      <ClerkProvider>
+        <WhatsAppButton
+          phoneNumber="+543718462342"
+          message="¡Hola! Estoy interesado en un producto de su tienda."
         />
-      </div>
-    </ClerkProvider>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <PromotionalModalManager
+            modalType="showcase"
+            delay={6000}
+            oncePerSession={true}
+            oncePerDay={false}
+            minScreenWidth={768}
+          />
+        </div>
+      </ClerkProvider>
+    </div>
   );
 }

@@ -1,15 +1,13 @@
-import CookieConsentBanner from "@/components/cookie-consent-banner";
-import "./globals.css";
 import { Toaster } from "react-hot-toast";
-import { ThemeProvider } from "next-themes";
+import { ThemeProviderd } from "@/components/ThemeProviderd";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="font-poppins antialiased bg-white  text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <body className="font-poppins antialiased bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+        <ThemeProviderd attribute="class" defaultTheme="system" enableSystem>
           {children}
-        </ThemeProvider>
+        </ThemeProviderd>
 
         {/* Notificaciones */}
         <Toaster
@@ -21,9 +19,6 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             },
           }}
         />
-
-        {/* Extras */}
-        <CookieConsentBanner />
       </body>
     </html>
   );

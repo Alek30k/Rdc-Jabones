@@ -1610,7 +1610,7 @@ export default function SoapBusinessManager() {
                         <SelectItem value="facial">Facial</SelectItem>
                         <SelectItem value="corporal">Corporal</SelectItem>
                         <SelectItem value="especial">Especial</SelectItem>
-                        <SelectItem value="capilar">Capilar</SelectItem>
+                        <SelectItem value="Combos">Combos</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
