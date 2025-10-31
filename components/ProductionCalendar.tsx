@@ -233,9 +233,9 @@ export default function ProductionCalendar() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4 ">
       {/* Calendar */}
-      <Card className="col-span-1 lg:col-span-1">
+      <Card className="col-span-1 lg:col-span-1 ">
         <CardHeader className="flex items-center justify-between">
           <CardTitle>Calendario de Producción</CardTitle>
           <div>
@@ -244,7 +244,7 @@ export default function ProductionCalendar() {
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className=" text-gray-900">
           <Calendar
             onChange={(d) => setValue(Array.isArray(d) ? d[0] : d)}
             value={value}
@@ -254,7 +254,7 @@ export default function ProductionCalendar() {
       </Card>
 
       {/* Events list */}
-      <Card className="col-span-1 lg:col-span-2">
+      <Card className="col-span-1 lg:col-span-2 ">
         <CardHeader>
           <CardTitle>Eventos del día — {format(value, "PPP")}</CardTitle>
         </CardHeader>
@@ -266,11 +266,11 @@ export default function ProductionCalendar() {
               No hay eventos para este día.
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-3 bg-gray-200">
               {eventsForDay.map((ev) => (
                 <div
                   key={ev.id}
-                  className="p-3 border rounded flex justify-between items-start"
+                  className="p-3 border rounded flex justify-between items-start text-gray-900 "
                 >
                   <div>
                     <div className="flex items-center gap-3">
@@ -317,13 +317,13 @@ export default function ProductionCalendar() {
 
       {/* Modal (simple) */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center ">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setIsOpen(false)}
           />
 
-          <div className="relative w-full max-w-xl bg-white rounded-lg p-6 z-60">
+          <div className="relative w-full max-w-xl bg-white rounded-lg p-6 z-60 text-gray-900 ">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">
                 {editing ? "Editar evento" : "Nuevo evento"}
@@ -345,7 +345,7 @@ export default function ProductionCalendar() {
               </div>
 
               <div>
-                <label className="block text-sm mb-1">Fecha y hora</label>
+                <label className="block text-sm mb-1 ">Fecha y hora</label>
                 <input
                   type="datetime-local"
                   value={dateStr}

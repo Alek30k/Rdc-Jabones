@@ -50,6 +50,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { createClient } from "@/lib/supabase/client";
+import FinancialDashboard from "./FinancialDashboard";
+import ProductionCalendar from "./ProductionCalendar";
+import PriceSimulator from "./PriceSimulator";
+import DarkModeToggle from "./DarkModeToggle";
 
 // Types
 interface Product {
@@ -94,12 +99,6 @@ interface AlertThresholds {
   monthlyRevenueGoal: number;
   expenseLimitPercentage: number;
 }
-
-import { createClient } from "@/lib/supabase/client";
-import FinancialDashboard from "./FinancialDashboard";
-import ProductionCalendar from "./ProductionCalendar";
-import PriceSimulator from "./PriceSimulator";
-import DarkModeToggle from "./DarkModeToggle";
 
 // State Initialization
 const defaultNewProduct = {
