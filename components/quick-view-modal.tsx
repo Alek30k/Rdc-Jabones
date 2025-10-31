@@ -64,13 +64,11 @@ export default function QuickViewModal({
           {/* Columna de detalles del producto */}
           <div className="p-6 md:p-8 flex flex-col justify-between">
             <DialogHeader className="mb-4">
-              <DialogTitle className="text-2xl font-bold text-gray-900 mb-2">
+              <DialogTitle className="text-2xl font-bold  mb-2">
                 {product.name}
               </DialogTitle>
               {product?.description && (
-                <p className="text-sm text-gray-600 line-clamp-4">
-                  {product?.description}
-                </p>
+                <p className="text-sm  line-clamp-4">{product?.description}</p>
               )}
             </DialogHeader>
 
@@ -88,7 +86,7 @@ export default function QuickViewModal({
                 className="w-full rounded-full text-base py-3"
               />
               <Link
-                href={`/product/${product.slug.current}`}
+                href={`/product/${product.slug?.current}`}
                 className="block text-center text-sm text-shop_orange hover:underline mt-2"
               >
                 Ver detalles completos del producto

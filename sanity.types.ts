@@ -101,15 +101,22 @@ export type Order = {
   _rev: string;
   orderNumber?: string;
   orderDate?: string;
-  status?: "pending_confirmation" | "processing" | "shipped" | "delivered" | "cancelled";
+  status?:
+    | "pending_confirmation"
+    | "processing"
+    | "shipped"
+    | "delivered"
+    | "cancelled";
   customer?: {
     name?: string;
     email?: string;
     id?: string;
   };
-  items?: Array<{
-    _key: string;
-  } & ItemOrdered>;
+  items?: Array<
+    {
+      _key: string;
+    } & ItemOrdered
+  >;
   totals?: {
     subtotal?: number;
     discount?: number;
@@ -125,6 +132,7 @@ export type Product = {
   _rev: string;
   name?: string;
   slug?: Slug;
+  description?: string;
   images?: Array<{
     asset?: {
       _ref: string;
@@ -167,7 +175,13 @@ export type Product = {
   }>;
   stock?: number;
   status?: "new" | "hot" | "sale";
-  variant?: "jabones" | "regalos" | "corporal" | "facial" | "combos" | "infantiles";
+  variant?:
+    | "jabones"
+    | "regalos"
+    | "corporal"
+    | "facial"
+    | "combos"
+    | "infantiles";
   isFeatured?: boolean;
   weight?: number;
   quantity?: string;
@@ -177,37 +191,40 @@ export type Product = {
   ingredients?: Array<string>;
 };
 
-export type BlockContent = Array<{
-  children?: Array<{
-    marks?: Array<string>;
-    text?: string;
-    _type: "span";
-    _key: string;
-  }>;
-  style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
-  listItem?: "bullet";
-  markDefs?: Array<{
-    href?: string;
-    _type: "link";
-    _key: string;
-  }>;
-  level?: number;
-  _type: "block";
-  _key: string;
-} | {
-  asset?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-  };
-  media?: unknown;
-  hotspot?: SanityImageHotspot;
-  crop?: SanityImageCrop;
-  alt?: string;
-  _type: "image";
-  _key: string;
-}>;
+export type BlockContent = Array<
+  | {
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal" | "h1" | "h2" | "h3" | "h4" | "blockquote";
+      listItem?: "bullet";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }
+  | {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+      _key: string;
+    }
+>;
 
 export type Category = {
   _id: string;
@@ -352,7 +369,25 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = Address | Author | ItemOrdered | Order | Product | BlockContent | Category | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes =
+  | Address
+  | Author
+  | ItemOrdered
+  | Order
+  | Product
+  | BlockContent
+  | Category
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityImageHotspot
+  | SanityImageCrop
+  | SanityFileAsset
+  | SanityImageAsset
+  | SanityImageMetadata
+  | Geopoint
+  | Slug
+  | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/queries/index.ts
 // Variable: query
@@ -443,7 +478,13 @@ export type DEAL_PRODUCTSResult = Array<{
   categories: Array<string | null> | null;
   stock?: number;
   status?: "hot" | "new" | "sale";
-  variant?: "combos" | "corporal" | "facial" | "infantiles" | "jabones" | "regalos";
+  variant?:
+    | "combos"
+    | "corporal"
+    | "facial"
+    | "infantiles"
+    | "jabones"
+    | "regalos";
   isFeatured?: boolean;
   weight?: number;
   quantity?: string;
@@ -502,7 +543,13 @@ export type PRODUCT_BY_SLUG_QUERYResult = {
   }> | null;
   stock?: number;
   status?: "hot" | "new" | "sale";
-  variant?: "combos" | "corporal" | "facial" | "infantiles" | "jabones" | "regalos";
+  variant?:
+    | "combos"
+    | "corporal"
+    | "facial"
+    | "infantiles"
+    | "jabones"
+    | "regalos";
   isFeatured?: boolean;
   weight?: number;
   quantity?: string;
@@ -526,15 +573,22 @@ export type MY_ORDERS_QUERYResult = Array<{
   _rev: string;
   orderNumber?: string;
   orderDate?: string;
-  status?: "cancelled" | "delivered" | "pending_confirmation" | "processing" | "shipped";
+  status?:
+    | "cancelled"
+    | "delivered"
+    | "pending_confirmation"
+    | "processing"
+    | "shipped";
   customer?: {
     name?: string;
     email?: string;
     id?: string;
   };
-  items?: Array<{
-    _key: string;
-  } & ItemOrdered>;
+  items?: Array<
+    {
+      _key: string;
+    } & ItemOrdered
+  >;
   totals?: {
     subtotal?: number;
     discount?: number;
@@ -559,16 +613,16 @@ export type OTHERS_BLOG_QUERYResult = Array<never>;
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"product\" && count(categories[]->_ref[@in $categoryIds]) > 0 && slug.current != $currentProductSlug][0...4]{\n    _id,\n    name,\n    slug,\n    price,\n    discount,\n    description,\n    richDescription,\n    images[]{\n      asset->{\n        url\n      }\n    },\n    stock\n  }": QueryResult;
+    '*[_type == "product" && count(categories[]->_ref[@in $categoryIds]) > 0 && slug.current != $currentProductSlug][0...4]{\n    _id,\n    name,\n    slug,\n    price,\n    discount,\n    description,\n    richDescription,\n    images[]{\n      asset->{\n        url\n      }\n    },\n    stock\n  }': QueryResult;
     "*[_type=='brand'] | order(name asc) ": BRANDS_QUERYResult;
     " *[_type == 'blog' && isLatest == true]|order(name asc){\n      ...,\n      blogcategories[]->{\n      title\n    }\n    }": LATEST_BLOG_QUERYResult;
     "*[_type == 'product' && status == 'hot'] | order(name asc){\n    ...,\"categories\": categories[]->title\n  }": DEAL_PRODUCTSResult;
-    "*[_type == \"product\" && slug.current == $slug] | order(name asc) [0]{\n    ..., // Esto selecciona todas las propiedades de nivel superior del producto\n    categories[]->{ \n      _id,\n      name, \n      slug,\n      \n    },\n  }": PRODUCT_BY_SLUG_QUERYResult;
-    "*[_type == \"product\" && slug.current == $slug]{\n  \"brandName\": brand->title\n  }": BRAND_QUERYResult;
+    '*[_type == "product" && slug.current == $slug] | order(name asc) [0]{\n    ..., // Esto selecciona todas las propiedades de nivel superior del producto\n    categories[]->{ \n      _id,\n      name, \n      slug,\n      \n    },\n  }': PRODUCT_BY_SLUG_QUERYResult;
+    '*[_type == "product" && slug.current == $slug]{\n  "brandName": brand->title\n  }': BRAND_QUERYResult;
     "*[_type == 'order' && clerkUserId == $userId] | order(orderData desc){\n...,products[]{\n  ...,product->\n}\n}": MY_ORDERS_QUERYResult;
     "*[_type == 'blog'] | order(publishedAt desc)[0...$quantity]{\n  ...,  \n     blogcategories[]->{\n    title\n}\n    }\n  ": GET_ALL_BLOGResult;
-    "*[_type == \"blog\" && slug.current == $slug][0]{\n  ..., \n    author->{\n    name,\n    image,\n  },\n  blogcategories[]->{\n    title,\n    \"slug\": slug.current,\n  },\n}": SINGLE_BLOG_QUERYResult;
-    "*[_type == \"blog\"]{\n     blogcategories[]->{\n    ...\n    }\n  }": BLOG_CATEGORIESResult;
-    "*[\n  _type == \"blog\"\n  && defined(slug.current)\n  && slug.current != $slug\n]|order(publishedAt desc)[0...$quantity]{\n...\n  publishedAt,\n  title,\n  mainImage,\n  slug,\n  author->{\n    name,\n    image,\n  },\n  categories[]->{\n    title,\n    \"slug\": slug.current,\n  }\n}": OTHERS_BLOG_QUERYResult;
+    '*[_type == "blog" && slug.current == $slug][0]{\n  ..., \n    author->{\n    name,\n    image,\n  },\n  blogcategories[]->{\n    title,\n    "slug": slug.current,\n  },\n}': SINGLE_BLOG_QUERYResult;
+    '*[_type == "blog"]{\n     blogcategories[]->{\n    ...\n    }\n  }': BLOG_CATEGORIESResult;
+    '*[\n  _type == "blog"\n  && defined(slug.current)\n  && slug.current != $slug\n]|order(publishedAt desc)[0...$quantity]{\n...\n  publishedAt,\n  title,\n  mainImage,\n  slug,\n  author->{\n    name,\n    image,\n  },\n  categories[]->{\n    title,\n    "slug": slug.current,\n  }\n}': OTHERS_BLOG_QUERYResult;
   }
 }
