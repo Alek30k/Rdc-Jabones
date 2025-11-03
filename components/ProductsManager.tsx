@@ -180,19 +180,19 @@ export default function ProductsManager() {
               </div>
 
               {/* Categoría con Select */}
-              <div className="space-y-2">
+              <div className="space-y-2 ">
                 <Label>Categoría</Label>
                 <select
                   value={newProduct.category}
                   onChange={(e) =>
                     setNewProduct({ ...newProduct, category: e.target.value })
                   }
-                  className="w-full border rounded-md p-2"
+                  className="w-full border rounded-md p-2 bg-white dark:bg-gray-900"
                 >
-                  <option value="jabon">Jabón</option>
-                  <option value="cosmetica">Cosmética</option>
-                  <option value="accesorios">Accesorios</option>
-                  <option value="promociones">Promociones</option>
+                  <option value="jabon">Facial</option>
+                  <option value="cosmetica">Corporal</option>
+                  <option value="accesorios">Ambos (facial y corporal)</option>
+                  <option value="promociones">Combos</option>
                   <option value="otros">Otros</option>
                 </select>
               </div>
