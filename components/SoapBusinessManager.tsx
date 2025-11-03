@@ -941,7 +941,7 @@ export default function SoapBusinessManager() {
           onValueChange={setActiveTab}
           className="space-y-4"
         >
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-7 gap-2">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-7 gap-2 mb-18 md:mb-0">
             <TabsTrigger value="dashboard" className="gap-2">
               <BarChart3 className="w-4 h-4" />
               Dashboard
@@ -1369,7 +1369,7 @@ export default function SoapBusinessManager() {
                         >
                           <div className="flex-1">
                             <p className="font-medium">{product.name}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 ">
                               Costo: ${product.costPerUnit.toFixed(2)} | Precio:
                               ${product.pricePerUnit.toFixed(2)}
                             </p>
@@ -1588,7 +1588,7 @@ export default function SoapBusinessManager() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="calc-cost">Costo por Unidad</Label>
+                    <Label htmlFor="calc-cost">por Unidad</Label>
                     <Input id="calc-cost" type="number" placeholder="0.00" />
                   </div>
                   <div className="space-y-2">

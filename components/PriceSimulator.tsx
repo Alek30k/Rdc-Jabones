@@ -64,10 +64,12 @@ export default function PriceSimulator() {
           </Button>
         </CardHeader>
 
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
           <div className="space-y-3">
             <div>
-              <Label htmlFor="material">Costo materia prima ($)</Label>
+              <Label htmlFor="material" className="mb-2">
+                Costo materia prima ($)
+              </Label>
               <Input
                 id="material"
                 type="number"
@@ -77,7 +79,9 @@ export default function PriceSimulator() {
             </div>
 
             <div>
-              <Label htmlFor="extras">Costos adicionales ($)</Label>
+              <Label htmlFor="extras" className="mb-2">
+                Costos adicionales ($)
+              </Label>
               <Input
                 id="extras"
                 type="number"
@@ -89,7 +93,9 @@ export default function PriceSimulator() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="laborHours">Horas de trabajo</Label>
+                <Label htmlFor="laborHours" className="mb-2">
+                  Horas de trabajo
+                </Label>
                 <Input
                   id="laborHours"
                   type="number"
@@ -98,7 +104,9 @@ export default function PriceSimulator() {
                 />
               </div>
               <div>
-                <Label htmlFor="hourlyRate">Valor hora ($)</Label>
+                <Label htmlFor="hourlyRate" className="mb-2">
+                  Valor hora ($)
+                </Label>
                 <Input
                   id="hourlyRate"
                   type="number"
@@ -109,7 +117,7 @@ export default function PriceSimulator() {
             </div>
 
             <div>
-              <Label>Margen de ganancia (%)</Label>
+              <Label className="mb-2 ">Margen de ganancia (%)</Label>
               <Slider
                 value={[margin]}
                 min={10}
