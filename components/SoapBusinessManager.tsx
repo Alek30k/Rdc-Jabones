@@ -101,19 +101,6 @@ interface AlertThresholds {
   expenseLimitPercentage: number;
 }
 
-// State Initialization
-const defaultNewProduct = {
-  name: "",
-  costPerUnit: "",
-  pricePerUnit: "",
-  category: "facial",
-};
-const defaultNewExpense = {
-  description: "",
-  amount: "",
-  category: "materias-primas",
-  date: new Date().toISOString().split("T")[0],
-};
 const defaultNewSale = {
   productId: "",
   quantity: "",
@@ -138,11 +125,11 @@ export default function SoapBusinessManager() {
   const [thresholds, setThresholds] =
     useState<AlertThresholds>(defaultThresholds);
 
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct] = useState<Product | null>(null);
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  const [newProduct, setNewProduct] = useState(defaultNewProduct);
-  const [newExpense, setNewExpense] = useState(defaultNewExpense);
+  console.log(editingProduct);
+
   const [newSale, setNewSale] = useState(defaultNewSale);
 
   const [mounted, setMounted] = useState(false);
@@ -687,135 +674,6 @@ export default function SoapBusinessManager() {
     } else if (action === "Crear promoción") {
       setActiveTab("products");
       toast.info("🎁 Navegando a la sección de productos");
-    }
-  };
-
-  const addProduct = async () => {
-    if (
-      !newProduct.name ||
-      !newProduct.costPerUnit ||
-      !newProduct.pricePerUnit
-    ) {
-      toast.error("Por favor, completa todos los campos del producto.");
-      return;
-    }
-
-    const costPerUnit = Number.parseFloat(newProduct.costPerUnit);
-    const pricePerUnit = Number.parseFloat(newProduct.pricePerUnit);
-
-    if (
-      isNaN(costPerUnit) ||
-      costPerUnit < 0 ||
-      isNaN(pricePerUnit) ||
-      pricePerUnit <= 0
-    ) {
-      toast.error(
-        "El costo y el precio deben ser números válidos (precio > 0)."
-      );
-      return;
-    }
-
-    console.log("[v0] Adding new product:", newProduct);
-
-    const product: Product = {
-      id: Date.now().toString(),
-      name: newProduct.name,
-      costPerUnit: costPerUnit,
-      pricePerUnit: pricePerUnit,
-      unitsSold: 0,
-      category: newProduct.category,
-    };
-
-    try {
-      const { error } = await supabase.from("products").insert({
-        id: product.id,
-        name: product.name,
-        cost_per_unit: product.costPerUnit,
-        price_per_unit: product.pricePerUnit,
-        units_sold: product.unitsSold,
-        category: product.category,
-      });
-
-      if (error) {
-        console.error("[v0] Error inserting product:", error);
-        toast.error("Error al guardar el producto");
-        return;
-      }
-
-      console.log("[v0] Product saved to Supabase:", product);
-      setProducts([...products, product]);
-      setNewProduct(defaultNewProduct);
-
-      toast.success(`Producto agregado: ${product.name}`);
-    } catch (error) {
-      console.error("[v0] Error adding product:", error);
-      toast.error("Error al agregar producto");
-    }
-  };
-
-  const startEditingProduct = (product: Product) => {
-    setEditingProduct(product);
-    setNewProduct({
-      name: product.name,
-      costPerUnit: product.costPerUnit.toString(),
-      pricePerUnit: product.pricePerUnit.toString(),
-      category: product.category,
-    });
-    setActiveTab("products");
-    setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100);
-  };
-
-  const cancelEditing = () => {
-    setEditingProduct(null);
-    setNewProduct(defaultNewProduct);
-  };
-
-  const addExpense = async () => {
-    if (!newExpense.description || !newExpense.amount) {
-      toast.error(
-        "Por favor, ingresa una descripción y un monto para el gasto."
-      );
-      return;
-    }
-
-    const amount = Number.parseFloat(newExpense.amount);
-    if (isNaN(amount) || amount <= 0) {
-      toast.error("El monto debe ser un número positivo.");
-      return;
-    }
-
-    const expense: Expense = {
-      id: Date.now().toString(),
-      description: newExpense.description,
-      amount: amount,
-      category: newExpense.category,
-      date: newExpense.date,
-    };
-
-    try {
-      const { error } = await supabase.from("expenses").insert({
-        id: expense.id,
-        description: expense.description,
-        amount: expense.amount,
-        category: expense.category,
-        date: expense.date,
-      });
-
-      if (error) {
-        console.error("[v0] Error inserting expense:", error);
-        toast.error("Error al guardar el gasto");
-        return;
-      }
-
-      setExpenses([...expenses, expense]);
-      setNewExpense(defaultNewExpense);
-
-      toast.success(
-        `Gasto registrado: $${expense.amount.toFixed(2)} en ${expense.category}`
-      );
-    } catch (error) {
-      console.error("[v0] Error adding expense:", error);
-      toast.error("Error al agregar gasto");
     }
   };
 
