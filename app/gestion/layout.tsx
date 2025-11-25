@@ -1,3 +1,5 @@
+"use client";
+
 import { Toaster } from "react-hot-toast";
 import { ThemeProviderd } from "@/components/ThemeProviderd";
 
@@ -9,7 +11,6 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           {children}
         </ThemeProviderd>
 
-        {/* Notificaciones */}
         <Toaster
           position="bottom-right"
           toastOptions={{
