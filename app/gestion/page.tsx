@@ -8,25 +8,18 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
 
-  // const adminPassword = process.env.NEXT_PRIVATE_ADMIN_PASSWORD;
-
   const adminPassword = "rdc123";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === adminPassword) {
       setAuthenticated(true);
-      localStorage.setItem("authenticatedOwner", "true"); // Guarda la sesión local
     } else {
       alert("Contraseña incorrecta");
     }
   };
 
-  // Mantener sesión activa si ya inició antes
-  if (typeof window !== "undefined") {
-    const session = localStorage.getItem("authenticatedOwner");
-    if (session && !authenticated) setAuthenticated(true);
-  }
+  console.log("render");
 
   if (!authenticated) {
     return (
