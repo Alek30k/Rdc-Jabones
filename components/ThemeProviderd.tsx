@@ -7,9 +7,10 @@ export function ThemeProviderd({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="system" // usa el tema del sistema por defecto
+      defaultTheme="system"
       enableSystem
       disableTransitionOnChange
+      suppressHydrationWarning
       {...props}
     >
       {children}
