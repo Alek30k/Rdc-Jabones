@@ -15,6 +15,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "react-hot-toast";
 import { Edit, Trash2, Plus } from "lucide-react";
+import { useProducts } from "@/contexts/ProductsContext";
 
 interface Product {
   id: string;
@@ -27,9 +28,8 @@ interface Product {
 }
 
 export default function ProductsManager() {
-  const supabase = createClient();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { products, loading, saveProduct, deleteProduct } = useProducts();
+
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
   const [newProduct, setNewProduct] = useState<
@@ -42,50 +42,8 @@ export default function ProductsManager() {
     category: "otros",
   });
 
-  // 📦 Cargar productos
-  const fetchProducts = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) toast.error("Error al cargar productos");
-    else setProducts(data || []);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  // ➕ Agregar / Editar producto
   const handleSave = async () => {
-    if (
-      !newProduct.name ||
-      newProduct.cost_per_unit <= 0 ||
-      newProduct.price_per_unit <= 0
-    ) {
-      toast.error("Completa todos los campos correctamente");
-      return;
-    }
-
-    const payload = { ...newProduct };
-
-    if (editing) {
-      const { error } = await supabase
-        .from("products")
-        .update(payload)
-        .eq("id", editing.id);
-      if (error) toast.error("Error al actualizar producto");
-      else toast.success("Producto actualizado");
-    } else {
-      const { error } = await supabase
-        .from("products")
-        .insert([{ ...payload, id: crypto.randomUUID() }]);
-      if (error) toast.error("Error al agregar producto");
-      else toast.success("Producto agregado");
-    }
-
+    await saveProduct(newProduct, editing?.id || null);
     setOpen(false);
     setEditing(null);
     setNewProduct({
@@ -95,18 +53,12 @@ export default function ProductsManager() {
       units_sold: 0,
       category: "otros",
     });
-    fetchProducts();
   };
 
   // 🗑️ Eliminar producto
   const handleDelete = async (id: string) => {
     if (!confirm("¿Eliminar este producto?")) return;
-    const { error } = await supabase.from("products").delete().eq("id", id);
-    if (error) toast.error("Error al eliminar producto");
-    else {
-      toast.success("Producto eliminado");
-      fetchProducts();
-    }
+    await deleteProduct(id);
   };
 
   return (

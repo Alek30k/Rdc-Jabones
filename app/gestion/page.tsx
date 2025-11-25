@@ -2,6 +2,7 @@
 import { useState } from "react";
 import SoapBusinessManager from "@/components/SoapBusinessManager";
 import Image from "next/image";
+import { ProductsProvider } from "@/contexts/ProductsContext";
 
 export default function Home() {
   const [password, setPassword] = useState("");
@@ -62,5 +63,9 @@ export default function Home() {
     );
   }
 
-  return <SoapBusinessManager />;
+  return (
+    <ProductsProvider>
+      <SoapBusinessManager />
+    </ProductsProvider>
+  );
 }

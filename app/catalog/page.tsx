@@ -39,7 +39,7 @@ type Product = {
   price: number;
   weight: string;
   badges: string[];
-  gallery?: string[]; // Added gallery property
+  gallery?: string[]; // Added galleAloery property
 };
 
 const SoapCatalogComparison = () => {
@@ -1019,7 +1019,7 @@ const SoapCatalogComparison = () => {
       {compareProducts.length > 0 && (
         <button
           onClick={() => setShowComparison(true)}
-          className="fixed bottom-24 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-full shadow-2xl hover:scale-105 transition-all flex items-center gap-3 animate-bounce"
+          className="fixed bottom-24 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-full shadow-2xl hover:scale-105 transition-all flex items-center gap-3 "
         >
           <GitCompare className="w-5 h-5" />
           <span className="font-semibold">
@@ -1100,7 +1100,7 @@ const SoapCatalogComparison = () => {
                   setShowCart(true);
                   setShowFloatingMenu(false);
                 }}
-                className="group flex items-center gap-3 animate-in fade-in slide-in-from-right duration-300 delay-300"
+                className="group flex items-center gap-3 animate-in fade-in slide-in-from-right duration-300 delay-300 "
               >
                 <span className="bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-lg text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                   Ver Carrito ({getTotalItems()})
@@ -1155,7 +1155,7 @@ const SoapCatalogComparison = () => {
       {cart.length > 0 && !showCart && (
         <button
           onClick={() => setShowCart(true)}
-          className="fixed bottom-6 right-6 z-50 bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-full shadow-2xl hover:scale-105 transition-all flex items-center gap-3"
+          className="fixed bottom-6 right-6 z-50 bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-full shadow-2xl hover:scale-105 transition-all flex items-center gap-3 animate-bounce"
         >
           <ShoppingCart className="w-5 h-5" />
           <span className="font-semibold">
@@ -1365,7 +1365,6 @@ const SoapCatalogComparison = () => {
                       >
                         <X className="w-4 h-4" />
                       </button>
-
                       <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
                         <Image
                           src={product.image || "/placeholder.svg"}
@@ -1374,21 +1373,20 @@ const SoapCatalogComparison = () => {
                           className="object-cover"
                         />
                       </div>
-
                       <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-1">
                         {product.name}
                       </h3>
                       <p className="text-gray-600 dark:text-gray-400 mb-4">
                         {product.subtitle}
                       </p>
-
+                      setCompareProducts
                       <div className="space-y-4">
                         <div>
                           <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                             Precio:
                           </p>
                           <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                            ${product.price}{" "}
+                            $setCompareProducts{product.price}{" "}
                             {/* <span className="text-sm text-gray-500">
                               ({product.weight})
                             </span> */}
@@ -1436,10 +1434,12 @@ const SoapCatalogComparison = () => {
                           <ul className="space-y-2">
                             {product.benefits.map((benefit, i) => (
                               <li
+                                setCompareProducts
                                 key={i}
                                 className="flex items-start gap-2 text-sm"
                               >
                                 <span className="text-green-500 mt-0.5">✓</span>
+                                setCompareProducts{" "}
                                 <span className="text-gray-600 dark:text-gray-400">
                                   {benefit}
                                 </span>
@@ -1729,7 +1729,7 @@ const SoapCatalogComparison = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-auto">
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-auto">
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-green-600 to-green-500 text-white px-6 py-4 flex justify-between items-center rounded-t-2xl z-10">
+            <div className="sticky top-0 bg-gradient-to-r from-green-600 to-green-500 text-white px-6 py-4 flex justify-between items-center rounded-t-2xl z-10 ">
               <div className="flex items-center gap-3">
                 <ShoppingCart className="w-6 h-6" />
                 <h2 className="text-lg md:text-2xl font-bold">Mi Carrito</h2>
