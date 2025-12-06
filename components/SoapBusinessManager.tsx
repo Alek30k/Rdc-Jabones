@@ -142,6 +142,10 @@ export default function SoapBusinessManager() {
   }, []);
 
   useEffect(() => {
+    console.log("object");
+  }, []);
+
+  useEffect(() => {
     if (!mounted) return;
 
     const testConnection = async () => {

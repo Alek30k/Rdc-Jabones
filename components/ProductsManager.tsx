@@ -81,7 +81,7 @@ export default function ProductsManager() {
     setNewProduct({ name: "", price: "", cost: "", stock: "", category: "" });
     loadProducts();
   };
-
+  console.log("asdasdasd");
   const handleUpdate = async () => {
     if (!editingProduct) return;
 
@@ -200,7 +200,6 @@ export default function ProductsManager() {
               }
             />
           </div>
-
           <div>
             <Label>Stock</Label>
             <Input
