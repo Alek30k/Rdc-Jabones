@@ -30,13 +30,13 @@ import {
   ArrowRight,
   CreditCard,
   MapPin,
-  Package2,
   Info,
+  Package2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import AddAddressModal from "@/components/AddAddressModal";
 
@@ -53,25 +53,25 @@ const CartPage = () => {
   const [needsDelivery, setNeedsDelivery] = useState(false);
   const router = useRouter();
 
-  const fetchAddresses = async () => {
+  const fetchAddresses = useCallback(async () => {
+    if (!user?.id) return;
+
     setAddressLoading(true);
     try {
-      const query = `*[_type=="address" && user._ref == "${user?.id}"] | order(publishedAt desc)`;
+      const query = `*[_type=="address" && user._ref == "${user.id}"] | order(publishedAt desc)`;
       const data = await client.fetch(query);
+
       setAddresses(data);
+
       const defaultAddress = data.find((addr: Address) => addr.default);
-      if (defaultAddress) {
-        setSelectedAddress(defaultAddress);
-      } else if (data.length > 0) {
-        setSelectedAddress(data[0]);
-      }
+      setSelectedAddress(defaultAddress || data[0] || null);
     } catch (error) {
       console.log("Addresses fetching error:", error);
       toast.error("Error al cargar las direcciones");
     } finally {
       setAddressLoading(false);
     }
-  };
+  }, [user?.id]);
 
   const handleAddressAdded = (newAddress: Address) => {
     setAddresses((prev) => {
@@ -87,7 +87,7 @@ const CartPage = () => {
     if (isSignedIn && needsDelivery) {
       fetchAddresses();
     }
-  }, [isSignedIn, needsDelivery, user?.id]);
+  }, [isSignedIn, needsDelivery, fetchAddresses]);
 
   const handleResetCart = () => {
     const confirmed = window.confirm(

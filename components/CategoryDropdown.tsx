@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
@@ -20,75 +19,90 @@ interface Category {
   id: string;
   name: string;
   slug: string;
+  href: string;
   icon: React.ReactNode;
   description?: string;
   productCount?: number;
-  href: string;
 }
-
-const categorias = await getCategories();
-
-// Datos de ejemplo - reemplaza con tus categorías reales
-const categories: Category[] = [
-  {
-    id: categorias[0]._id,
-    name: "Jabones Artesanales",
-    slug: "jabones-artesanales",
-    href: `/category/${categorias[0].slug?.current}`,
-    icon: <Leaf className="w-4 h-4" />,
-    description: "Hechos a mano con ingredientes naturales",
-    productCount: categorias[0].productCount || 25,
-  },
-  {
-    id: "2",
-    name: "Jabones Combos",
-    slug: "jabones-combos",
-    href: `/category/${categorias[1].slug?.current}`,
-    icon: <Sparkles className="w-4 h-4" />,
-    description: "Fórmulas exclusivas y aceites esenciales",
-    productCount: categorias[1].productCount || 0,
-  },
-  {
-    id: "3",
-    name: "Sets de Regalo",
-    slug: "sets-regalo",
-    href: `/category/${categorias[5].slug?.current}`,
-    icon: <Gift className="w-4 h-4" />,
-    description: "Perfectos para regalar",
-    productCount: categorias[5].productCount || 10,
-  },
-  {
-    id: "4",
-    name: "Cuidado Facial",
-    slug: "cuidado-facial",
-    href: `/category/${categorias[2].slug?.current}`,
-    icon: <Heart className="w-4 h-4" />,
-    description: "Especiales para el rostro",
-    productCount: categorias[2].productCount || 15,
-  },
-  {
-    id: "5",
-    name: "Jabones Corporales",
-    slug: "jabones-corporales",
-    href: `/category/${categorias[4].slug?.current}`,
-    icon: <Package className="w-4 h-4" />,
-    description: "Para el cuidado del cuerpo",
-    productCount: categorias[4].productCount || 30,
-  },
-  {
-    id: "6",
-    name: "Jabones Infantiles",
-    slug: "jabones-infantiles",
-    href: `/category/${categorias[3].slug?.current}`,
-    icon: <Baby className="w-4 h-4" />,
-    description: "Suaves y humectantes para los más pequeños",
-    productCount: categorias[3].productCount || 20,
-  },
-];
 
 const CategoryDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // 🔥 Cargar categorías SIN top-level await
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const categorias = await getCategories();
+
+        if (!categorias || categorias.length === 0) return;
+
+        const mapped: Category[] = [
+          {
+            id: categorias[0]._id,
+            name: "Jabones Artesanales",
+            slug: categorias[0].slug?.current,
+            href: `/category/${categorias[0].slug?.current}`,
+            icon: <Leaf className="w-4 h-4" />,
+            description: "Hechos a mano con ingredientes naturales",
+            productCount: categorias[0].productCount || 25,
+          },
+          {
+            id: categorias[1]._id,
+            name: "Jabones Combos",
+            slug: categorias[1].slug?.current,
+            href: `/category/${categorias[1].slug?.current}`,
+            icon: <Sparkles className="w-4 h-4" />,
+            description: "Fórmulas exclusivas y aceites esenciales",
+            productCount: categorias[1].productCount || 0,
+          },
+          {
+            id: categorias[5]._id,
+            name: "Sets de Regalo",
+            slug: categorias[5].slug?.current,
+            href: `/category/${categorias[5].slug?.current}`,
+            icon: <Gift className="w-4 h-4" />,
+            description: "Perfectos para regalar",
+            productCount: categorias[5].productCount || 10,
+          },
+          {
+            id: categorias[2]._id,
+            name: "Cuidado Facial",
+            slug: categorias[2].slug?.current,
+            href: `/category/${categorias[2].slug?.current}`,
+            icon: <Heart className="w-4 h-4" />,
+            description: "Especiales para el rostro",
+            productCount: categorias[2].productCount || 15,
+          },
+          {
+            id: categorias[4]._id,
+            name: "Jabones Corporales",
+            slug: categorias[4].slug?.current,
+            href: `/category/${categorias[4].slug?.current}`,
+            icon: <Package className="w-4 h-4" />,
+            description: "Para el cuidado del cuerpo",
+            productCount: categorias[4].productCount || 30,
+          },
+          {
+            id: categorias[3]._id,
+            name: "Jabones Infantiles",
+            slug: categorias[3].slug?.current,
+            href: `/category/${categorias[3].slug?.current}`,
+            icon: <Baby className="w-4 h-4" />,
+            description: "Suaves y humectantes para los más pequeños",
+            productCount: categorias[3].productCount || 20,
+          },
+        ];
+
+        setCategories(mapped);
+      } catch (err) {
+        console.error("Error cargando categorías:", err);
+      }
+    };
+
+    loadCategories();
+  }, []);
 
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
@@ -100,7 +114,6 @@ const CategoryDropdown = () => {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -108,23 +121,17 @@ const CategoryDropdown = () => {
   // Cerrar dropdown con Escape
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-      }
+      if (event.key === "Escape") setIsOpen(false);
     };
-
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
 
   return (
-    <div className="relative " ref={dropdownRef}>
-      {/* Trigger Button */}
+    <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="   dark:text-gray-100 transition-colors duration-300 flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 "
-        aria-expanded={isOpen}
-        aria-haspopup="true"
+        className="dark:text-gray-100 transition-colors duration-300 flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
       >
         <Grid3X3 className="w-4 h-4" />
         Categorías
@@ -133,17 +140,14 @@ const CategoryDropdown = () => {
         />
       </button>
 
-      {/* Dropdown Menu */}
       {isOpen && (
-        <div className=" absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
-          {/* Header */}
+        <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
           <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
             <h3 className="text-sm font-semibold text-gray-900">
               Explorar por categoría
             </h3>
           </div>
 
-          {/* Categories List */}
           <div className="py-2 max-h-96 overflow-y-auto">
             {categories.map((category) => (
               <Link
@@ -157,7 +161,7 @@ const CategoryDropdown = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-medium text-gray-900 group-hover:text-green-600 transition-colors duration-200">
+                    <h4 className="text-sm font-medium text-gray-900 group-hover:text-green-600">
                       {category.name}
                     </h4>
                     {category.productCount && (
@@ -176,12 +180,11 @@ const CategoryDropdown = () => {
             ))}
           </div>
 
-          {/* Footer */}
           <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
             <Link
               href="/shop"
               onClick={() => setIsOpen(false)}
-              className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
+              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
             >
               Ver todas las categorías →
             </Link>

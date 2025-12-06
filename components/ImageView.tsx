@@ -8,7 +8,7 @@ import type {
 import { urlFor } from "@/sanity/lib/image";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -64,17 +64,20 @@ const ImageView = ({ images = [], isStock }: Props) => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isFullscreen, hasMultipleImages, activeIndex]);
+  }, [isFullscreen, hasMultipleImages, navigateImage]);
 
-  const navigateImage = (direction: "prev" | "next") => {
-    if (direction === "prev") {
-      setActiveIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-    } else {
-      setActiveIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-    }
-    setImageLoading(true);
-    setImageError(false);
-  };
+  const navigateImage = useCallback(
+    (direction: "prev" | "next") => {
+      if (direction === "prev") {
+        setActiveIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+      } else {
+        setActiveIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+      }
+      setImageLoading(true);
+      setImageError(false);
+    },
+    [images.length]
+  );
 
   const handleImageLoad = () => {
     setImageLoading(false);

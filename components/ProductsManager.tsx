@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,9 +36,9 @@ export default function ProductsManager() {
   // Cargar productos al iniciar
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [loadProducts]);
 
-  const loadProducts = async () => {
+  const loadProducts = useCallback(async () => {
     const { data, error } = await supabase.from("products").select("*");
 
     if (error) {
@@ -56,7 +56,7 @@ export default function ProductsManager() {
     }));
 
     setProducts(formatted);
-  };
+  }, [supabase]);
 
   const handleCreate = async () => {
     if (!newProduct.name || !newProduct.price || !newProduct.cost) {
@@ -106,17 +106,20 @@ export default function ProductsManager() {
     loadProducts();
   };
 
-  const deleteProduct = async (id) => {
-    const { error } = await supabase.from("products").delete().eq("id", id);
+  const deleteProduct = useCallback(
+    async (id) => {
+      const { error } = await supabase.from("products").delete().eq("id", id);
 
-    if (error) {
-      toast.error("Error al eliminar");
-      return;
-    }
+      if (error) {
+        toast.error("Error al eliminar");
+        return;
+      }
 
-    toast.success("Producto eliminado");
-    loadProducts();
-  };
+      toast.success("Producto eliminado");
+      loadProducts();
+    },
+    [supabase, products]
+  );
 
   const modifyStock = async (productId, amount) => {
     const product = products.find((p) => p.id === productId);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ProductCard from "./ProductCard";
 import { motion, AnimatePresence } from "motion/react";
 import { client } from "@/sanity/lib/client";
@@ -32,18 +32,25 @@ const ProductGrid = () => {
 
   const router = useRouter();
 
-  const query = `*[_type == "product" && variant == $variant] | order(name asc){
-    ...,"categories": categories[]->title
-  }`;
+  const query = useMemo(
+    () =>
+      `*[_type == "product" && variant == $variant] | order(name asc){
+      ...,"categories": categories[]->title
+    }`,
+    []
+  );
 
-  const params = { variant: selectedTab.toLowerCase() };
+  const params = useMemo(
+    () => ({ variant: selectedTab.toLowerCase() }),
+    [selectedTab]
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const response = await client.fetch(query, params);
-        setProducts(await response);
+        setProducts(response);
       } catch (error) {
         console.log("Product fetching Error", error);
       } finally {
@@ -51,7 +58,7 @@ const ProductGrid = () => {
       }
     };
     fetchData();
-  }, [selectedTab]);
+  }, [query, params]);
 
   useEffect(() => {
     const handleResize = () => {
