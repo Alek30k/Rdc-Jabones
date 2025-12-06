@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -139,10 +139,6 @@ export default function SoapBusinessManager() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    console.log("object");
   }, []);
 
   useEffect(() => {
@@ -435,11 +431,10 @@ export default function SoapBusinessManager() {
 
   useEffect(() => {
     if (!mounted) return;
-
     checkForAlerts();
-  }, [products, sales, expenses, thresholds]);
+  }, [mounted, checkForAlerts]);
 
-  const checkForAlerts = () => {
+  const checkForAlerts = useCallback(() => {
     const newAlerts: BusinessAlert[] = [];
 
     products.forEach((product) => {
@@ -636,7 +631,7 @@ export default function SoapBusinessManager() {
         }
       });
     }
-  };
+  }, [products, sales, expenses, thresholds, alerts, thresholds]);
 
   const dismissAlert = (alertId: string) => {
     setAlerts(

@@ -146,7 +146,7 @@ const CategoryProducts = ({ categories, slug }: Props) => {
   // Only fetch products when currentSlug changes
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+  }, [fetchProducts, currentPage]);
 
   // Reset page only when filters change (not when category changes)
   useEffect(() => {

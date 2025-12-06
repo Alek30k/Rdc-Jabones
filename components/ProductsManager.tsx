@@ -81,7 +81,7 @@ export default function ProductsManager() {
     setNewProduct({ name: "", price: "", cost: "", stock: "", category: "" });
     loadProducts();
   };
-  console.log("asdasdasd");
+
   const handleUpdate = async () => {
     if (!editingProduct) return;
 
@@ -118,7 +118,7 @@ export default function ProductsManager() {
       toast.success("Producto eliminado");
       loadProducts();
     },
-    [supabase, products]
+    [supabase, loadProducts]
   );
 
   const modifyStock = useCallback(
