@@ -429,6 +429,7 @@ export default function SoapBusinessManager() {
     saveSettings();
   }, [thresholds, mounted, supabase]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!mounted) return;
     checkForAlerts();
