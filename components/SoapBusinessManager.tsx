@@ -631,7 +631,7 @@ export default function SoapBusinessManager() {
         }
       });
     }
-  }, [products, sales, expenses, thresholds, alerts, thresholds]);
+  }, [products, sales, expenses, thresholds, alerts]);
 
   const dismissAlert = (alertId: string) => {
     setAlerts(
