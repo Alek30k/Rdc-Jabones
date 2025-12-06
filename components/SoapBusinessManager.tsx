@@ -65,6 +65,7 @@ interface Product {
   pricePerUnit: number;
   unitsSold: number;
   category: string;
+  stock: number;
 }
 
 interface Expense {
@@ -99,6 +100,7 @@ interface AlertThresholds {
   noSalesDays: number;
   monthlyRevenueGoal: number;
   expenseLimitPercentage: number;
+  lowStockThreshold: number;
 }
 
 const defaultNewSale = {
@@ -112,6 +114,7 @@ const defaultThresholds = {
   noSalesDays: 7,
   monthlyRevenueGoal: 50000,
   expenseLimitPercentage: 60,
+  lowStockThreshold: 10,
 };
 
 export default function SoapBusinessManager() {
@@ -125,10 +128,7 @@ export default function SoapBusinessManager() {
   const [thresholds, setThresholds] =
     useState<AlertThresholds>(defaultThresholds);
 
-  const [editingProduct] = useState<Product | null>(null);
   const [activeTab, setActiveTab] = useState("dashboard");
-
-  console.log(editingProduct);
 
   const [newSale, setNewSale] = useState(defaultNewSale);
 
@@ -203,6 +203,7 @@ export default function SoapBusinessManager() {
             pricePerUnit: p.price_per_unit,
             unitsSold: p.units_sold,
             category: p.category,
+            stock: p.stock ?? 0,
           }));
           console.log("[v0] Loaded products from Supabase:", formattedProducts);
           setProducts(formattedProducts);
@@ -327,6 +328,7 @@ export default function SoapBusinessManager() {
                 monthlyRevenueGoal: defaultSettings.monthly_revenue_goal,
                 expenseLimitPercentage:
                   defaultSettings.expense_limit_percentage,
+                lowStockThreshold: settingsData.low_stock_threshold,
               });
             }
           } else {
@@ -340,6 +342,7 @@ export default function SoapBusinessManager() {
             noSalesDays: settingsData.no_sales_days,
             monthlyRevenueGoal: settingsData.monthly_revenue_goal,
             expenseLimitPercentage: settingsData.expense_limit_percentage,
+            lowStockThreshold: settingsData.low_stock_threshold,
           });
           console.log("[v0] Loaded settings from Supabase");
         }
@@ -414,6 +417,7 @@ export default function SoapBusinessManager() {
           no_sales_days: thresholds.noSalesDays,
           monthly_revenue_goal: thresholds.monthlyRevenueGoal,
           expense_limit_percentage: thresholds.expenseLimitPercentage,
+          low_stock_threshold: thresholds.lowStockThreshold,
         })
         .eq("id", "default");
 
@@ -721,10 +725,29 @@ export default function SoapBusinessManager() {
       }
 
       const newUnitsSold = product.unitsSold + quantity;
+      const newStock = Math.max(0, (product.stock ?? 0) - quantity);
+
       const { error: productError } = await supabase
         .from("products")
-        .update({ units_sold: newUnitsSold })
+        .update({
+          units_sold: newUnitsSold,
+          stock: newStock,
+        })
         .eq("id", product.id);
+
+      if (productError) {
+        console.error("[v0] Error updating product:", productError);
+        toast.error("Error al actualizar producto");
+        return;
+      }
+
+      setProducts(
+        products.map((p) =>
+          p.id === product.id
+            ? { ...p, unitsSold: newUnitsSold, stock: newStock }
+            : p
+        )
+      );
 
       if (productError) {
         console.error("[v0] Error updating product units:", productError);
@@ -932,6 +955,10 @@ export default function SoapBusinessManager() {
                 {products.reduce((sum, p) => sum + p.unitsSold, 0)} unidades
                 vendidas
               </p>
+              <p className="text-xs text-purple-100">
+                Stock total:{" "}
+                {products.reduce((sum, p) => sum + (p.stock ?? 0), 0)}
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -969,6 +996,10 @@ export default function SoapBusinessManager() {
             <TabsTrigger value="expenses" className="gap-2">
               <DollarSign className="w-4 h-4" />
               Gastos
+            </TabsTrigger>
+            <TabsTrigger value="inventory" className="gap-2">
+              <Package className="w-4 h-4" />
+              Inventario
             </TabsTrigger>
             <TabsTrigger value="calculator" className="gap-2">
               <Calculator className="w-4 h-4" />
@@ -1568,6 +1599,45 @@ export default function SoapBusinessManager() {
                       );
                     })
                   )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="inventory" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Inventario Completo</CardTitle>
+              </CardHeader>
+
+              <CardContent>
+                <div className="space-y-4">
+                  {products.map((p) => (
+                    <div
+                      key={p.id}
+                      className="flex justify-between p-4 bg-gray-100 dark:bg-gray-800 rounded-lg"
+                    >
+                      <div>
+                        <p className="font-medium">{p.name}</p>
+                        <p className="text-xs text-gray-500">
+                          Categoría: {p.category}
+                        </p>
+                      </div>
+
+                      <div className="font-bold">
+                        Stock:{" "}
+                        <span
+                          className={
+                            p.stock <= thresholds.lowStockThreshold
+                              ? "text-red-500"
+                              : "text-green-500"
+                          }
+                        >
+                          {p.stock}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
