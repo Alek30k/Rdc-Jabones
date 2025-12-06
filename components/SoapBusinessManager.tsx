@@ -432,7 +432,7 @@ export default function SoapBusinessManager() {
   useEffect(() => {
     if (!mounted) return;
     checkForAlerts();
-  }, [mounted]);
+  }, [products, sales, expenses, thresholds]);
 
   const checkForAlerts = useCallback(() => {
     const newAlerts: BusinessAlert[] = [];
