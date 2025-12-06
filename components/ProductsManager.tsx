@@ -33,11 +33,6 @@ export default function ProductsManager() {
 
   const [editingProduct, setEditingProduct] = useState(null);
 
-  // Cargar productos al iniciar
-  useEffect(() => {
-    loadProducts();
-  }, [loadProducts]);
-
   const loadProducts = useCallback(async () => {
     const { data, error } = await supabase.from("products").select("*");
 
@@ -57,6 +52,11 @@ export default function ProductsManager() {
 
     setProducts(formatted);
   }, [supabase]);
+
+  // Cargar productos al iniciar
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
 
   const handleCreate = async () => {
     if (!newProduct.name || !newProduct.price || !newProduct.cost) {
