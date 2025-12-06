@@ -121,26 +121,26 @@ export default function ProductsManager() {
     [supabase, products]
   );
 
-  const modifyStock = async (productId, amount) => {
-    const product = products.find((p) => p.id === productId);
-    const newStock = Math.max(0, product.stock + amount);
+  const modifyStock = useCallback(
+    async (productId, amount) => {
+      const product = products.find((p) => p.id === productId);
+      const newStock = Math.max(0, product.stock + amount);
 
-    const { error } = await supabase
-      .from("products")
-      .update({ stock: newStock })
-      .eq("id", productId);
+      const { error } = await supabase
+        .from("products")
+        .update({ stock: newStock })
+        .eq("id", productId);
 
-    if (error) {
-      toast.error("Error actualizando stock");
-      return;
-    }
-
-    setProducts(
-      products.map((p) => (p.id === productId ? { ...p, stock: newStock } : p))
-    );
-
-    toast.success("Stock actualizado");
-  };
+      if (!error) {
+        setProducts(
+          products.map((p) =>
+            p.id === productId ? { ...p, stock: newStock } : p
+          )
+        );
+      }
+    },
+    [products, supabase]
+  );
 
   return (
     <Card>

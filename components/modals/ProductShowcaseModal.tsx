@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { X, Star, ArrowRight, Sparkles, Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 
 interface ProductShowcaseModalProps {
   isOpen: boolean;
@@ -106,8 +107,10 @@ const ProductShowcaseModal = ({
                 >
                   {/* Imagen del producto */}
                   <div className="relative mb-4">
-                    <img
+                    <Image
                       src={product.image || "/placeholder.svg"}
+                      width={500}
+                      height={500}
                       alt={product.name}
                       className="w-full h-32 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
                     />

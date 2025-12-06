@@ -153,7 +153,7 @@ const CategoryProducts = ({ categories, slug }: Props) => {
     if (currentPage !== 1) {
       setCurrentPage(1);
     }
-  }, [searchTerm, sortBy, priceRange]); // Removed currentPage from dependency
+  }, [searchTerm, sortBy, priceRange, currentPage]); // Removed currentPage from dependency
 
   // Optimized handlers
   const handleSearchChange = useCallback((value: string) => {
