@@ -429,12 +429,6 @@ export default function SoapBusinessManager() {
     saveSettings();
   }, [thresholds, mounted, supabase]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (!mounted) return;
-    checkForAlerts();
-  }, [products, sales, expenses, thresholds]);
-
   const checkForAlerts = useCallback(() => {
     const newAlerts: BusinessAlert[] = [];
 
@@ -634,6 +628,11 @@ export default function SoapBusinessManager() {
     }
   }, [products, sales, expenses, thresholds, alerts]);
 
+  useEffect(() => {
+    if (!mounted) return;
+    checkForAlerts();
+  }, [mounted, checkForAlerts]);
+
   const dismissAlert = (alertId: string) => {
     setAlerts(
       alerts.map((alert) =>
@@ -756,11 +755,6 @@ export default function SoapBusinessManager() {
       }
 
       setSales([...sales, sale]);
-      setProducts(
-        products.map((p) =>
-          p.id === newSale.productId ? { ...p, unitsSold: newUnitsSold } : p
-        )
-      );
 
       setNewSale(defaultNewSale);
 
