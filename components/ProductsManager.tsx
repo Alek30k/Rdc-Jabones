@@ -159,7 +159,7 @@ export default function ProductsManager() {
         </div>
         {/* FORMULARIO */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div>
+          <div className="flex flex-col gap-2">
             <Label>Nombre</Label>
             <Input
               value={editingProduct ? editingProduct.name : newProduct.name}
@@ -173,7 +173,7 @@ export default function ProductsManager() {
               }
             />
           </div>
-          <div>
+          <div className="flex flex-col gap-2">
             <Label>Precio</Label>
             <Input
               type="number"
@@ -188,7 +188,7 @@ export default function ProductsManager() {
               }
             />
           </div>
-          <div>
+          <div className="flex flex-col gap-2">
             <Label>Costo</Label>
             <Input
               type="number"
@@ -203,7 +203,7 @@ export default function ProductsManager() {
               }
             />
           </div>
-          <div>
+          <div className="flex flex-col gap-2">
             <Label>Stock</Label>
             <Input
               type="number"
@@ -219,7 +219,7 @@ export default function ProductsManager() {
             />
           </div>
 
-          <div>
+          <div className="flex flex-col gap-2">
             <Label>Categoría</Label>
             <Input
               value={
