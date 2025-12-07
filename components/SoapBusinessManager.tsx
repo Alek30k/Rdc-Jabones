@@ -192,7 +192,7 @@ export default function SoapBusinessManager() {
           toast.error("Error al cargar productos");
         } else if (productsData) {
           const formattedProducts = productsData.map((p) => ({
-            id: p.id,
+            id: p.id_new,
             name: p.name,
             costPerUnit: p.cost_per_unit,
             pricePerUnit: p.price_per_unit,
@@ -550,7 +550,7 @@ export default function SoapBusinessManager() {
       0
     );
     const totalProductCosts = sales.reduce((sum, sale) => {
-      const product = products.find((p) => p.id === sale.productId);
+      const product = products.find((p) => p.id_new === sale.productId);
       return sum + (product ? product.costPerUnit * sale.quantity : 0);
     }, 0);
 
@@ -683,7 +683,7 @@ export default function SoapBusinessManager() {
       return;
     }
 
-    const product = products.find((p) => p.id === newSale.productId);
+    const product = products.find((p) => p.id_new === newSale.productId);
     if (!product) {
       toast.error("Producto no encontrado.");
       return;
@@ -737,7 +737,7 @@ export default function SoapBusinessManager() {
 
       setProducts(
         products.map((p) =>
-          p.id === product.id
+          p.id_new === product.id
             ? { ...p, unitsSold: newUnitsSold, stock: newStock }
             : p
         )
@@ -768,7 +768,7 @@ export default function SoapBusinessManager() {
     0
   );
   const totalProductCosts = sales.reduce((sum, sale) => {
-    const product = products.find((p) => p.id === sale.productId);
+    const product = products.find((p) => p.id_new === sale.productId);
     return sum + (product ? product.costPerUnit * sale.quantity : 0);
   }, 0);
   const netProfit = totalRevenue - totalExpenses - totalProductCosts;
@@ -1503,7 +1503,7 @@ export default function SoapBusinessManager() {
                   ) : (
                     [...sales].reverse().map((sale) => {
                       const product = products.find(
-                        (p) => p.id === sale.productId
+                        (p) => p.id_new === sale.productId
                       );
                       return (
                         <div
@@ -1568,7 +1568,7 @@ export default function SoapBusinessManager() {
 
                                   setProducts(
                                     products.map((p) =>
-                                      p.id === product.id
+                                      p.id_new === product.id
                                         ? { ...p, unitsSold: newUnitsSold }
                                         : p
                                     )
@@ -1616,7 +1616,7 @@ export default function SoapBusinessManager() {
                   </div>
                   {filteredInventory.map((p) => (
                     <div
-                      key={p.id}
+                      key={p.id_new}
                       className="flex justify-between p-4 bg-gray-100 dark:bg-gray-800 rounded-lg"
                     >
                       <div>

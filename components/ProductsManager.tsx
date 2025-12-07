@@ -30,7 +30,6 @@ export default function ProductsManager() {
   });
 
   const [search, setSearch] = useState("");
-
   const [editingProduct, setEditingProduct] = useState(null);
 
   const loadProducts = useCallback(async () => {
@@ -42,7 +41,7 @@ export default function ProductsManager() {
     }
 
     const formatted = data.map((p) => ({
-      id: p.id,
+      id: p.id_new, // 👈 AHORA id SIEMPRE ES id_new
       name: p.name,
       price: p.price_per_unit,
       cost: p.cost_per_unit,
@@ -53,7 +52,6 @@ export default function ProductsManager() {
     setProducts(formatted);
   }, [supabase]);
 
-  // Cargar productos al iniciar
   useEffect(() => {
     loadProducts();
   }, [loadProducts]);
@@ -73,6 +71,7 @@ export default function ProductsManager() {
     });
 
     if (error) {
+      console.log("SUPABASE INSERT ERROR:", error);
       toast.error("Error al agregar producto");
       return;
     }
@@ -94,7 +93,7 @@ export default function ProductsManager() {
         stock: parseInt(editingProduct.stock),
         category: editingProduct.category,
       })
-      .eq("id", editingProduct.id);
+      .eq("id_new", editingProduct.id); // 👈 CORREGIDO
 
     if (error) {
       toast.error("Error al actualizar");
@@ -108,7 +107,10 @@ export default function ProductsManager() {
 
   const deleteProduct = useCallback(
     async (id) => {
-      const { error } = await supabase.from("products").delete().eq("id", id);
+      const { error } = await supabase
+        .from("products")
+        .delete()
+        .eq("id_new", id); // 👈 CORREGIDO
 
       if (error) {
         toast.error("Error al eliminar");
@@ -123,13 +125,13 @@ export default function ProductsManager() {
 
   const modifyStock = useCallback(
     async (productId, amount) => {
-      const product = products.find((p) => p.id === productId);
+      const product = products.find((p) => p.id === productId); // 👈 CORREGIDO
       const newStock = Math.max(0, product.stock + amount);
 
       const { error } = await supabase
         .from("products")
         .update({ stock: newStock })
-        .eq("id", productId);
+        .eq("id_new", productId); // 👈 CORREGIDO
 
       if (!error) {
         setProducts(
@@ -154,9 +156,10 @@ export default function ProductsManager() {
             placeholder="Buscar jabón por nombre..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className=" px-3 py-2 border rounded-lg"
+            className="px-3 py-2 border rounded-lg"
           />
         </div>
+
         {/* FORMULARIO */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="flex flex-col gap-2">
@@ -173,6 +176,7 @@ export default function ProductsManager() {
               }
             />
           </div>
+
           <div className="flex flex-col gap-2">
             <Label>Precio</Label>
             <Input
@@ -188,6 +192,7 @@ export default function ProductsManager() {
               }
             />
           </div>
+
           <div className="flex flex-col gap-2">
             <Label>Costo</Label>
             <Input
@@ -203,6 +208,7 @@ export default function ProductsManager() {
               }
             />
           </div>
+
           <div className="flex flex-col gap-2">
             <Label>Stock</Label>
             <Input
