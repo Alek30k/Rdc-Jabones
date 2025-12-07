@@ -137,6 +137,8 @@ export default function SoapBusinessManager() {
     "checking" | "connected" | "error"
   >("checking");
 
+  const [inventorySearch, setInventorySearch] = useState("");
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -832,6 +834,10 @@ export default function SoapBusinessManager() {
     }
   };
 
+  const filteredInventory = products.filter((p) =>
+    p.name.toLowerCase().includes(inventorySearch.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -999,10 +1005,10 @@ export default function SoapBusinessManager() {
               <Calculator className="w-4 h-4" />
               Calculadora
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="gap-2">
+            {/* <TabsTrigger value="analytics" className="gap-2">
               <LineChartIcon className="w-4 h-4" />
               Analytics
-            </TabsTrigger>
+            </TabsTrigger> */}
           </TabsList>
 
           <TabsContent value="alerts" className="space-y-4">
@@ -1601,12 +1607,21 @@ export default function SoapBusinessManager() {
           <TabsContent value="inventory" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Inventario Completo</CardTitle>
+                <CardTitle>Inventario </CardTitle>
               </CardHeader>
 
               <CardContent>
                 <div className="space-y-4">
-                  {products.map((p) => (
+                  <div className="mb-4">
+                    <input
+                      type="text"
+                      placeholder="Buscar en inventario..."
+                      className=" px-3 py-2 border rounded-lg"
+                      value={inventorySearch}
+                      onChange={(e) => setInventorySearch(e.target.value)}
+                    />
+                  </div>
+                  {filteredInventory.map((p) => (
                     <div
                       key={p.id}
                       className="flex justify-between p-4 bg-gray-100 dark:bg-gray-800 rounded-lg"
@@ -1735,7 +1750,7 @@ export default function SoapBusinessManager() {
             <PriceSimulator />
             <ProductionCalendar />
           </TabsContent>
-
+          {/* 
           <TabsContent value="analytics" className="space-y-4">
             <Card>
               <CardHeader>
@@ -1925,7 +1940,7 @@ export default function SoapBusinessManager() {
               </CardContent>
             </Card>
             <FinancialDashboard />
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
       </div>
     </div>
