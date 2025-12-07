@@ -147,16 +147,16 @@ export default function ProductsManager() {
       <CardHeader>
         <CardTitle>Gestión de Productos con Stock</CardTitle>
       </CardHeader>
-      <div className="mb-4">
-        <Input
-          placeholder="Buscar jabón por nombre..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-sm"
-        />
-      </div>
 
       <CardContent className="space-y-6">
+        <div className="mb-4">
+          <input
+            placeholder="Buscar jabón por nombre..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className=" px-3 py-2 border rounded-lg"
+          />
+        </div>
         {/* FORMULARIO */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div>
