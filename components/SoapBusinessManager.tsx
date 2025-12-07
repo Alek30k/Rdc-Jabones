@@ -34,7 +34,6 @@ import {
   PieChart,
   Plus,
   Trash2,
-  LineChartIcon,
   Bell,
   AlertTriangle,
   CheckCircle2,
@@ -43,14 +42,8 @@ import {
   Settings,
 } from "lucide-react";
 // Import chart components
-import { Area, AreaChart, XAxis, YAxis } from "recharts";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+
 import { createClient } from "@/lib/supabase/client";
-import FinancialDashboard from "./FinancialDashboard";
 import ProductionCalendar from "./ProductionCalendar";
 import PriceSimulator from "./PriceSimulator";
 import DarkModeToggle from "./DarkModeToggle";
