@@ -154,4 +154,3 @@ export default function SalesSection() {
     </div>
   );
 }
-1;
