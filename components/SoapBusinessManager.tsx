@@ -49,6 +49,7 @@ import PriceSimulator from "./PriceSimulator";
 import DarkModeToggle from "./DarkModeToggle";
 import ExpensesManager from "./ui/ExpensesManager";
 import ProductsManager from "./ProductsManager";
+import SalesSection from "./SalesSection";
 
 // Types
 interface Product {
@@ -364,20 +365,23 @@ export default function SoapBusinessManager() {
 
       if (newAlerts.length > 0) {
         console.log("[v0] Saving new alerts to Supabase:", newAlerts.length);
+
         const { error } = await supabase.from("alerts").insert(
           newAlerts.map((a) => ({
-            id: a.id,
             type: a.type,
             title: a.title,
             message: a.message,
-            action: a.action,
-            dismissed: a.dismissed,
-            created_at: a.createdAt,
+            action: a.action ?? null,
+            dismissed: a.dismissed ?? false,
+            created_at: a.createdAt ?? new Date().toISOString(),
           }))
         );
 
         if (error) {
-          console.error("[v0] Error saving alerts:", error);
+          console.error(
+            "[v0] Error saving alerts:",
+            JSON.stringify(error, null, 2)
+          );
         }
       }
 
@@ -1421,180 +1425,7 @@ export default function SoapBusinessManager() {
           </TabsContent>
 
           <TabsContent value="sales" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Plus className="w-5 h-5" />
-                  Registrar Venta
-                </CardTitle>
-                <CardDescription>Anota una nueva venta</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="sale-product">Producto</Label>
-                    <Select
-                      value={newSale.productId}
-                      onValueChange={(value) =>
-                        setNewSale({ ...newSale, productId: value })
-                      }
-                    >
-                      <SelectTrigger id="sale-product">
-                        <SelectValue placeholder="Selecciona un producto" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {products.map((product) => (
-                          <SelectItem key={product.id} value={product.id}>
-                            {product.name} (${product.pricePerUnit.toFixed(2)})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="sale-quantity">Cantidad</Label>
-                    <Input
-                      id="sale-quantity"
-                      type="number"
-                      min="1"
-                      placeholder="1"
-                      value={newSale.quantity}
-                      onChange={(e) =>
-                        setNewSale({ ...newSale, quantity: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="sale-date">Fecha</Label>
-                    <Input
-                      id="sale-date"
-                      type="date"
-                      value={newSale.date}
-                      onChange={(e) =>
-                        setNewSale({ ...newSale, date: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-                <Button
-                  onClick={addSale}
-                  className="mt-4 w-full md:w-auto"
-                  disabled={!newSale.productId || !newSale.quantity}
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Registrar Venta
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Historial de Ventas</CardTitle>
-                <CardDescription>
-                  {sales.length} ventas registradas
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {sales.length === 0 ? (
-                    <p className="text-gray-500 text-center py-8">
-                      No hay ventas registradas
-                    </p>
-                  ) : (
-                    [...sales].reverse().map((sale) => {
-                      const product = products.find(
-                        (p) => p.id_new === sale.productId
-                      );
-                      return (
-                        <div
-                          key={sale.id}
-                          className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
-                        >
-                          <div className="flex-1">
-                            <p className="font-medium">
-                              {product?.name || "Producto eliminado"}
-                            </p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {sale.quantity} unidades × $
-                              {product?.pricePerUnit.toFixed(2)}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-bold text-green-600">
-                              ${sale.totalAmount.toFixed(2)}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {new Date(sale.date).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="ml-2"
-                            onClick={async () => {
-                              try {
-                                const { error: saleError } = await supabase
-                                  .from("sales")
-                                  .delete()
-                                  .eq("id", sale.id);
-
-                                if (saleError) {
-                                  console.error(
-                                    "[v0] Error deleting sale:",
-                                    saleError
-                                  );
-                                  toast.error("Error al eliminar la venta");
-                                  return;
-                                }
-
-                                if (product) {
-                                  const newUnitsSold = Math.max(
-                                    0,
-                                    product.unitsSold - sale.quantity
-                                  );
-                                  const { error: productError } = await supabase
-                                    .from("products")
-                                    .update({ units_sold: newUnitsSold })
-                                    .eq("id", product.id);
-
-                                  if (productError) {
-                                    console.error(
-                                      "[v0] Error updating product units:",
-                                      productError
-                                    );
-                                    toast.error("Error al actualizar unidades");
-                                    return;
-                                  }
-
-                                  setProducts(
-                                    products.map((p) =>
-                                      p.id_new === product.id
-                                        ? { ...p, unitsSold: newUnitsSold }
-                                        : p
-                                    )
-                                  );
-                                }
-
-                                setSales(sales.filter((s) => s.id !== sale.id));
-                                toast.success("Venta eliminada");
-                              } catch (error) {
-                                console.error(
-                                  "[v0] Error deleting sale:",
-                                  error
-                                );
-                                toast.error("Error al eliminar venta");
-                              }
-                            }}
-                          >
-                            <Trash2 className="w-4 h-4 text-red-500" />
-                          </Button>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            <SalesSection />
           </TabsContent>
 
           <TabsContent value="inventory" className="space-y-4">

@@ -151,15 +151,6 @@ export default function ProductsManager() {
       </CardHeader>
 
       <CardContent className="space-y-6">
-        <div className="mb-4">
-          <input
-            placeholder="Buscar jabón por nombre..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="px-3 py-2 border rounded-lg"
-          />
-        </div>
-
         {/* FORMULARIO */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="flex flex-col gap-2">
@@ -250,6 +241,14 @@ export default function ProductsManager() {
           {editingProduct ? "Guardar Cambios" : "Agregar Producto"}
         </Button>
 
+        <div className="mb-4">
+          <input
+            placeholder="Buscar jabón por nombre..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="px-3 py-2 border rounded-lg"
+          />
+        </div>
         {/* TABLA */}
         <Table>
           <TableHeader>
