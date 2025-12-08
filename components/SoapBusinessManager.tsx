@@ -117,8 +117,6 @@ export default function SoapBusinessManager() {
 
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  const [newSale, setNewSale] = useState(defaultNewSale);
-
   const [mounted, setMounted] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<
     "checking" | "connected" | "error"

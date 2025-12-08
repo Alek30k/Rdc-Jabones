@@ -18,8 +18,6 @@ export default function SalesSection() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const [massSaleItems, setMassSaleItems] = useState([]);
-
   const [search, setSearch] = useState("");
 
   useEffect(() => {
