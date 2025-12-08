@@ -90,11 +90,6 @@ interface AlertThresholds {
   lowStockThreshold: number;
 }
 
-const defaultNewSale = {
-  productId: "",
-  quantity: "",
-  date: new Date().toISOString().split("T")[0],
-};
 const defaultThresholds = {
   lowProfitMargin: 20,
   highExpenseCategory: 500,
