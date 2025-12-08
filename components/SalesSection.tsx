@@ -7,8 +7,6 @@ import ProductSaleCard from "./ProductSaleCard";
 import SaleConfirmModal from "./SaleConfirmModal";
 import SalesHistory from "./SalesHistory";
 import { v4 as uuid } from "uuid";
-import { Button } from "./ui/button";
-import MassSaleModal from "./MassSaleModal";
 import { Input } from "./ui/input";
 
 export default function SalesSection() {
@@ -20,7 +18,6 @@ export default function SalesSection() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const [massSaleOpen, setMassSaleOpen] = useState(false);
   const [massSaleItems, setMassSaleItems] = useState([]);
 
   const [search, setSearch] = useState("");
@@ -99,71 +96,6 @@ export default function SalesSection() {
     } catch (error) {
       console.error("INSERT + STOCK ERROR:", error);
       toast.error("Error al registrar venta");
-    }
-  };
-
-  // --------------------------------------------------
-  // 🟦 Venta Masiva (MEJORADA CON VALIDACIÓN)
-  // --------------------------------------------------
-  const handleMassSaleConfirm = async () => {
-    try {
-      if (massSaleItems.length === 0) {
-        toast.error("No seleccionaste productos");
-        return;
-      }
-
-      let saleRecords = [];
-
-      for (const item of massSaleItems) {
-        const product = products.find((p) => p.id === item.productId);
-        if (!product) continue;
-
-        const quantity = Number(item.quantity);
-
-        if (quantity <= 0) continue;
-
-        // ❌ Validar stock negativo
-        if (quantity > product.stock) {
-          toast.error(
-            `No hay stock suficiente de "${product.name}". Disponible: ${product.stock}`
-          );
-          return;
-        }
-
-        const total = product.pricePerUnit * quantity;
-
-        saleRecords.push({
-          id: uuid(),
-          product_id: product.id,
-          quantity,
-          date: new Date().toISOString().slice(0, 10),
-          total_amount: total,
-        });
-
-        // Descontar stock
-        await supabase
-          .from("products")
-          .update({ stock: product.stock - quantity })
-          .eq("id_new", product.id);
-      }
-
-      if (saleRecords.length === 0) {
-        toast.error("No agregaste cantidades válidas");
-        return;
-      }
-
-      const { error } = await supabase.from("sales").insert(saleRecords);
-      if (error) throw error;
-
-      toast.success("Venta masiva registrada correctamente");
-
-      setMassSaleItems([]);
-      setMassSaleOpen(false);
-      loadSales();
-      loadProducts();
-    } catch (err) {
-      console.error(err);
-      toast.error("Error en venta masiva");
     }
   };
 

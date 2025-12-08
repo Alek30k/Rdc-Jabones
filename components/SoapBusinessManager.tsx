@@ -12,13 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -32,7 +26,6 @@ import {
   BarChart3,
   Download,
   PieChart,
-  Plus,
   Trash2,
   Bell,
   AlertTriangle,
@@ -676,93 +669,6 @@ export default function SoapBusinessManager() {
     } else if (action === "Crear promoción") {
       setActiveTab("products");
       toast.info("🎁 Navegando a la sección de productos");
-    }
-  };
-
-  const addSale = async () => {
-    if (!newSale.productId || !newSale.quantity) {
-      toast.error(
-        "Por favor, selecciona un producto y una cantidad para la venta."
-      );
-      return;
-    }
-
-    const product = products.find((p) => p.id_new === newSale.productId);
-    if (!product) {
-      toast.error("Producto no encontrado.");
-      return;
-    }
-
-    const quantity = Number.parseInt(newSale.quantity);
-    if (isNaN(quantity) || quantity <= 0) {
-      toast.error("La cantidad debe ser un número entero positivo.");
-      return;
-    }
-
-    const sale: Sale = {
-      id: Date.now().toString(),
-      productId: newSale.productId,
-      quantity: quantity,
-      totalAmount: product.pricePerUnit * quantity,
-      date: newSale.date,
-    };
-
-    try {
-      const { error: saleError } = await supabase.from("sales").insert({
-        id: sale.id,
-        product_id: sale.productId,
-        quantity: sale.quantity,
-        total_amount: sale.totalAmount,
-        date: sale.date,
-      });
-
-      if (saleError) {
-        console.error("[v0] Error inserting sale:", saleError);
-        toast.error("Error al guardar la venta");
-        return;
-      }
-
-      const newUnitsSold = product.unitsSold + quantity;
-      const newStock = Math.max(0, (product.stock ?? 0) - quantity);
-
-      const { error: productError } = await supabase
-        .from("products")
-        .update({
-          units_sold: newUnitsSold,
-          stock: newStock,
-        })
-        .eq("id", product.id);
-
-      if (productError) {
-        console.error("[v0] Error updating product:", productError);
-        toast.error("Error al actualizar producto");
-        return;
-      }
-
-      setProducts(
-        products.map((p) =>
-          p.id_new === product.id
-            ? { ...p, unitsSold: newUnitsSold, stock: newStock }
-            : p
-        )
-      );
-
-      if (productError) {
-        console.error("[v0] Error updating product units:", productError);
-        toast.error("Error al actualizar unidades vendidas");
-        return;
-      }
-
-      setSales([...sales, sale]);
-
-      setNewSale(defaultNewSale);
-
-      toast.success(
-        `Venta registrada: ${quantity}x ${product.name} - $${sale.totalAmount.toFixed(2)}`
-      );
-    } catch (error) {
-      console.error("[v0] Error adding sale:", error);
-      toast.error("Error al agregar venta");
     }
   };
 
