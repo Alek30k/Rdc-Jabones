@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Container from "@/components/Container";
 import { Button } from "@/components/ui/button";
 import {
@@ -91,7 +91,8 @@ export default function ProduccionPage() {
   );
 
   // Form states
-  const [tipoJabon, setTipoJabon] = useState("");
+  const [tipoJabon1, setTipoJabon1] = useState("");
+  const [tipoJabon2, setTipoJabon2] = useState("");
   const [cantidad, setCantidad] = useState("");
   const [color, setColor] = useState("");
   const [notas, setNotas] = useState("");
@@ -99,6 +100,26 @@ export default function ProduccionPage() {
   // Filter states
   const [filterStartDate, setFilterStartDate] = useState("");
   const [filterEndDate, setFilterEndDate] = useState("");
+
+  //Fecha
+  const [fechaProduccion, setFechaProduccion] = useState<string>("");
+
+  const getDateKey = (timestamp: string): string => {
+    // Si es un string YYYY-MM-DD puro → lo devolvemos tal cual
+    if (/^\d{4}-\d{2}-\d{2}$/.test(timestamp)) {
+      return timestamp;
+    }
+
+    // Si ya tiene hora (casos antiguos), extraemos solo la parte de la fecha
+    // y ajustamos si es necesario por desfase (muy conservador)
+    try {
+      const dt = new Date(timestamp);
+      // Forzamos el día local ignorando la hora UTC
+      return dt.toISOString().split("T")[0];
+    } catch {
+      return timestamp.split("T")[0]; // fallback
+    }
+  };
 
   const supabase = createClient();
 
@@ -134,10 +155,12 @@ export default function ProduccionPage() {
   };
 
   const resetForm = () => {
-    setTipoJabon("");
+    setTipoJabon1("");
+    setTipoJabon2("");
     setCantidad("");
     setColor("");
     setNotas("");
+    setFechaProduccion(getTodayISO()); // ← Fecha actual por defecto
     setIsEditing(false);
     setCurrentRecord(null);
   };
@@ -145,17 +168,19 @@ export default function ProduccionPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!tipoJabon || !cantidad) {
+    if (!tipoJabon1 || !cantidad || !fechaProduccion) {
       toast.error("Por favor completa los campos requeridos");
       return;
     }
 
     try {
+      const tipoJabon = tipoJabon1 + (tipoJabon2 ? ` y ${tipoJabon2}` : "");
       const recordData = {
         tipo_jabon: tipoJabon,
         cantidad: Number(cantidad),
         color: color || null,
         notas: notas || null,
+        created_at: fechaProduccion, // ← ¡Solo YYYY-MM-DD! Esto es lo más estable
       };
 
       if (isEditing && currentRecord) {
@@ -186,10 +211,14 @@ export default function ProduccionPage() {
 
   const handleEdit = (record: ProductionRecord) => {
     setCurrentRecord(record);
-    setTipoJabon(record.tipo_jabon);
+    const tipos = record.tipo_jabon.split(" y ");
+    setTipoJabon1(tipos[0] || "");
+    setTipoJabon2(tipos[1] || "");
     setCantidad(record.cantidad.toString());
     setColor(record.color || "");
     setNotas(record.notas || "");
+    const recordDate = getDateKey(record.created_at);
+    setFechaProduccion(recordDate);
     setIsEditing(true);
     setIsDialogOpen(true);
   };
@@ -227,6 +256,33 @@ export default function ProduccionPage() {
   const averageProduction =
     totalRecords > 0 ? totalProduction / totalRecords : 0;
 
+  const getTodayISO = () => {
+    const today = new Date();
+    // Forzamos a zona Argentina para que sea exacto
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  // Opción A: Días más recientes primero (recomendado)
+  const groupedRecords = useMemo(() => {
+    const groups: Record<string, ProductionRecord[]> = {};
+
+    // Orden descendente global (más nuevo → más viejo)
+    const sorted = [...records].sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+
+    sorted.forEach((record) => {
+      const dateKey = getDateKey(record.created_at); // ← ¡Aquí está la clave!
+      if (!groups[dateKey]) groups[dateKey] = [];
+      groups[dateKey].push(record);
+    });
+
+    return groups;
+  }, [records]);
+
   return (
     <div className="min-h-screen bg-gray-50/30">
       <Container className="py-8">
@@ -235,7 +291,7 @@ export default function ProduccionPage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Producción de Jabones
+                📒 Registro de Producción de Jabones
               </h1>
               <p className="text-gray-600 mt-1">
                 Gestiona y registra tu producción diaria
@@ -270,23 +326,58 @@ export default function ProduccionPage() {
                 <form onSubmit={handleSubmit}>
                   <div className="space-y-4 py-4">
                     <div className="space-y-2">
-                      <Label htmlFor="tipo">Tipo de Jabón *</Label>
-                      <Select
-                        value={tipoJabon}
-                        onValueChange={setTipoJabon}
+                      <Label htmlFor="fecha">Fecha de producción *</Label>
+                      <Input
+                        id="fecha"
+                        type="date"
+                        value={fechaProduccion}
+                        onChange={(e) => setFechaProduccion(e.target.value)}
                         required
-                      >
-                        <SelectTrigger id="tipo">
-                          <SelectValue placeholder="Selecciona un tipo" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {soapTypes.map((type) => (
-                            <SelectItem key={type} value={type}>
-                              {type}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        {isEditing
+                          ? "Fecha original del registro (puedes modificarla)"
+                          : "Por defecto hoy. Puedes seleccionar cualquier fecha anterior."}
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="tipo1">Tipo de Jabón 1 *</Label>
+                        <Select
+                          value={tipoJabon1}
+                          onValueChange={setTipoJabon1}
+                          required
+                        >
+                          <SelectTrigger id="tipo1">
+                            <SelectValue placeholder="Selecciona un tipo" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {soapTypes.map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="tipo2">Tipo de Jabón 2</Label>
+                        <Select
+                          value={tipoJabon2}
+                          onValueChange={setTipoJabon2}
+                        >
+                          <SelectTrigger id="tipo2">
+                            <SelectValue placeholder="Selecciona un tipo" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {soapTypes.map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="cantidad">Cantidad (unidades) *</Label>
@@ -446,76 +537,110 @@ export default function ProduccionPage() {
                   No hay registros. Comienza agregando tu primera producción.
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Fecha</TableHead>
-                        <TableHead>Tipo de Jabón</TableHead>
-                        <TableHead className="text-center">Cantidad</TableHead>
-                        <TableHead>Color</TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Notas
-                        </TableHead>
-                        <TableHead className="text-right">Acciones</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {records.map((record) => (
-                        <TableRow key={record.id}>
-                          <TableCell className="font-medium">
-                            {format(new Date(record.created_at), "dd/MM/yyyy", {
-                              locale: es,
-                            })}
-                          </TableCell>
+                <div className="space-y-8">
+                  {/* Agrupamos los registros por fecha */}
+                  {Object.entries(groupedRecords).map(
+                    ([dateKey, dateRecords]) => (
+                      <div key={dateKey} className="space-y-3">
+                        {/* Título con la fecha */}
+                        <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-300 pb-2 flex items-baseline gap-3">
+                          <span>
+                            {format(
+                              new Date(`${dateKey}T12:00:00`),
+                              "EEEE dd 'de' MMMM 'de' yyyy",
+                              { locale: es }
+                            )}
+                          </span>
+                          <span className="text-sm font-normal text-gray-500">
+                            ({dateRecords.length}{" "}
+                            {dateRecords.length === 1
+                              ? "producción"
+                              : "producciones"}
+                            )
+                          </span>
+                        </h3>
 
-                          <TableCell>
-                            <Badge variant="outline">{record.tipo_jabon}</Badge>
-                          </TableCell>
-                          <TableCell className="text-center font-semibold">
-                            {record.cantidad}
-                          </TableCell>
-                          <TableCell>
-                            {record.color ? (
-                              <span className="text-sm text-gray-700">
-                                {record.color}
-                              </span>
-                            ) : (
-                              <span className="text-sm text-gray-400">-</span>
-                            )}
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell max-w-xs truncate">
-                            {record.notas ? (
-                              <span className="text-sm text-gray-600">
-                                {record.notas}
-                              </span>
-                            ) : (
-                              <span className="text-sm text-gray-400">-</span>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleEdit(record)}
-                              >
-                                <Edit2 className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleDelete(record.id)}
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                        {/* Tabla para este día */}
+                        <div className="space-y-3 rounded-lg bg-white/40 p-4 shadow-sm">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Tipo de Jabón</TableHead>
+                                <TableHead className="text-center">
+                                  Cantidad
+                                </TableHead>
+                                <TableHead>Color</TableHead>
+                                <TableHead>Notas</TableHead>
+                                <TableHead className="text-right">
+                                  Acciones
+                                </TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {dateRecords
+                                .slice() // copia para no mutar original
+                                .sort(
+                                  (a, b) =>
+                                    new Date(b.created_at).getTime() -
+                                    new Date(a.created_at).getTime()
+                                )
+                                .map((record) => (
+                                  <TableRow key={record.id}>
+                                    <TableCell>
+                                      {record.tipo_jabon
+                                        .split(" y ")
+                                        .map((tipo, index) => (
+                                          <Badge
+                                            key={index}
+                                            variant="outline"
+                                            className="mr-1"
+                                          >
+                                            {tipo.trim()}
+                                          </Badge>
+                                        ))}
+                                    </TableCell>
+                                    <TableCell className="text-center font-semibold">
+                                      {record.cantidad}
+                                    </TableCell>
+                                    <TableCell>
+                                      {record.color || (
+                                        <span className="text-gray-400">-</span>
+                                      )}
+                                    </TableCell>
+                                    <TableCell className="max-w-xs truncate">
+                                      {record.notas || (
+                                        <span className="text-gray-400">-</span>
+                                      )}
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                      <div className="flex justify-end gap-1">
+                                        <Button
+                                          size="sm"
+                                          variant="ghost"
+                                          onClick={() => handleEdit(record)}
+                                        >
+                                          <Edit2 className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="ghost"
+                                          onClick={() =>
+                                            handleDelete(record.id)
+                                          }
+                                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                        >
+                                          <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                      </div>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      </div>
+                    )
+                  )}
                 </div>
               )}
             </CardContent>
