@@ -42,6 +42,8 @@ import {
   Edit2,
   Trash2,
   Filter,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { format } from "date-fns";
@@ -117,6 +119,10 @@ export default function ProduccionPage() {
 
   //Fecha
   const [fechaProduccion, setFechaProduccion] = useState<string>("");
+
+  // Toggle states for sections
+  const [showStatistics, setShowStatistics] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   const getDateKey = (timestamp: string): string => {
     // Si es un string YYYY-MM-DD puro → lo devolvemos tal cual
@@ -451,90 +457,118 @@ export default function ProduccionPage() {
             </Dialog>
           </div>
 
-          {/* Statistics Cards */}
-          <div className="grid gap-4 md:grid-cols-3">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Producido
-                </CardTitle>
-                <Package className="h-4 w-4 text-shop_orange" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalProduction}</div>
-                <p className="text-xs text-gray-600">unidades en total</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Registros
-                </CardTitle>
-                <Calendar className="h-4 w-4 text-shop_orange" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalRecords}</div>
-                <p className="text-xs text-gray-600">días de producción</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Promedio Diario
-                </CardTitle>
-                <TrendingUp className="h-4 w-4 text-shop_orange" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {averageProduction.toFixed(1)}
-                </div>
-                <p className="text-xs text-gray-600">unidades por día</p>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Toggle for Statistics */}
+          <Button
+            variant="outline"
+            onClick={() => setShowStatistics(!showStatistics)}
+            className="w-full md:w-auto"
+          >
+            {showStatistics ? "Ocultar Estadísticas" : "Mostrar Estadísticas"}
+            {showStatistics ? (
+              <ChevronUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ChevronDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+          {showStatistics && (
+            <div className="grid gap-4 md:grid-cols-3">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Total Producido
+                  </CardTitle>
+                  <Package className="h-4 w-4 text-shop_orange" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{totalProduction}</div>
+                  <p className="text-xs text-gray-600">unidades en total</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Total Registros
+                  </CardTitle>
+                  <Calendar className="h-4 w-4 text-shop_orange" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{totalRecords}</div>
+                  <p className="text-xs text-gray-600">días de producción</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Promedio Diario
+                  </CardTitle>
+                  <TrendingUp className="h-4 w-4 text-shop_orange" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {averageProduction.toFixed(1)}
+                  </div>
+                  <p className="text-xs text-gray-600">unidades por día</p>
+                </CardContent>
+              </Card>
+            </div>
+          )}
 
-          {/* Filters */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Filter className="w-4 h-4" />
-                Filtrar por Fecha
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1 space-y-2">
-                  <Label htmlFor="start-date">Desde</Label>
-                  <Input
-                    id="start-date"
-                    type="date"
-                    value={filterStartDate}
-                    onChange={(e) => setFilterStartDate(e.target.value)}
-                  />
+          {/* Toggle for Filters */}
+          <Button
+            variant="outline"
+            onClick={() => setShowFilters(!showFilters)}
+            className="w-full md:w-auto"
+          >
+            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
+            {showFilters ? (
+              <ChevronUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ChevronDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
+          {showFilters && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Filter className="w-4 h-4" />
+                  Filtrar por Fecha
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1 space-y-2">
+                    <Label htmlFor="start-date">Desde</Label>
+                    <Input
+                      id="start-date"
+                      type="date"
+                      value={filterStartDate}
+                      onChange={(e) => setFilterStartDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <Label htmlFor="end-date">Hasta</Label>
+                    <Input
+                      id="end-date"
+                      type="date"
+                      value={filterEndDate}
+                      onChange={(e) => setFilterEndDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setFilterStartDate("");
+                        setFilterEndDate("");
+                      }}
+                    >
+                      Limpiar Filtros
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex-1 space-y-2">
-                  <Label htmlFor="end-date">Hasta</Label>
-                  <Input
-                    id="end-date"
-                    type="date"
-                    value={filterEndDate}
-                    onChange={(e) => setFilterEndDate(e.target.value)}
-                  />
-                </div>
-                <div className="flex items-end">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setFilterStartDate("");
-                      setFilterEndDate("");
-                    }}
-                  >
-                    Limpiar Filtros
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Records Table */}
           <Card>
