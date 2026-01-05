@@ -45,11 +45,13 @@ import {
   ChevronDown,
   ChevronUp,
   Box,
+  ArrowLeft,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 
 interface ShipmentRecord {
   id: string;
@@ -285,6 +287,15 @@ export default function EnviosPage() {
                 Gestiona y registra tus envíos
               </p>
             </div>
+
+            {/* Botón para ir a la página de Production */}
+            <Link href="/admin/production">
+              <Button variant="outline" className="gap-2">
+                Ir a Registro de Producción
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button

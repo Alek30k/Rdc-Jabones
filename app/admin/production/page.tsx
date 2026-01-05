@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import Link from "next/link"; // ← Importamos Link de Next.js
 
 import { useState, useEffect, useMemo } from "react";
 import Container from "@/components/Container";
@@ -44,6 +45,7 @@ import {
   Filter,
   ChevronDown,
   ChevronUp,
+  ArrowRight, // ← Icono para el botón de enlace
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { format } from "date-fns";
@@ -125,19 +127,14 @@ export default function ProduccionPage() {
   const [showFilters, setShowFilters] = useState(false);
 
   const getDateKey = (timestamp: string): string => {
-    // Si es un string YYYY-MM-DD puro → lo devolvemos tal cual
     if (/^\d{4}-\d{2}-\d{2}$/.test(timestamp)) {
       return timestamp;
     }
-
-    // Si ya tiene hora (casos antiguos), extraemos solo la parte de la fecha
-    // y ajustamos si es necesario por desfase (muy conservador)
     try {
       const dt = new Date(timestamp);
-      // Forzamos el día local ignorando la hora UTC
       return dt.toISOString().split("T")[0];
     } catch {
-      return timestamp.split("T")[0]; // fallback
+      return timestamp.split("T")[0];
     }
   };
 
@@ -180,7 +177,7 @@ export default function ProduccionPage() {
     setCantidad("");
     setColor("");
     setNotas("");
-    setFechaProduccion(getTodayISO()); // ← Fecha actual por defecto
+    setFechaProduccion(getTodayISO());
     setIsEditing(false);
     setCurrentRecord(null);
   };
@@ -200,7 +197,7 @@ export default function ProduccionPage() {
         cantidad: Number(cantidad),
         color: color || null,
         notas: notas || null,
-        created_at: fechaProduccion, // ← ¡Solo YYYY-MM-DD! Esto es lo más estable
+        created_at: fechaProduccion,
       };
 
       if (isEditing && currentRecord) {
@@ -278,24 +275,22 @@ export default function ProduccionPage() {
 
   const getTodayISO = () => {
     const today = new Date();
-    // Forzamos a zona Argentina para que sea exacto
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, "0");
     const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
-  // Opción A: Días más recientes primero (recomendado)
+
   const groupedRecords = useMemo(() => {
     const groups: Record<string, ProductionRecord[]> = {};
 
-    // Orden descendente global (más nuevo → más viejo)
     const sorted = [...records].sort(
       (a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
 
     sorted.forEach((record) => {
-      const dateKey = getDateKey(record.created_at); // ← ¡Aquí está la clave!
+      const dateKey = getDateKey(record.created_at);
       if (!groups[dateKey]) groups[dateKey] = [];
       groups[dateKey].push(record);
     });
@@ -307,7 +302,7 @@ export default function ProduccionPage() {
     <div className="min-h-screen bg-gray-50/30">
       <Container className="py-8">
         <div className="space-y-6">
-          {/* Header */}
+          {/* Header con botón a Envíos */}
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
@@ -317,6 +312,16 @@ export default function ProduccionPage() {
                 Gestiona y registra tu producción diaria
               </p>
             </div>
+
+            {/* Botón para ir a la página de envíos */}
+            <Link href="/admin/envios">
+              <Button variant="outline" className="gap-2">
+                Ir a Registro de Envíos
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+
+            {/* Botón de nuevo registro (mantenido) */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button
@@ -590,7 +595,6 @@ export default function ProduccionPage() {
                   {Object.entries(groupedRecords).map(
                     ([dateKey, dateRecords]) => (
                       <div key={dateKey} className="space-y-3">
-                        {/* Título con la fecha */}
                         <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-300 pb-2 flex items-baseline gap-3">
                           <span>
                             {format(
@@ -608,7 +612,6 @@ export default function ProduccionPage() {
                           </span>
                         </h3>
 
-                        {/* Tabla para este día */}
                         <div className="space-y-3 rounded-lg bg-white/40 p-4 shadow-sm">
                           <Table>
                             <TableHeader>
@@ -626,7 +629,7 @@ export default function ProduccionPage() {
                             </TableHeader>
                             <TableBody>
                               {dateRecords
-                                .slice() // copia para no mutar original
+                                .slice()
                                 .sort(
                                   (a, b) =>
                                     new Date(b.created_at).getTime() -
