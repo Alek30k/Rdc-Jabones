@@ -576,7 +576,7 @@ export default function ProduccionPage() {
           )}
 
           {/* Records Table */}
-          <Card>
+          <Card className="border-green-400 bg-green-200">
             <CardHeader>
               <CardTitle>Historial de Producción</CardTitle>
             </CardHeader>

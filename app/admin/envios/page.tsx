@@ -548,7 +548,7 @@ export default function EnviosPage() {
           )}
 
           {/* Historial */}
-          <Card>
+          <Card className="border-blue-400 bg-blue-200">
             <CardHeader>
               <CardTitle>Historial de Envíos</CardTitle>
             </CardHeader>
