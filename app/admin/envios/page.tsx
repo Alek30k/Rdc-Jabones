@@ -37,7 +37,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Plus,
   Calendar,
-  Package,
   TrendingUp,
   Edit2,
   Trash2,
