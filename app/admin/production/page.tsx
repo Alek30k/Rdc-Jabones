@@ -78,6 +78,7 @@ const soapTypes = [
   "Rosa",
   "Menta",
   "Coco",
+  "Frutilla",
   "Eucalipto",
   "Limón",
   "Naranja",
