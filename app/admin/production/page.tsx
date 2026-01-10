@@ -73,6 +73,8 @@ const soapTypes = [
   "Manzanilla",
   "Lavanda",
   "Carbón Activado",
+  "Leche",
+  "Leche de Cabra",
   "Avena",
   "Jazmín",
   "Rosa",
@@ -84,6 +86,7 @@ const soapTypes = [
   "Naranja",
   "Uva",
   "Vino",
+  "Té Verde",
   "Espirulina",
   "Otro",
 ];
