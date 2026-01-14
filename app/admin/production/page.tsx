@@ -89,6 +89,7 @@ const soapTypes = [
   "Pepino",
   "Romero",
   "Uva",
+  "Ananá",
   "Vino",
   "Té Verde",
   "Espirulina",
